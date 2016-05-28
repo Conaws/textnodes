@@ -6,6 +6,7 @@
                   :scope "provided"                            ]
                  [reagent "0.5.1"]
                  [reagent-utils                       "0.1.7"  ]
+                 [keybind            "2.0.0"]
                  [re-frame "0.7.0"]
                  [garden "1.3.2"]]
 

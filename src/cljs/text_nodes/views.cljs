@@ -8,6 +8,7 @@
        ;     [hickory.core :refer [as-hiccup as-hickory]]
             [datascript.core :as db]
             [cljs.pprint     :refer [pprint]]
+            [keybind.core :as key]
             [cljs.reader                ]
             [clojure.string  :as str    ])
   (:require-macros
@@ -153,6 +154,94 @@
    (reaction (:testmap @db))))
 
 
+
+
+
+
+(register-handler
+ :change-text
+ (fn [db [_ text]]
+   (assoc db :text text)))
+
+(register-sub
+ :text
+ (fn [db]
+   (reaction (:text @db))))
+
+
+
+
+(defn add-a []
+  []
+  (let [val (atom "")
+        stop #(reset! val "")
+        fire #(do
+                (dispatch [:add-answer-1 @val])
+                (stop)
+                (js/alert @val))]
+    (fn []
+     [:div
+       [:input {:value @val
+                :on-change #(reset! val (-> %
+                                            .-target
+                                            .-value))
+                :on-key-down #(case (.-which %)
+                               13 (fire))}]
+
+       [:button {:on-click fire} "Add Answer"]])))
+
+
+
+
+
+
+
+(defn tvalue [e]
+  (-> e
+      .-target
+      .-value))
+  
+
+(defn parsed [text]
+  (str/split text #"\n"))
+  
+
+(register-sub
+ :parsed-text
+ (fn [db]
+   (reaction (pr-str (parsed (:text @db))))))
+
+
+(register-handler
+ :clear-text
+ (fn [db]
+   (let [text (:text db)]
+     (js/console.log text)
+     (assoc db :text (str text "\t")))))
+
+
+(defn tree-text []
+  (let [text (subscribe [:text])
+        p    (subscribe [:parsed-text])]
+    (fn []
+      [:div
+       
+       [:h1 @p]
+       [:textarea {:on-change #(dispatch [:change-text (tvalue %)])
+                   :on-key-down #(case (.-which %)
+                                   9 (do
+                                       (dispatch [:clear-text])
+                                       (.preventDefault %))
+                                   :else)
+                   :value @text}]])))
+
+
+
+(key/bind! "shift-space" ::prev #(dispatch [:change-text "blamo"]))
+
+
+
+
 (defn stuff [conn]
   (let [tm (subscribe [:testmap])]
   (fn []
@@ -160,9 +249,26 @@
    [:button {:on-click #(dispatch [:init conn])} "start"]
 ;   [canvas conn]
    [connview conn]
+   [tree-text]
    [entity-view conn]
    [:h1 (pr-str @tm)]
 ])))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
