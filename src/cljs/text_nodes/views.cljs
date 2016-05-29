@@ -36,7 +36,8 @@
     (let[sa (first s)
          r (rest s)
          [children siblings] (split-with #(< (first sa) (first %)) r)
-         answer     {:node (second sa)}
+         answer     {:node (second sa)
+                     :children-visible true}
          answer
          (if (< 0 (count children))
            (assoc answer :children (nodify children))
@@ -174,26 +175,6 @@
 
 
 
-(defn add-a []
-  []
-  (let [val (atom "")
-        stop #(reset! val "")
-        fire #(do
-                (dispatch [:add-answer-1 @val])
-                (stop)
-                (js/alert @val))]
-    (fn []
-     [:div
-       [:input {:value @val
-                :on-change #(reset! val (-> %
-                                            .-target
-                                            .-value))
-                :on-key-down #(case (.-which %)
-                               13 (fire))}]
-
-       [:button {:on-click fire} "Add Answer"]])))
-
-
 
 (defn count-tabs
   [string]
@@ -219,36 +200,79 @@
 (register-sub
  :parsed-text
  (fn [db]
-   (reaction (pr-str (nodify (parsed (:text @db)))))))
+   (reaction (nodify (parsed (:text @db))))))
 
 
 (register-handler
  :clear-text
- (fn [db]
+ (fn [db [_ e]]
    (let [text (:text db)]
-     (js/console.log text)
+     (js/console.log e)
      (assoc db :text (str text "\t")))))
 
+
+
+(register-handler
+ :fix-tree
+ (fn [db]
+   (let [tree @(subscribe [:parsed-text])]
+     (assoc db :tree tree))))
+
+
+
+(register-sub
+ :tree
+ (fn [db]
+   (reaction (:tree @db))))
 
 (defn tree-text []
   (let [text (subscribe [:text])
         p    (subscribe [:parsed-text])]
     (fn []
       [:div
-       
-       [:h1 @p]
        [:textarea {:style {:width 500 :height 500}
-                   :on-change #(dispatch [:change-text (tvalue %)])
+                   :on-change #(do
+                                 (dispatch [:change-text (tvalue %)])
+                                 (dispatch [:fix-tree]))
                    :on-key-down #(case (.-which %)
                                    9 (do
-                                       (dispatch [:clear-text])
+                                       (dispatch [:clear-text %])
                                        (.preventDefault %))
                                    :else)
                    :value @text}]])))
 
 
 
-(key/bind! "shift-space" ::prev #(dispatch [:change-text "blamo"]))
+(defn tree [t]
+  (let [visible? (rx/atom (:children-visible t))]
+      (fn []
+        [:div
+              (if (< 0 (count (:children t)))
+            [:button {:on-click #(reset! visible? (not @visible?))} 
+             (if @visible?
+               "+"
+               "-")])
+         [:strong (:node t)]
+         [:div {:style {:margin-left 100
+                        :display (if (not @visible?)
+                                   :none
+                                   :block)}}
+          (for [child (:children t)]
+              ^{:key child} [tree child])]])))
+
+
+
+(defn tree-display []
+  (let [tree-array (subscribe [:tree])]
+    (fn []
+      [:div {:style {:float "right"
+                     :margin-right 50
+                     :border "2px solid black"
+                     :width 500}}
+       [:button {:on-click #(dispatch [:fix-tree])} "X"]
+       [:div (pr-str @tree-array)]
+         (for [t @tree-array]
+           ^{:key t} [tree t])])))
 
 
 
@@ -259,7 +283,7 @@
   [:div
    [:button {:on-click #(dispatch [:init conn])} "start"]
 ;   [canvas conn]
-   [connview conn]
+   [tree-display]
    [tree-text]
    [entity-view conn]
    [:h1 (pr-str @tm)]
