@@ -7,6 +7,7 @@
        ;     [history.util  :refer [e-value]]
        ;     [hickory.core :refer [as-hiccup as-hickory]]
             [datascript.core :as db]
+            [re-com.core   :as re-com :refer [h-box v-box box gap line scroller border h-split v-split title flex-child-style p]]
             [cljs.pprint     :refer [pprint]]
             [keybind.core :as key]
             [cljs.reader                ]
@@ -130,6 +131,9 @@
 
 
 
+(defn seperate-graph-map [graph-map-array] 
+  (map (partial tree-seq :node :children) graph-map-array))
+
 
 
 (register-handler 
@@ -221,8 +225,7 @@
 
 (defn tree-text []
   (let [text (subscribe [:text])
-        p    (subscribe [:parsed-text])
-        this (rx/current-component)]
+        p    (subscribe [:parsed-text])]
     (fn []
       [:div
        [:textarea {:style {:width 500 :height 500}
@@ -243,17 +246,21 @@
 (defn tree [t]
   (let [visible? (rx/atom (:children-visible t))]
       (fn []
-        [:div
-              (if (< 0 (count (:children t)))
+        [:div 
+         [:div  {:style {:width 200
+                        :height 100
+                        :overflow "scroll"
+                        :background-color :green}}
+          (:node t)]
+         (if (< 0 (count (:children t)))
             [:button {:on-click #(reset! visible? (not @visible?))} 
              (if @visible?
-               "+"
-               "-")])
-         [:strong (:node t)]
-         [:div {:style {:margin-left 100
+               "-"
+               "+")])
+         [:div {:style {
+                        :margin-left 10
                         :display (if (not @visible?)
-                                   :none
-                                   :block)}}
+                                   :none)}}
           (for [child (:children t)]
               ^{:key child} [tree child])]])))
 
@@ -266,11 +273,32 @@
                      :margin-right 50
                      :border "2px solid black"
                      :width 500}}
-       [:button {:on-click #(dispatch [:fix-tree])} "X"]
-       [:div (pr-str @tree-array)]
+       #_[:button {:on-click #(dispatch [:fix-tree])} "X"]
+       #_[:div (pr-str @tree-array)]
          (for [t @tree-array]
            ^{:key t} [tree t])])))
 
+
+
+(def cnt (rx/atom 0))
+(defn myspan1 [] [:span @cnt])
+(defn myspan2 [t] [:span t])
+(defn demo []
+  [v-box
+   :size "auto"
+   :gap "10px"
+   :children [
+              [re-com/button :label (str "inc " @cnt) :on-click #(swap! cnt inc)]
+              [re-com/h-split   
+               :panel-1 [tree-text]
+               :panel-2 [tree-display]
+               ]]])
+
+
+
+
+(defn demo2 []
+  [:div])
 
 
 
@@ -280,8 +308,8 @@
   [:div
    [:button {:on-click #(dispatch [:init conn])} "start"]
 ;   [canvas conn]
-   [tree-display]
-   [tree-text]
+   [demo2]
+   [demo]
    [entity-view conn]
    [:h1 (pr-str @tm)]
 ])))
@@ -308,6 +336,7 @@
 
 (defn main-panel []
     (fn []
+      
       [stuff conn]))
 
 

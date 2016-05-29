@@ -4,6 +4,7 @@
                  [posh                                "0.3.5"  ]
                  [org.clojure/clojurescript           "1.8.40"
                   :scope "provided"                            ]
+                 [re-com                              "0.8.3"  ]
                  [reagent "0.5.1"]
                  [reagent-utils                       "0.1.7"  ]
                  [keybind            "2.0.0"]
