@@ -158,10 +158,6 @@
    (reaction (:testmap @db))))
 
 
-
-
-
-
 (register-handler
  :change-text
  (fn [db [_ text]]
@@ -171,8 +167,6 @@
  :text
  (fn [db]
    (reaction (:text @db))))
-
-
 
 
 
@@ -205,10 +199,10 @@
 
 (register-handler
  :clear-text
- (fn [db [_ e]]
+ (fn [db [_ e end]]
    (let [text (:text db)]
-     (js/console.log e)
-     (assoc db :text (str text "\t")))))
+     (js/console.log (pr-str e))
+     (assoc db :text (str (subs text 0 e) "\t"  (subs text end))))))
 
 
 
@@ -227,7 +221,8 @@
 
 (defn tree-text []
   (let [text (subscribe [:text])
-        p    (subscribe [:parsed-text])]
+        p    (subscribe [:parsed-text])
+        this (rx/current-component)]
     (fn []
       [:div
        [:textarea {:style {:width 500 :height 500}
@@ -236,7 +231,9 @@
                                  (dispatch [:fix-tree]))
                    :on-key-down #(case (.-which %)
                                    9 (do
-                                       (dispatch [:clear-text %])
+                                       (dispatch [:clear-text 
+                                                  (-> % .-target .-selectionStart)
+                                                  (-> % .-target .-selectionEnd)])
                                        (.preventDefault %))
                                    :else)
                    :value @text}]])))
@@ -438,11 +435,7 @@
          [:h1 (:node/text @node)]
          #_[:div (pr-str @node) ]]]])))
      
-  
-
-  
-   
-
+ 
 
 (defn hickory-printer [text]
    [:div 
