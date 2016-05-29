@@ -28,6 +28,28 @@
 
 
 
+
+
+(defn nodify [nseq]
+  (loop [result [] 
+         s nseq]
+    (let[sa (first s)
+         r (rest s)
+         [children siblings] (split-with #(< (first sa) (first %)) r)
+         answer     {:node (second sa)}
+         answer
+         (if (< 0 (count children))
+           (assoc answer :children (nodify children))
+           (assoc answer :children children))]
+      
+      (if (< 0 (count siblings))
+        (recur (conj result answer) siblings)
+        (conj result answer)))))
+
+
+
+
+
 (defonce conn
   (doto (db/create-conn schema)
         posh!))
@@ -103,25 +125,6 @@
 
 
 
-(defn nodify [nseq]
-  (loop [result [] 
-         s nseq]
-    (let[sa (first s)
-         r (rest s)
-         [children siblings] (split-with #(< (first sa) (first %)) r)
-         answer     {:node (second sa)}
-         answer
-         (if (< 0 (count children))
-           (assoc answer :children (nodify children))
-           (assoc answer :children children))]
-      
-      (if (< 0 (count siblings))
-        (recur (conj result answer) siblings)
-        (conj result answer)))))
-
-
-
-
 (nodify test-struct)
 
 
@@ -192,7 +195,11 @@
 
 
 
+(defn count-tabs
+  [string]
+  (count (take-while #{\tab} string)))
 
+(count-tabs "\t\t")
 
 
 
@@ -203,13 +210,16 @@
   
 
 (defn parsed [text]
-  (str/split text #"\n"))
+  (->> (str/split text #"\n")
+       (map (juxt count-tabs str/trim))))
+
+
   
 
 (register-sub
  :parsed-text
  (fn [db]
-   (reaction (pr-str (parsed (:text @db))))))
+   (reaction (pr-str (nodify (parsed (:text @db)))))))
 
 
 (register-handler
@@ -227,7 +237,8 @@
       [:div
        
        [:h1 @p]
-       [:textarea {:on-change #(dispatch [:change-text (tvalue %)])
+       [:textarea {:style {:width 500 :height 500}
+                   :on-change #(dispatch [:change-text (tvalue %)])
                    :on-key-down #(case (.-which %)
                                    9 (do
                                        (dispatch [:clear-text])
