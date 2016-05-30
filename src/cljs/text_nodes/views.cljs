@@ -7,6 +7,7 @@
        ;     [history.util  :refer [e-value]]
        ;     [hickory.core :refer [as-hiccup as-hickory]]
             [datascript.core :as db]
+            [re-com.core   :as re-com :refer [h-box v-box box gap line scroller border h-split v-split title flex-child-style p]]
             [cljs.pprint     :refer [pprint]]
             [keybind.core :as key]
             [cljs.reader                ]
@@ -130,6 +131,9 @@
 
 
 
+(defn seperate-graph-map [graph-map-array] 
+  (map (partial tree-seq :node :children) graph-map-array))
+
 
 
 (register-handler 
@@ -221,8 +225,7 @@
 
 (defn tree-text []
   (let [text (subscribe [:text])
-        p    (subscribe [:parsed-text])
-        this (rx/current-component)]
+        p    (subscribe [:parsed-text])]
     (fn []
       [:div
        [:textarea {:style {:width 500 :height 500}
@@ -239,38 +242,113 @@
                    :value @text}]])))
 
 
+                                 ;; [box
+                                 ;;  :min-width "50px"
+                                 ;;  :align-self :center
+                                 ;;  :style {:background-color "white"
+                                 ;;          :margin "10px"
+                                 ;;          :border "2px solid blue"}
+                                 ;;  :child
+
+
 
 (defn tree [t]
   (let [visible? (rx/atom (:children-visible t))]
       (fn []
-        [:div
-              (if (< 0 (count (:children t)))
-            [:button {:on-click #(reset! visible? (not @visible?))} 
-             (if @visible?
-               "+"
-               "-")])
-         [:strong (:node t)]
-         [:div {:style {:margin-left 100
-                        :display (if (not @visible?)
-                                   :none
-                                   :block)}}
-          (for [child (:children t)]
-              ^{:key child} [tree child])]])))
+         [v-box
+          :min-width  "40px"
+          :size "auto"
+          :gap "5px"
+          :children
+          [ 
+           [v-box
+            :align-self :center
+            :gap "5px"
+            :children [
+                       [box 
+                        :align-self :center
+                        :min-width  "40"
+                        :style {:background-color "white"
+                                :padding "5px"
+                                :margin"20px 10px 0px 10px" 
+                                :border "2px solid blue"}
+
+                        :child (:node t)]
+                       [box 
+                        :align-self :center
+                        :child 
+                        [:div
+                         (if (< 0 (count (:children t)))
+                           [:button {:on-click #(reset! visible? (not @visible?))} 
+                            (if @visible?
+                              "-"
+                              "+")])]]]]
+           [box
+            :child
+            [h-box
+             :justify :center
+             :style {:display (if (not @visible?)
+                               :none)}
+             :children [
+                       (for [child (:children t)]
+
+
+                         ^{:key child}
+
+                                  [tree child])]]]]])))
 
 
 
 (defn tree-display []
   (let [tree-array (subscribe [:tree])]
     (fn []
-      [:div {:style {:float "right"
-                     :margin-right 50
-                     :border "2px solid black"
-                     :width 500}}
-       [:button {:on-click #(dispatch [:fix-tree])} "X"]
-       [:div (pr-str @tree-array)]
+      [h-box
+       :style {:background-color "lightGrey"}
+       :width "100%"
+       :justify :center
+       :gap   "2em"
+       :children [
+       #_[:button {:on-click #(dispatch [:fix-tree])} "X"]
+       #_[:div (pr-str @tree-array)]
          (for [t @tree-array]
-           ^{:key t} [tree t])])))
+           ^{:key t} [tree t])]])))
 
+
+
+
+
+(defn demo []
+  [v-box
+   :size "auto"
+   :gap "10px"
+   :children [
+              [re-com/h-split   
+               :panel-1 [tree-text]
+               :panel-2 [tree-display]
+               ]]])
+
+
+
+
+
+
+(defn demo2 []
+  [h-box
+   :height "100px"
+   :justify :center
+   :children [
+              [box
+               :child "Box1"
+               :style {:background-color "blue"}
+               ]
+              [box
+               :child "b"
+               :style {:background-color "green"}
+               ]
+              [box
+               :child "b"
+               :align-self :center
+               ]]])
 
 
 
@@ -278,10 +356,9 @@
   (let [tm (subscribe [:testmap])]
   (fn []
   [:div
-   [:button {:on-click #(dispatch [:init conn])} "start"]
+   #_[:button {:on-click #(dispatch [:init conn])} "start"]
 ;   [canvas conn]
-   [tree-display]
-   [tree-text]
+   [demo]
    [entity-view conn]
    [:h1 (pr-str @tm)]
 ])))
@@ -308,6 +385,7 @@
 
 (defn main-panel []
     (fn []
+      
       [stuff conn]))
 
 
