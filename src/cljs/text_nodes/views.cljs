@@ -315,19 +315,19 @@
 
 
 
-(def cnt (rx/atom 0))
-(defn myspan1 [] [:span @cnt])
-(defn myspan2 [t] [:span t])
+
+
 (defn demo []
   [v-box
    :size "auto"
    :gap "10px"
    :children [
-              [re-com/button :label (str "inc " @cnt) :on-click #(swap! cnt inc)]
               [re-com/h-split   
                :panel-1 [tree-text]
                :panel-2 [tree-display]
                ]]])
+
+
 
 
 
@@ -356,9 +356,8 @@
   (let [tm (subscribe [:testmap])]
   (fn []
   [:div
-   [:button {:on-click #(dispatch [:init conn])} "start"]
+   #_[:button {:on-click #(dispatch [:init conn])} "start"]
 ;   [canvas conn]
-   [demo2]
    [demo]
    [entity-view conn]
    [:h1 (pr-str @tm)]
