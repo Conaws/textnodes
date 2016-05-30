@@ -242,41 +242,65 @@
                    :value @text}]])))
 
 
+                                 ;; [box
+                                 ;;  :min-width "50px"
+                                 ;;  :align-self :center
+                                 ;;  :style {:background-color "white"
+                                 ;;          :margin "10px"
+                                 ;;          :border "2px solid blue"}
+                                 ;;  :child
+
+
 
 (defn tree [t]
   (let [visible? (rx/atom (:children-visible t))]
       (fn []
-        [:div 
-         [:div  {:style {:width 200
-                        :height 100
-                        :overflow "scroll"
-                        :background-color :green}}
-          (:node t)]
-         (if (< 0 (count (:children t)))
-            [:button {:on-click #(reset! visible? (not @visible?))} 
-             (if @visible?
-               "-"
-               "+")])
-         [:div {:style {
-                        :margin-left 10
-                        :display (if (not @visible?)
-                                   :none)}}
-          (for [child (:children t)]
-              ^{:key child} [tree child])]])))
+         [v-box
+          :gap "20px"
+          :children
+          [
+           [box 
+            :align-self :center
+            :style {:background-color "lightBlue"}
+            :child (:node t)]
+           [box 
+            :align-self :center
+            :child 
+            [:div
+             (if (< 0 (count (:children t)))
+               [:button {:on-click #(reset! visible? (not @visible?))} 
+               (if @visible?
+                 "-"
+                 "+")])]]
+           [box
+            :child
+            [h-box
+             :justify :center
+             :style {:display (if (not @visible?)
+                               :none)}
+             :children [
+                       (for [child (:children t)]
+
+
+                         ^{:key child}
+
+                                  [tree child])]]]]])))
 
 
 
 (defn tree-display []
   (let [tree-array (subscribe [:tree])]
     (fn []
-      [:div {:style {:float "right"
-                     :margin-right 50
-                     :border "2px solid black"
-                     :width 500}}
+      [h-box
+       :style {:background-color "lightGrey"}
+       :width "100%"
+       :justify :center
+       :gap   "2em"
+       :children [
        #_[:button {:on-click #(dispatch [:fix-tree])} "X"]
        #_[:div (pr-str @tree-array)]
          (for [t @tree-array]
-           ^{:key t} [tree t])])))
+           ^{:key t} [tree t])]])))
 
 
 
@@ -298,7 +322,22 @@
 
 
 (defn demo2 []
-  [:div])
+  [h-box
+   :height "100px"
+   :justify :center
+   :children [
+              [box
+               :child "Box1"
+               :style {:background-color "blue"}
+               ]
+              [box
+               :child "b"
+               :style {:background-color "green"}
+               ]
+              [box
+               :child "b"
+               :align-self :center
+               ]]])
 
 
 
