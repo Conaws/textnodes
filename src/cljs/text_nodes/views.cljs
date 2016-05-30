@@ -256,22 +256,33 @@
   (let [visible? (rx/atom (:children-visible t))]
       (fn []
          [v-box
-          :gap "20px"
+          :min-width  "40px"
+          :size "auto"
+          :gap "5px"
           :children
-          [
-           [box 
+          [ 
+           [v-box
             :align-self :center
-            :style {:background-color "lightBlue"}
-            :child (:node t)]
-           [box 
-            :align-self :center
-            :child 
-            [:div
-             (if (< 0 (count (:children t)))
-               [:button {:on-click #(reset! visible? (not @visible?))} 
-               (if @visible?
-                 "-"
-                 "+")])]]
+            :gap "5px"
+            :children [
+                       [box 
+                        :align-self :center
+                        :min-width  "40"
+                        :style {:background-color "white"
+                                :padding "5px"
+                                :margin"20px 10px 0px 10px" 
+                                :border "2px solid blue"}
+
+                        :child (:node t)]
+                       [box 
+                        :align-self :center
+                        :child 
+                        [:div
+                         (if (< 0 (count (:children t)))
+                           [:button {:on-click #(reset! visible? (not @visible?))} 
+                            (if @visible?
+                              "-"
+                              "+")])]]]]
            [box
             :child
             [h-box
