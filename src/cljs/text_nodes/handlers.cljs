@@ -1,11 +1,17 @@
 (ns text-nodes.handlers
-    (:require [re-frame.core :as re-frame]
-              [text-nodes.db :as db]))
+  (:require [re-frame.core :as re-frame]
+            [text-nodes.db :as db]
+            [clojure.string :as str]))
 
 (re-frame/register-handler
  :initialize-db
  (fn  [_ _]
    db/default-db))
+
+
+(defn count-tabs
+  [string]
+  (count (take-while #{\tab} string)))
 
 (defn nodify3 [rows]
   ;; find the entities
