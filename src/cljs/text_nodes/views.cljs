@@ -136,6 +136,35 @@
 
 
 
+
+(def sep (seperate-graph-map (nodify test-struct)))
+
+
+
+(defn nestedmap->edges [noderef childrenref nestedmap]
+  (let [seperated (tree-seq noderef childrenref nestedmap)]
+    (->> seperated
+         (map (juxt noderef #(mapv noderef (childrenref %))))
+         (into {}))))
+
+
+(defn nestedmaparray->edges [array-of-trees]
+  (->> array-of-trees
+       (map (partial nestedmap->edges :node :children))
+       (apply (partial merge-with (comp flatten conj)))))
+
+
+
+
+
+(merge-with (comp flatten conj) {:a '(:b)} {:a '(:c)})
+
+(nestedmaparray->edges (nodify test-struct))
+
+
+
+
+
 (register-handler 
  :init
  (fn [db [_ conn]]  
