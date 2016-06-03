@@ -11,9 +11,11 @@
             [cljs.pprint     :refer [pprint]]
             [keybind.core :as key]
             [cljs.reader                ]
+            [com.rpl.specter  :refer [ALL] :as s]
             [clojure.string  :as str    ])
   (:require-macros
-            [reagent.ratom :refer [reaction]]))
+           [com.rpl.specter.macros  :refer [select transform defprotocolpath]]
+           [reagent.ratom :refer [reaction]]))
 
 
 
@@ -25,7 +27,6 @@
           ;   :node/content          {:db/valueType :db.type/uri}
            ;  :node/title            {:db/valueType :db.type/string}
              })
-
 
 
 
@@ -126,8 +127,24 @@
                    [1  "1c"]])
 
 
+(select ALL test-struct)
 
-(nodify test-struct)
+;this gives me the first layer
+
+
+(defn get-children [treesarray]
+  
+  (select [ALL (s/collect-one :node) :children ALL :node]
+          treesarray))
+
+(get-children (nodify test-struct))
+
+
+(pprint (select [ALL]  (nodify test-struct)))
+
+;;[["a" "b"] ["a" "d"] ["1a" "1b"] ["1a" "1c"]]
+;;[["a" "b"] ["a" "d"] ["1a" "1b"] ["1a" "1c"]]
+
 
 
 
