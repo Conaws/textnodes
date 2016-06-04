@@ -1,0 +1,28 @@
+* Tree Wallker Example
+
+
+Still don't totally understand how this works, but apparently it can be recursive
+
+relates to the nodify function
+
+aka nestedarray->graph
+
+
+
+                    (def test-struct [[0 :a] [1 :b] [2 :c] [0 :d] [1 :e] [1 :f]])
+
+                    (defprotocolpath TreeWalker [])
+
+                    (extend-protocolpath TreeWalker
+                      Object nil
+                      clojure.lang.PersistentVector [s/ALL TreeWalker])
+
+                    (select [TreeWalker number?] [:a 1 [2 [[[3]]] :e] [4 5 [6 7]]])
+                    (select [TreeWalker :a] 
+                               
+                    [:a 1 [2 [[[3 {:a "b"}]]] :e] [4 {:a '({} {:b {:c :d}})} 5 [6 7]]]
+                    
+                    
+* newHeadline
+
+    
