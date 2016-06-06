@@ -1,5 +1,5 @@
 (defproject text-nodes "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha3"]
                  [datascript                          "0.13.3" ]
                  [posh                                "0.3.5"  ]
                  [org.clojure/clojurescript           "1.8.40"
@@ -7,6 +7,7 @@
                  [re-com                              "0.8.3"  ]
                  [reagent "0.5.1"]
                  [reagent-utils                       "0.1.7"  ]
+                 [com.rpl/specter                     "0.11.0" ]
                  [keybind            "2.0.0"]
                  [re-frame "0.7.0"]
                  [garden "1.3.2"]]
