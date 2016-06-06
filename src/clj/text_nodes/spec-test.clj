@@ -40,22 +40,71 @@
   [string]
   (count (take-while #{\tab} string)))
   
-;@+node:conor.20160606075341.1: *5* experiment with re-seq
+;@+node:conor.20160606075341.1: *5* using split-with
+
+
+(def trigger #{"@person" "@role"})
+
+(s/def ::trigger trigger)
+
+
+(s/def ::string string?)
+
+(s/def ::even-parse  (s/* 
+                      (s/cat 
+                       :t        ::trigger
+                       :string   string?)))
+
+
+
 
 (defn check-edges [edgeset string]
   (let [words (str/split string #"\s")]
-    (->> (partition-by #(edgeset (keyword %)) words)
-        (partition 2))))
-
-(check-edges #{:abcd :edf} "abcd this goes at abcd edf abcd")
-
-
+    (->> (split-with #(edgeset %) words)
+        (partition 2)
+        first
+        ((juxt #(ffirst %) #(str/join " " (second %)))))))
 
 
 
+(s/explain ::even-parse (check-edges trigger "@person Conor"))
+(s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
+
+(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
 
 
 
+
+
+
+;@+node:conor.20160606094026.1: *6* (def trigger #{"@person" "@role"})
+
+
+(def trigger #{"@person" "@role"})
+
+(s/def ::trigger trigger)
+;@+node:conor.20160606094026.2: *6* (s/def ::string string?)
+(s/def ::string string?)
+
+(s/def ::even-parse  (s/* 
+                      (s/cat 
+                       :t        ::trigger
+                       :string   string?)))
+;@+node:conor.20160606094026.3: *6* (defn check-edges [edgeset string]  
+
+
+(defn check-edges [edgeset string]
+  (let [words (str/split string #"\s")]
+    (->> (split-with #(edgeset %) words)
+        (partition 2)
+        first
+        ((juxt #(ffirst %) #(str/join " " (second %)))))))
+;@+node:conor.20160606094026.4: *6* (s/explain ::even-parse (check-edges trigger "@person 
+
+(s/explain ::even-parse (check-edges trigger "@person Conor"))
+(s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
+
+(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
 ;@+node:conor.20160606073225.3: *5* (defn parsed [text]  (->> 
 
 (defn parsed [text]
