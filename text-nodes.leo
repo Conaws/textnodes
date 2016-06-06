@@ -9,23 +9,23 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="conor.20160606053544.1"><vh>Files to write</vh>
+<v t="conor.20160606053544.1" a="E"><vh>Files to write</vh>
 <v t="conor.20160605011037.1"><vh>@path ~/orgmap/leo/text-nodes</vh>
 <v t="conor.20160605011510.1" a="E"><vh>@auto log.org</vh></v>
 <v t="conor.20160605013539.1" a="E"><vh>@auto specter.org</vh></v>
 </v>
 <v t="conor.20160605013848.1"><vh>@auto datascript.org</vh></v>
-<v t="conor.20160605010926.1"><vh>@path src/</vh>
-<v t="conor.20160605011023.2"><vh>/clj/</vh>
+<v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
+<v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
 <v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
 <v t="conor.20160606052632.1"
-expanded="conor.20160606053224.1,conor.20160606075341.1,"><vh>@file spec-test.clj</vh></v>
-<v t="conor.20160605012522.1" a="E"><vh>@auto core.clj</vh></v>
+expanded="conor.20160606062933.1,conor.20160606065151.1,conor.20160606073225.1,conor.20160606113823.1,conor.20160606070500.1,"><vh>@file spec-test.clj</vh></v>
+<v t="conor.20160605012522.1"><vh>@auto core.clj</vh></v>
 <v t="conor.20160605011026.1"><vh>css.clj</vh></v>
 </v>
 </v>
-<v t="conor.20160605011023.1" a="E"><vh>/cljs/</vh>
-<v t="conor.20160605011952.1" a="E"><vh>/text_nodes/</vh>
+<v t="conor.20160605011023.1"><vh>/cljs/</vh>
+<v t="conor.20160605011952.1"><vh>/text_nodes/</vh>
 <v t="conor.20160605011953.6"><vh>config.cljs</vh></v>
 <v t="conor.20160605011953.5"><vh>@auto core.cljs</vh></v>
 <v t="conor.20160605011953.4"><vh>@auto db.cljs</vh></v>
@@ -36,7 +36,7 @@ expanded="conor.20160606053224.1,conor.20160606075341.1,"><vh>@file spec-test.cl
 </v>
 </v>
 </v>
-<v t="conor.20160606044649.1"><vh>Mon Jun  6 </vh>
+<v t="conor.20160606044649.1" a="E"><vh>Mon Jun  6 </vh>
 <v t="conor.20160606053804.1"><vh>break</vh></v>
 <v t="conor.20160606055117.1"><vh>Discovery  05:55:43</vh>
 <v t="conor.20160606055120.1"><vh>Working with Leo and Emacs</vh>
@@ -89,37 +89,48 @@ expanded="conor.20160606053224.1,conor.20160606075341.1,"><vh>@file spec-test.cl
 </v>
 </v>
 </v>
-<v t="conor.20160606093849.1" a="E"><vh>experiment with parsing on triggers -- works for a single trigger per value </vh>
+<v t="conor.20160606093849.1"><vh>experiment with parsing on triggers -- works for a single trigger per value </vh>
 <v t="conor.20160606093907.1"><vh>(def trigger #{"@person" "@role"})</vh></v>
 <v t="conor.20160606093907.2"><vh>(s/def ::string string?)</vh></v>
 <v t="conor.20160606093907.3"><vh>(defn check-edges [edgeset string]  </vh></v>
 <v t="conor.20160606093907.4"><vh>(s/explain ::even-parse (check-edges trigger "@person </vh></v>
 </v>
+<v t="conor.20160606113713.1"><vh>splitting up text</vh>
+<v t="conor.20160606113722.1"><vh>Checking edges</vh>
+<v t="conor.20160606113736.1"><vh>(def trigger #{"@person" "@role"})</vh></v>
+<v t="conor.20160606113736.2"><vh>(s/def ::string string?)</vh></v>
+<v t="conor.20160606113736.3"><vh>(s/def ::even-parse  (s/*  </vh></v>
+<v t="conor.20160606113736.4"><vh>(defn check-edges [edgeset string]  </vh></v>
+<v t="conor.20160606113737.1"><vh>(check-edges trigger "Conor is great </vh></v>
+<v t="conor.20160606113737.2"><vh>(s/explain ::even-parse (check-edges trigger "@person </vh></v>
+<v t="conor.20160606113737.3"><vh>(s/conform ::even-parse (check-edges trigger "@person </vh></v>
+<v t="conor.20160606113737.4"><vh>(s/explain ::even-parse (check-edges trigger "Conor </vh></v>
+<v t="conor.20160606113737.5"><vh>(s/explain ::even-parse [[":abcd" "this is </vh></v>
 </v>
-<v t="conor.20160606053224.1"><vh>spec-test</vh>
-<v t="conor.20160605013418.1"><vh>namespace</vh></v>
-<v t="conor.20160606062933.1"><vh>string spec</vh>
-<v t="conor.20160606062941.1"><vh>sampletext</vh></v>
-<v t="conor.20160606065151.1"><vh>Edge Spec</vh>
-<v t="conor.20160606065211.1"></v>
-<v t="conor.20160606070318.1"><vh>role spec</vh></v>
-<v t="conor.20160606074329.1"><vh>edge</vh></v>
-<v t="conor.20160606064711.1"></v>
 </v>
-<v t="conor.20160606073225.1"><vh>splitting the string with types</vh>
-<v t="conor.20160606073225.2"><vh>(defn count-tabs  [string]  </vh></v>
+<v t="conor.20160606115351.1"><vh>clojure set functions</vh>
+<v t="conor.20160606115355.1" a="E"><vh>11:53:59</vh>
+<v t="conor.20160606115634.1"><vh>intersection</vh></v>
+</v>
+</v>
+</v>
 <v t="conor.20160606075341.1" a="E"><vh>using split-with</vh>
+<v t="conor.20160606120955.1"><vh>set-members-in-string</vh></v>
+<v t="conor.20160606113823.1" a="E"><vh>splitting text using conforms</vh>
+<v t="conor.20160606123700.1"><vh>WIN  reducing pattern volume 3</vh></v>
+</v>
+</v>
+<v t="conor.20160606123700.1"></v>
+<v t="conor.20160606130151.1"><vh>WIN  reducing pattern volume 2</vh></v>
+<v t="conor.20160606124013.1"><vh>WIN reducing pattern basic</vh></v>
+<v t="conor.20160606120806.1" a="E"><vh>oneway</vh>
 <v t="conor.20160606094026.1"><vh>(def trigger #{"@person" "@role"})</vh></v>
+<v t="conor.20160606114947.1"><vh>set-members-in-string</vh></v>
+<v t="conor.20160606114555.1"><vh>(s/def ::trigger trigger)</vh></v>
 <v t="conor.20160606094026.2"><vh>(s/def ::string string?)</vh></v>
+<v t="conor.20160606114644.1"><vh>(s/def ::even-parse  (s/* (s/cat :t ::trigger :string string?)))</vh></v>
 <v t="conor.20160606094026.3"><vh>(defn check-edges [edgeset string]  </vh></v>
 <v t="conor.20160606094026.4"><vh>(s/explain ::even-parse (check-edges trigger "@person </vh></v>
-</v>
-<v t="conor.20160606073225.3"><vh>(defn parsed [text]  (-&gt;&gt; </vh></v>
-</v>
-<v t="conor.20160606070500.1"><vh>Test the Edgespec</vh>
-<v t="conor.20160606070517.1"><vh>returning the conformed value</vh></v>
-</v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -131,17 +142,6 @@ expanded="conor.20160606053224.1,conor.20160606075341.1,"><vh>@file spec-test.cl
 <t tx="conor.20160605011037.1"></t>
 <t tx="conor.20160605011952.1">@path text_nodes</t>
 <t tx="conor.20160605011953.6"></t>
-<t tx="conor.20160605013418.1">(ns text-nodes.core
-  (:require [com.rpl.specter  :as sp :refer [ALL]]
-                [clojure.spec        :as s]
-                [clojure.string      :as str]
-                [clojure.pprint       :refer [pprint]]
-                [datascript.core    :as db])
-  (:use 
-   [com.rpl.specter.macros 
-         :only [select transform defprotocolpath
-                extend-protocolpath]]))
-</t>
 <t tx="conor.20160606044649.1">04:46:54 2016
 
 adding in new clojure
@@ -161,7 +161,6 @@ Mon Jun  6 05:24:02 2016
 back to text nodes
 
 </t>
-<t tx="conor.20160606053224.1"></t>
 <t tx="conor.20160606053544.1"></t>
 <t tx="conor.20160606053804.1">start --  Mon Jun  6 05:38:14 2016
 
@@ -181,9 +180,6 @@ its currently commented out
 for time;;
 </t>
 <t tx="conor.20160606055940.1"></t>
-<t tx="conor.20160606062933.1"></t>
-<t tx="conor.20160606062941.1">(def sampletext "This is the first goal\n\tThis is it's first child\n\t\t:person Conor")
-</t>
 <t tx="conor.20160606063153.1">@others
 </t>
 <t tx="conor.20160606063559.1"></t>
@@ -217,39 +213,11 @@ need to find a way to do that
                 :node   string?))
 
 </t>
-<t tx="conor.20160606065151.1"></t>
 <t tx="conor.20160606065211.1">(s/def ::person (s/and string? #(str/starts-with?  %  ":person")))
                                    
 </t>
 <t tx="conor.20160606065408.1"></t>
-<t tx="conor.20160606070318.1">(s/def ::role  (s/and string?  #(re-matches #":role" %)))
-
-</t>
-<t tx="conor.20160606070500.1"></t>
-<t tx="conor.20160606070517.1">(for [[i t] (parsed sampletext)]
-    [i (s/conform ::edges t)])
-    
-    
-</t>
-<t tx="conor.20160606073225.1">@others
-</t>
-<t tx="conor.20160606073225.2">(defn count-tabs
-  [string]
-  (count (take-while #{\tab} string)))
-  
-</t>
-<t tx="conor.20160606073225.3">
-(defn parsed [text]
-  (-&gt;&gt; (str/split text #"\n")
-       (map (juxt count-tabs str/trim))))
-
-</t>
 <t tx="conor.20160606073324.1">(def sampletext "This is the first goal\n\tThis is it's first child\n\t\t:person Conor")
-</t>
-<t tx="conor.20160606074329.1">(s/def ::edge 
-    (s/or 
-        :person ::person
-        :role ::role))
 </t>
 <t tx="conor.20160606074702.1"></t>
 <t tx="conor.20160606074754.1"></t>
@@ -273,43 +241,7 @@ need to find a way to do that
     
     
 </t>
-<t tx="conor.20160606075341.1">
-
-(def trigger #{"@person" "@role"})
-
-(s/def ::trigger trigger)
-
-
-(s/def ::string string?)
-
-(s/def ::even-parse  (s/* 
-                      (s/cat 
-                       :t        ::trigger
-                       :string   string?)))
-
-
-
-
-(defn check-edges [edgeset string]
-  (let [words (str/split string #"\s")]
-    (-&gt;&gt; (split-with #(edgeset %) words)
-        (partition 2)
-        first
-        ((juxt #(ffirst %) #(str/join " " (second %)))))))
-
-
-
-(s/explain ::even-parse (check-edges trigger "@person Conor"))
-(s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
-
-(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
-
-
-
-
-
-
-</t>
+<t tx="conor.20160606075341.1"></t>
 <t tx="conor.20160606081759.1"></t>
 <t tx="conor.20160606081839.1"></t>
 <t tx="conor.20160606081845.1"></t>
@@ -432,29 +364,281 @@ process edge
 (s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
 
 (s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])</t>
-<t tx="conor.20160606094026.1">
+<t tx="conor.20160606094026.1">(def trigger #{"@person" "@role"})
 
-(def trigger #{"@person" "@role"})
-
-(s/def ::trigger trigger)</t>
+</t>
 <t tx="conor.20160606094026.2">(s/def ::string string?)
 
-(s/def ::even-parse  (s/* 
-                      (s/cat 
-                       :t        ::trigger
-                       :string   string?)))</t>
-<t tx="conor.20160606094026.3">
-
-(defn check-edges [edgeset string]
+</t>
+<t tx="conor.20160606094026.3">(defn check-edges [edgeset string]
   (let [words (str/split string #"\s")]
     (-&gt;&gt; (split-with #(edgeset %) words)
         (partition 2)
         first
-        ((juxt #(ffirst %) #(str/join " " (second %)))))))</t>
-<t tx="conor.20160606094026.4">
-(s/explain ::even-parse (check-edges trigger "@person Conor"))
+        ((juxt #(ffirst %) #(str/join " " (second %)))))))
+
+
+
+</t>
+<t tx="conor.20160606094026.4">(s/explain ::even-parse (check-edges trigger "@person Conor"))
+
+
 (s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
 
-(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])</t>
+
+</t>
+<t tx="conor.20160606113713.1"></t>
+<t tx="conor.20160606113722.1">
+
+(def trigger #{"@person" "@role"})
+
+(s/def ::trigger trigger)
+
+
+(s/def ::string string?)
+
+(s/def ::edgeparse (s/cat 
+                    :type  ::trigger
+                    :val   (s/and string? #(not (trigger %)))))
+
+
+(s/def ::even-parse  (s/* 
+                      (s/or :edge  ::edgeparse
+                            :child (s/spec  (s/cat  )))
+
+
+
+
+(defn check-edges [edgeset string]
+  (loop [result [] s string]
+    (let [words (str/split string #"\s")]
+      (if  (edgeset (first words))
+        (-&gt;&gt; (partition-by #(edgeset %) words)
+             (partition 2)
+             (map (juxt #(ffirst %) #(str/join " " (second %))))
+             (apply conj result))
+        (let [node-string (take-while #(not (edgeset %)) words)
+              newval (str/join " " node-string) 
+              remaining (str/replace-first s (re-pattern newval) "")]
+          (if (seq remaining)
+            (recur (conj result newval) remaining)
+            result))))))
+
+(comment
+
+(check-edges trigger "@person Coonro is great @role org @person Steve")
+
+
+(check-edges trigger "Conor is great @role organizer")
+
+(str/replace-first "abcd" (re-pattern "b") "")
+
+
+(s/explain ::even-parse (check-edges trigger "@person Conor"))
+
+
+(s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
+
+(s/explain ::even-parse (check-edges trigger "@person Conor @role King of the World"))
+
+
+(s/explain ::even-parse (check-edges trigger "Conor @role King of the World"))
+
+
+(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
+
+)
+
+
+
+
+</t>
+<t tx="conor.20160606113736.1">
+
+(def trigger #{"@person" "@role"})
+
+(s/def ::trigger trigger)</t>
+<t tx="conor.20160606113736.2">(s/def ::string string?)
+
+(s/def ::edgeparse (s/cat 
+                    :type  ::trigger
+                    :val   (s/and string? #(not (trigger %)))))</t>
+<t tx="conor.20160606113736.3">(s/def ::even-parse  (s/* 
+                      (s/or :edge  ::edgeparse
+                            :child (s/spec  (s/cat  )))</t>
+<t tx="conor.20160606113736.4">
+
+(defn check-edges [edgeset string]
+  (loop [result [] s string]
+    (let [words (str/split string #"\s")]
+      (if  (edgeset (first words))
+        (-&gt;&gt; (partition-by #(edgeset %) words)
+             (partition 2)
+             (map (juxt #(ffirst %) #(str/join " " (second %))))
+             (apply conj result))
+        (let [node-string (take-while #(not (edgeset %)) words)
+              newval (str/join " " node-string) 
+              remaining (str/replace-first s (re-pattern newval) "")]
+          (if (seq remaining)
+            (recur (conj result newval) remaining)
+            result))))))
+
+(comment
+
+(check-edges trigger "@person Coonro is great @role org @person Steve")</t>
+<t tx="conor.20160606113737.1">(check-edges trigger "Conor is great @role organizer")
+
+(str/replace-first "abcd" (re-pattern "b") "")</t>
+<t tx="conor.20160606113737.2">(s/explain ::even-parse (check-edges trigger "@person Conor"))</t>
+<t tx="conor.20160606113737.3">(s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
+
+(s/explain ::even-parse (check-edges trigger "@person Conor @role King of the World"))</t>
+<t tx="conor.20160606113737.4">(s/explain ::even-parse (check-edges trigger "Conor @role King of the World"))</t>
+<t tx="conor.20160606113737.5">(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
+
+)</t>
+<t tx="conor.20160606113823.1">
+(def trigger #{"@person" "@role"})
+
+(s/def ::trigger trigger)
+
+(s/def ::not-trigger (s/and string? #(not (trigger %))))
+
+(s/conform ::not-trigger "Conor")
+
+(s/def ::string string?)
+
+(s/def ::edgeparse (s/cat 
+                    :type  ::trigger
+                    :val   (s/* ::not-trigger)))
+
+(s/conform ::edgeparse  ["@person" "Conor" "White-Sullivan"])
+
+
+(s/def ::even-parse  (s/* 
+                      (s/or :edge  ::edgeparse
+                            :child (s/spec (s/* ::not-trigger)))))
+
+
+@others
+
+
+
+(defn check-edges [edgeset string]
+  (loop [result [] s string]
+    (let [words (str/split string #"\s")]
+      (if  (edgeset (first words))
+        (-&gt;&gt; (partition-by #(edgeset %) words)
+             (partition 2)
+             (map (juxt #(ffirst %) #(str/join " " (second %))))
+             (apply conj result))
+        (let [node-string (take-while #(not (edgeset %)) words)
+              newval (str/join " " node-string) 
+              remaining (str/replace-first s (re-pattern newval) "")]
+          (if (seq remaining)
+            (recur (conj result newval) remaining)
+            result))))))
+
+(comment
+
+(check-edges trigger "@person Coonro is great @role org @person Steve")
+
+
+(check-edges trigger "Conor is great @role organizer")
+
+(str/replace-first "abcd" (re-pattern "b") "")
+
+
+(s/explain ::even-parse (check-edges trigger "@person Conor"))
+
+
+(s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
+
+(s/explain ::even-parse (check-edges trigger "@person Conor @role King of the World"))
+
+
+(s/explain ::even-parse (check-edges trigger "Conor @role King of the World"))
+
+
+(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
+
+)
+
+
+
+
+</t>
+<t tx="conor.20160606114555.1">(s/def ::trigger trigger)
+
+</t>
+<t tx="conor.20160606114644.1">(s/def ::even-parse  (s/* 
+                      (s/cat 
+                       :t        ::trigger
+                       :string   string?)))
+                       
+                       
+</t>
+<t tx="conor.20160606114947.1">(defn members-in-string  [trigset string]
+   (set/intersection trigset (str/split string #"\s")))
+
+
+</t>
+<t tx="conor.20160606115351.1"></t>
+<t tx="conor.20160606115355.1">end Mon Jun  6 11:56:59 2016
+
+</t>
+<t tx="conor.20160606115634.1">user=&gt; (clojure.set/intersection #{1})
+#{1}
+user=&gt; (clojure.set/intersection #{1 2} #{2 3})
+#{2}
+user=&gt; (clojure.set/intersection #{1 2} #{2 3} #{3 4})
+#{}
+user=&gt; (clojure.set/intersection #{1 :a} #{:a 3} #{:a})
+#{:a}</t>
+<t tx="conor.20160606120806.1"></t>
+<t tx="conor.20160606120955.1">(defn members-in-string  [trigset string]
+   (set/intersection trigset (str/split string #"\s")))
+
+
+</t>
+<t tx="conor.20160606123700.1">
+
+(reduce (fn [ {c :current r :result :as m} input] 
+         (update m :current #(conj % input))
+          #_(if (s/valid? ::not-trigger input)
+            (update m :current (conj c input))
+            (update m :current [input]
+                    :result  (conj r c))))  
+        {:current []
+         :result []}  
+        ["@person" "Conor" "White-Sullivan"])
+
+</t>
+<t tx="conor.20160606124013.1">
+
+(reduce (fn [ {c :current r :result :as m} input] 
+         (update m :current #(conj % input))
+          #_(if (s/valid? ::not-trigger input)
+            (update m :current (conj c input))
+            (update m :current [input]
+                    :result  (conj r c))))  
+        {:current []
+         :result []}  
+        ["@person" "Conor" "White-Sullivan"])
+
+</t>
+<t tx="conor.20160606130151.1">
+
+(reduce (fn [ {c :current r :result :as m} input] 
+         (update m :current #(conj % input))
+          #_(if (s/valid? ::not-trigger input)
+            (update m :current (conj c input))
+            (update m :current [input]
+                    :result  (conj r c))))  
+        {:current []
+         :result []}  
+        ["@person" "Conor" "White-Sullivan"])
+
+</t>
 </tnodes>
 </leo_file>

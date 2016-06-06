@@ -41,70 +41,96 @@
   (count (take-while #{\tab} string)))
   
 ;@+node:conor.20160606075341.1: *5* using split-with
+;@+node:conor.20160606120955.1: *6* set-members-in-string
+(defn members-in-string  [trigset string]
+   (set/intersection trigset (str/split string #"\s")))
 
 
-(def trigger #{"@person" "@role"})
-
-(s/def ::trigger trigger)
-
-
-(s/def ::string string?)
-
-(s/def ::even-parse  (s/* 
-                      (s/cat 
-                       :t        ::trigger
-                       :string   string?)))
-
-
-
-
-(defn check-edges [edgeset string]
-  (let [words (str/split string #"\s")]
-    (->> (split-with #(edgeset %) words)
-        (partition 2)
-        first
-        ((juxt #(ffirst %) #(str/join " " (second %)))))))
-
-
-
-(s/explain ::even-parse (check-edges trigger "@person Conor"))
-(s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
-
-(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
-
-
-
-
-
-
-;@+node:conor.20160606094026.1: *6* (def trigger #{"@person" "@role"})
-
+;@+node:conor.20160606113823.1: *6* splitting text using conforms
 
 (def trigger #{"@person" "@role"})
 
 (s/def ::trigger trigger)
-;@+node:conor.20160606094026.2: *6* (s/def ::string string?)
+
+(s/def ::not-trigger (s/and string? #(not (trigger %))))
+
+(s/conform ::not-trigger "Conor")
+
 (s/def ::string string?)
 
+(s/def ::edgeparse (s/cat 
+                    :type  ::trigger
+                    :val   (s/* ::not-trigger)))
+
+(s/conform ::edgeparse  ["@person" "Conor" "White-Sullivan"])
+
+
 (s/def ::even-parse  (s/* 
-                      (s/cat 
-                       :t        ::trigger
-                       :string   string?)))
-;@+node:conor.20160606094026.3: *6* (defn check-edges [edgeset string]  
+                      (s/or :edge  ::edgeparse
+                            :child (s/spec (s/* ::not-trigger)))))
+
+
+;@+others
+;@+node:conor.20160606123700.1: *7* WIN  reducing pattern volume 3
+
+
+(reduce (fn [ {c :current r :result :as m} input] 
+         (update m :current #(conj % input))
+          #_(if (s/valid? ::not-trigger input)
+            (update m :current (conj c input))
+            (update m :current [input]
+                    :result  (conj r c))))  
+        {:current []
+         :result []}  
+        ["@person" "Conor" "White-Sullivan"])
+
+;@-others
+
 
 
 (defn check-edges [edgeset string]
-  (let [words (str/split string #"\s")]
-    (->> (split-with #(edgeset %) words)
-        (partition 2)
-        first
-        ((juxt #(ffirst %) #(str/join " " (second %)))))))
-;@+node:conor.20160606094026.4: *6* (s/explain ::even-parse (check-edges trigger "@person 
+  (loop [result [] s string]
+    (let [words (str/split string #"\s")]
+      (if  (edgeset (first words))
+        (->> (partition-by #(edgeset %) words)
+             (partition 2)
+             (map (juxt #(ffirst %) #(str/join " " (second %))))
+             (apply conj result))
+        (let [node-string (take-while #(not (edgeset %)) words)
+              newval (str/join " " node-string) 
+              remaining (str/replace-first s (re-pattern newval) "")]
+          (if (seq remaining)
+            (recur (conj result newval) remaining)
+            result))))))
+
+(comment
+
+(check-edges trigger "@person Coonro is great @role org @person Steve")
+
+
+(check-edges trigger "Conor is great @role organizer")
+
+(str/replace-first "abcd" (re-pattern "b") "")
+
 
 (s/explain ::even-parse (check-edges trigger "@person Conor"))
+
+
 (s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
 
+(s/explain ::even-parse (check-edges trigger "@person Conor @role King of the World"))
+
+
+(s/explain ::even-parse (check-edges trigger "Conor @role King of the World"))
+
+
 (s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
+
+)
+
+
+
+
 ;@+node:conor.20160606073225.3: *5* (defn parsed [text]  (->> 
 
 (defn parsed [text]
