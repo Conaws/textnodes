@@ -18,8 +18,7 @@
 <v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
 <v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
 <v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
-<v t="conor.20160606052632.1" a="E"
-expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606073225.1,"><vh>@file spec-test.clj</vh></v>
+<v t="conor.20160606052632.1" a="E"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605012522.1"><vh>@auto core.clj</vh></v>
 <v t="conor.20160605011026.1"><vh>css.clj</vh></v>
 </v>
@@ -114,7 +113,7 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606073225.1,"
 </v>
 </v>
 </v>
-<v t="conor.20160606132427.1" a="E"><vh>General Clojure lessons</vh>
+<v t="conor.20160606132427.1"><vh>General Clojure lessons</vh>
 <v t="conor.20160606132433.1"><vh>debugging -- do println, then return test value</vh></v>
 <v t="conor.20160606132555.1"><vh>str/replace-first</vh></v>
 <v t="conor.20160606132801.1" a="E"><vh>reducing pattern</vh>
@@ -130,7 +129,7 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606073225.1,"
 </v>
 <v t="conor.20160606120955.1"><vh>set-members-in-string</vh></v>
 </v>
-<v t="conor.20160606132404.1" a="E"><vh>spec lessons</vh>
+<v t="conor.20160606132404.1"><vh>spec lessons</vh>
 <v t="conor.20160606132252.1"><vh>useful spec lessons</vh></v>
 </v>
 <v t="conor.20160606120806.1"><vh>oneway</vh>
@@ -142,7 +141,7 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606073225.1,"
 <v t="conor.20160606094026.3"><vh>(defn check-edges [edgeset string]  </vh></v>
 <v t="conor.20160606094026.4"><vh>(s/explain ::even-parse (check-edges trigger "@person </vh></v>
 </v>
-<v t="conor.20160606131947.1" a="E"><vh>Recovered Nodes</vh>
+<v t="conor.20160606131947.1"><vh>Recovered Nodes</vh>
 <v t="conor.20160606131947.2"><vh>Recovered node "WIN  reducing pattern volume 3" from @file spec-test.clj</vh>
 <v t="conor.20160606131947.3"><vh>old:WIN  reducing pattern volume 3</vh></v>
 <v t="conor.20160606131947.4"><vh>new:WIN  reducing pattern volume 3</vh></v>
