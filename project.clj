@@ -1,5 +1,5 @@
 (defproject text-nodes "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha3"]
                  [datascript                          "0.13.3" ]
                  [posh                                "0.3.5"  ]
                  [org.clojure/clojurescript           "1.8.40"
