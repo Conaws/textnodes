@@ -1,10 +1,12 @@
 
 (ns text-nodes.core
-  (:require [com.rpl.specter :as s
-             :refer [ALL]]
-            [clojure.pprint :refer [pprint]]
-            [datascript.core  :as db])
-  (:use [com.rpl.specter.macros 
+  (:require [com.rpl.specter  :as sp :refer [ALL]]
+                [clojure.spec        :as s]
+                [clojure.string      :as str]
+                [clojure.pprint       :refer [pprint]]
+                [datascript.core    :as db])
+  (:use 
+   [com.rpl.specter.macros 
          :only [select transform defprotocolpath
                 extend-protocolpath]]))
 

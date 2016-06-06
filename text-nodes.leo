@@ -9,36 +9,34 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="conor.20160606053544.1"><vh>Files to write</vh>
-<v t="conor.20160605011037.1"><vh>@path ~/orgmap/leo/text-nodes</vh>
+<v t="conor.20160606053544.1" a="E"><vh>Files to write</vh>
+<v t="conor.20160605011037.1" a="E"><vh>@path ~/orgmap/leo/text-nodes</vh>
 <v t="conor.20160605011510.1"><vh>@auto log.org</vh></v>
-<v t="conor.20160605013539.1"><vh>@auto specter.org</vh></v>
+<v t="conor.20160605013539.1" a="E"><vh>@auto specter.org</vh></v>
 </v>
 <v t="conor.20160605013848.1"><vh>@auto datascript.org</vh></v>
-<v t="conor.20160605010926.1"><vh>@path src/</vh>
-<v t="conor.20160605011023.2" a="M"><vh>/clj/</vh>
-<v t="conor.20160605011025.1" a="EM"><vh>/text_nodes/</vh>
+<v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
+<v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
+<v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
 <v t="conor.20160606052632.1" a="E"
-expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606063153.1,conor.20160606065151.1,conor.20160606070500.1,"><vh>@file spec-test.clj</vh></v>
-<v t="conor.20160605012522.1" a="M"><vh>@auto core.clj</vh>
-<v t="conor.20160605013418.1"><vh>namespace -- datascript and specter</vh></v>
-</v>
-<v t="conor.20160605011026.1" a="M"><vh>css.clj</vh></v>
+expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606073225.1,conor.20160606065151.1,conor.20160606070500.1,"><vh>@file spec-test.clj</vh></v>
+<v t="conor.20160605012522.1" a="E"><vh>@auto core.clj</vh></v>
+<v t="conor.20160605011026.1"><vh>css.clj</vh></v>
 </v>
 </v>
-<v t="conor.20160605011023.1" a="M"><vh>/cljs/</vh>
-<v t="conor.20160605011952.1" a="M"><vh>/text_nodes/</vh>
-<v t="conor.20160605011953.6" a="M"><vh>config.cljs</vh></v>
-<v t="conor.20160605011953.5" a="M"><vh>@auto core.cljs</vh></v>
-<v t="conor.20160605011953.4" a="M"><vh>@auto db.cljs</vh></v>
-<v t="conor.20160605011953.3" a="M"><vh>@auto handlers.cljs</vh></v>
-<v t="conor.20160605011953.2" a="M"><vh>@auto subs.cljs</vh></v>
-<v t="conor.20160605011953.1" a="M"><vh>@auto views.cljs</vh></v>
+<v t="conor.20160605011023.1"><vh>/cljs/</vh>
+<v t="conor.20160605011952.1"><vh>/text_nodes/</vh>
+<v t="conor.20160605011953.6"><vh>config.cljs</vh></v>
+<v t="conor.20160605011953.5"><vh>@auto core.cljs</vh></v>
+<v t="conor.20160605011953.4"><vh>@auto db.cljs</vh></v>
+<v t="conor.20160605011953.3"><vh>@auto handlers.cljs</vh></v>
+<v t="conor.20160605011953.2"><vh>@auto subs.cljs</vh></v>
+<v t="conor.20160605011953.1"><vh>@auto views.cljs</vh></v>
 </v>
 </v>
 </v>
 </v>
-<v t="conor.20160606044649.1" a="E"><vh>Mon Jun  6 </vh>
+<v t="conor.20160606044649.1"><vh>Mon Jun  6 </vh>
 <v t="conor.20160606053804.1"><vh>break</vh></v>
 <v t="conor.20160606055117.1"><vh>Discovery  05:55:43</vh>
 <v t="conor.20160606055120.1"><vh>Working with Leo and Emacs</vh>
@@ -47,10 +45,16 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606063153.1,c
 </v>
 <v t="conor.20160606055555.1"><vh>create timestamp  --05:57:57</vh></v>
 <v t="conor.20160606055940.1"><vh>break 05:59:42--06:35:58</vh></v>
-<v t="conor.20160606063559.1"><vh>splitting strings 06:36:09--06:45:07</vh>
+<v t="conor.20160606063559.1" a="E"><vh>splitting strings 06:36:09--06:45:07</vh>
 <v t="conor.20160606063703.1"><vh>tangent -- processing cljs files in leo</vh></v>
+<v t="conor.20160606063153.1" a="E"><vh>splitting the string with types</vh>
+<v t="conor.20160606073324.1"><vh>sampletext</vh></v>
+<v t="conor.20160606064205.1"><vh>(defn count-tabs  [string]  </vh></v>
+<v t="conor.20160606064205.2"><vh>(defn parsed [text]  (-&gt;&gt; </vh></v>
+<v t="conor.20160606064219.1"><vh>(parsed sampletext)</vh></v>
 </v>
-<v t="conor.20160606064547.1" a="E"><vh>where to use the types</vh>
+</v>
+<v t="conor.20160606064547.1"><vh>where to use the types</vh>
 <v t="conor.20160606064613.1"><vh>1.  As the string is being processed into a depth-array</vh></v>
 <v t="conor.20160606064654.1" a="E"><vh>2.  As the depth-array is being handed into the node</vh>
 <v t="conor.20160606064711.1"><vh>edges</vh></v>
@@ -61,21 +65,21 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606063153.1,c
 </v>
 </v>
 <v t="conor.20160606053224.1" a="E"><vh>spec-test</vh>
-<v t="conor.20160605013418.1"></v>
+<v t="conor.20160605013418.1"><vh>namespace</vh></v>
 <v t="conor.20160606062933.1" a="E"><vh>string spec</vh>
 <v t="conor.20160606062941.1"><vh>sampletext</vh></v>
-<v t="conor.20160606063153.1" a="E"><vh>splitting the string with types</vh>
-<v t="conor.20160606064205.1"><vh>(defn count-tabs  [string]  </vh></v>
-<v t="conor.20160606064205.2"><vh>(defn parsed [text]  (-&gt;&gt; </vh></v>
-<v t="conor.20160606064219.1"><vh>(parsed sampletext)</vh></v>
+<v t="conor.20160606073225.1" a="E"><vh>splitting the string with types</vh>
+<v t="conor.20160606073225.2"><vh>(defn count-tabs  [string]  </vh></v>
+<v t="conor.20160606073225.3"><vh>(defn parsed [text]  (-&gt;&gt; </vh></v>
+</v>
+</v>
 <v t="conor.20160606065151.1" a="E"><vh>Edge Spec</vh>
 <v t="conor.20160606065211.1"></v>
 <v t="conor.20160606070318.1"><vh>role spec</vh></v>
+<v t="conor.20160606074329.1"><vh>edge</vh></v>
 <v t="conor.20160606064711.1"></v>
 <v t="conor.20160606070500.1" a="E"><vh>Test the Edgespec</vh>
-<v t="conor.20160606070517.1"><vh>newHeadline</vh></v>
-</v>
-</v>
+<v t="conor.20160606070517.1"><vh>returning the conformed value</vh></v>
 </v>
 </v>
 </v>
@@ -89,129 +93,6 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606063153.1,c
 <t tx="conor.20160605011037.1"></t>
 <t tx="conor.20160605011952.1">@path text_nodes</t>
 <t tx="conor.20160605011953.6"></t>
-<t tx="conor.20160605012522.1">@language clojure
-
-(ns text-nodes.core
-  (:require [com.rpl.specter :as s
-             :refer [ALL]]
-            [clojure.pprint :refer [pprint]]
-            [datascript.core  :as db])
-  (:use [com.rpl.specter.macros 
-         :only [select transform defprotocolpath
-                extend-protocolpath]]))
-
-(defprotocolpath TreeWalker [])
-
-
-
-(extend-protocolpath TreeWalker
-  Object nil
-  clojure.lang.PersistentVector [s/ALL TreeWalker])
-
-
-
-(select [TreeWalker number?] [:a 1 [2 [[[3]]] :e] [4 5 [6 7]]])
-
-
-(select [TreeWalker :a] 
-           
-[:a 1 [2 [[[3 {:a "b"}]]] :e] [4 {:a '({} {:b {:c :d}})} 5 [6 7]]])
-
-
-
-
-(def test-struct [[0 :a] [1 :b] [2 :c] [0 :d] [1 :e] [1 :f]])
-
-
-
-
-
-
-(defn deptharray-&gt;graph [nodefn edgefn sibling-collector nseq]
-  (loop [result [] 
-         s nseq]
-    (let[[pdepth ptitle] (first s)
-         [children siblings] (split-with #(&lt; pdepth (first %)) (rest s))
-         answer   (nodefn ptitle)                     
-         answer
-         (if (seq children)
-           (edgefn answer (nodify nodefn edgefn children))
-           answer)]
-      (if (seq siblings)
-        (recur (sibling-collector result answer) siblings)
-        (sibling-collector result answer)))))
-
-
-;;  the fns
-;;  nodefn  takes a node's text, returns a nodeid (or the node itself)
-;;  edgefn  takes a nodeid and an index of childid, returns a nodeid (or node object)
-;;  siblingfn  takes  the current siblings of a node, and the node, returns a vector of all x at that level
-
-;; challenge, create the associations with order to them...
-
-
-
-
-
-
-
-
-
-(defn create-node 
-  [title]
-   {:node title})
-
-  
-(defn connect-node [node children]
-   (assoc node :children children :expanded true))
-
-
-
-
-(deptharray-&gt;graph identity vector conj test-struct)
-
-
-(deptharray-&gt;graph identity vector a test-struct)
-
-
-(def deptharray-&gt;nestedmap 
-  (partial deptharray-&gt;graph create-node connect-node conj))
-
-
-(pprint (deptharray-&gt;nestedmap test-struct))
-
-
-(defn dbafter-&gt;eid [rv]
-  (-&gt; rv
-     :tx-data
-     ffirst))
-
-
-(def fake-db (db/create-conn))
-
-
-(defn create-ds-node [db text]
-  (let [eid (db/q '[:find ?e
-                    :in $ ?text
-                    :where
-                    [?e :node/text ?text]] 
-                  @db
-                  text)]
-    (or (ffirst eid)
-        (dbafter-&gt;eid (db/transact! db [{:db/id -1
-                                         :node/text text}])))))
-
-
-
-(def rv (create-ds-node fake-db "l"))
-
-
-(keys rv)
-
-;test test
-
-@fake-db
-</t>
 <t tx="conor.20160605013418.1">(ns text-nodes.core
   (:require [com.rpl.specter  :as sp :refer [ALL]]
                 [clojure.spec        :as s]
@@ -263,9 +144,10 @@ for time;;
 </t>
 <t tx="conor.20160606055940.1"></t>
 <t tx="conor.20160606062933.1"></t>
-<t tx="conor.20160606062941.1">(def sampletext "This is the first goal\n\tThis is it's first child\n\t\t:assigned-to Conor")
+<t tx="conor.20160606062941.1">(def sampletext "This is the first goal\n\tThis is it's first child\n\t\t:person Conor")
 </t>
-<t tx="conor.20160606063153.1">@others</t>
+<t tx="conor.20160606063153.1">@others
+</t>
 <t tx="conor.20160606063559.1"></t>
 <t tx="conor.20160606063703.1">
 note -- working with @file's in leo is way nicer than alternatives
@@ -277,7 +159,8 @@ need to find a way to do that
 <t tx="conor.20160606064205.1">(defn count-tabs
   [string]
   (count (take-while #{\tab} string)))
-  </t>
+  
+</t>
 <t tx="conor.20160606064205.2">
 (defn parsed [text]
   (-&gt;&gt; (str/split text #"\n")
@@ -291,16 +174,43 @@ need to find a way to do that
 <t tx="conor.20160606064547.1"></t>
 <t tx="conor.20160606064613.1"></t>
 <t tx="conor.20160606064654.1"></t>
-<t tx="conor.20160606064711.1">(s/def ::edges #{::person ::role})</t>
+<t tx="conor.20160606064711.1">(s/def ::edges (s/or 
+                :edge #{::person ::role}
+                :node   string?))
+
+</t>
 <t tx="conor.20160606065151.1"></t>
-<t tx="conor.20160606065211.1">(s/def ::person (s/and string? #(str/starts-with  %  ":person")))
-                                   </t>
+<t tx="conor.20160606065211.1">(s/def ::person (s/and string? #(str/starts-with?  %  ":person")))
+                                   
+</t>
 <t tx="conor.20160606065408.1"></t>
-<t tx="conor.20160606070318.1">(s/def ::role  (s/and string?  #(re-matches #":role" %)))</t>
+<t tx="conor.20160606070318.1">(s/def ::role  (s/and string?  #(re-matches #":role" %)))
+
+</t>
 <t tx="conor.20160606070500.1"></t>
 <t tx="conor.20160606070517.1">(for [[i t] (parsed sampletext)]
-    [i (s/conforms ::edges t)])
+    [i (s/conform ::edges t)])
     
-    </t>
+    
+</t>
+<t tx="conor.20160606073225.1">@others
+</t>
+<t tx="conor.20160606073225.2">(defn count-tabs
+  [string]
+  (count (take-while #{\tab} string)))
+  
+</t>
+<t tx="conor.20160606073225.3">
+(defn parsed [text]
+  (-&gt;&gt; (str/split text #"\n")
+       (map (juxt count-tabs str/trim))))
+
+</t>
+<t tx="conor.20160606073324.1">(def sampletext "This is the first goal\n\tThis is it's first child\n\t\t:person Conor")
+</t>
+<t tx="conor.20160606074329.1">(s/def ::edge 
+    (s/or 
+        :person ::person
+        :role ::role))</t>
 </tnodes>
 </leo_file>
