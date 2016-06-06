@@ -9,17 +9,17 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="conor.20160606053544.1" a="E"><vh>Files to write</vh>
-<v t="conor.20160605011037.1" a="E"><vh>@path ~/orgmap/leo/text-nodes</vh>
+<v t="conor.20160606053544.1"><vh>Files to write</vh>
+<v t="conor.20160605011037.1"><vh>@path ~/orgmap/leo/text-nodes</vh>
 <v t="conor.20160605011510.1" a="E"><vh>@auto log.org</vh></v>
 <v t="conor.20160605013539.1" a="E"><vh>@auto specter.org</vh></v>
 </v>
 <v t="conor.20160605013848.1"><vh>@auto datascript.org</vh></v>
-<v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
-<v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
+<v t="conor.20160605010926.1"><vh>@path src/</vh>
+<v t="conor.20160605011023.2"><vh>/clj/</vh>
 <v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
-<v t="conor.20160606052632.1" a="E"
-expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606065151.1,conor.20160606073225.1,conor.20160606075341.1,conor.20160606070500.1,"><vh>@file spec-test.clj</vh></v>
+<v t="conor.20160606052632.1"
+expanded="conor.20160606053224.1,conor.20160606075341.1,"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605012522.1" a="E"><vh>@auto core.clj</vh></v>
 <v t="conor.20160605011026.1"><vh>css.clj</vh></v>
 </v>
@@ -36,7 +36,7 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606065151.1,c
 </v>
 </v>
 </v>
-<v t="conor.20160606044649.1" a="E"><vh>Mon Jun  6 </vh>
+<v t="conor.20160606044649.1"><vh>Mon Jun  6 </vh>
 <v t="conor.20160606053804.1"><vh>break</vh></v>
 <v t="conor.20160606055117.1"><vh>Discovery  05:55:43</vh>
 <v t="conor.20160606055120.1"><vh>Working with Leo and Emacs</vh>
@@ -96,17 +96,17 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606065151.1,c
 <v t="conor.20160606093907.4"><vh>(s/explain ::even-parse (check-edges trigger "@person </vh></v>
 </v>
 </v>
-<v t="conor.20160606053224.1" a="E"><vh>spec-test</vh>
+<v t="conor.20160606053224.1"><vh>spec-test</vh>
 <v t="conor.20160605013418.1"><vh>namespace</vh></v>
-<v t="conor.20160606062933.1" a="E"><vh>string spec</vh>
+<v t="conor.20160606062933.1"><vh>string spec</vh>
 <v t="conor.20160606062941.1"><vh>sampletext</vh></v>
-<v t="conor.20160606065151.1" a="E"><vh>Edge Spec</vh>
+<v t="conor.20160606065151.1"><vh>Edge Spec</vh>
 <v t="conor.20160606065211.1"></v>
 <v t="conor.20160606070318.1"><vh>role spec</vh></v>
 <v t="conor.20160606074329.1"><vh>edge</vh></v>
 <v t="conor.20160606064711.1"></v>
 </v>
-<v t="conor.20160606073225.1" a="E"><vh>splitting the string with types</vh>
+<v t="conor.20160606073225.1"><vh>splitting the string with types</vh>
 <v t="conor.20160606073225.2"><vh>(defn count-tabs  [string]  </vh></v>
 <v t="conor.20160606075341.1" a="E"><vh>using split-with</vh>
 <v t="conor.20160606094026.1"><vh>(def trigger #{"@person" "@role"})</vh></v>
@@ -116,15 +116,9 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606065151.1,c
 </v>
 <v t="conor.20160606073225.3"><vh>(defn parsed [text]  (-&gt;&gt; </vh></v>
 </v>
-<v t="conor.20160606070500.1" a="E"><vh>Test the Edgespec</vh>
+<v t="conor.20160606070500.1"><vh>Test the Edgespec</vh>
 <v t="conor.20160606070517.1"><vh>returning the conformed value</vh></v>
 </v>
-</v>
-</v>
-<v t="conor.20160606074855.1" a="E"><vh>Recovered Nodes</vh>
-<v t="conor.20160606074855.2"><vh>Recovered node "edges" from @file spec-test.clj</vh>
-<v t="conor.20160606074855.3"><vh>old:edges</vh></v>
-<v t="conor.20160606074855.4"><vh>new:edges</vh></v>
 </v>
 </v>
 </vnodes>
@@ -278,27 +272,6 @@ need to find a way to do that
     [i (s/conform ::edges t)])
     
     
-</t>
-<t tx="conor.20160606074855.1"></t>
-<t tx="conor.20160606074855.2">(uncached) conor.20160606064711.1
-Diff...
-  (s/def ::edges (s/or 
--                 :edge   ::edge
-?                       ^    ^^^
-+                 :edge #{::person ::role}
-?                       ^^^^^^^^^^   +++ ^
-                  :node   string?))
-  
-</t>
-<t tx="conor.20160606074855.3">(s/def ::edges (s/or 
-                :edge #{::person ::role}
-                :node   string?))
-
-</t>
-<t tx="conor.20160606074855.4">(s/def ::edges (s/or 
-                :edge   ::edge
-                :node   string?))
-
 </t>
 <t tx="conor.20160606075341.1">
 
