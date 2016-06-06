@@ -16,23 +16,6 @@
 ;@+node:conor.20160606062933.1: *3* string spec
 ;@+node:conor.20160606062941.1: *4* sampletext
 (def sampletext "This is the first goal\n\tThis is it's first child\n\t\t:person Conor")
-;@+node:conor.20160606065151.1: *4* Edge Spec
-;@+node:conor.20160606065211.1: *5* person spec
-(s/def ::person (s/and string? #(str/starts-with?  %  ":person")))
-                                   
-;@+node:conor.20160606070318.1: *5* role spec
-(s/def ::role  (s/and string?  #(re-matches #":role" %)))
-
-;@+node:conor.20160606074329.1: *5* edge
-(s/def ::edge 
-    (s/or 
-        :person ::person
-        :role ::role))
-;@+node:conor.20160606064711.1: *5* edges
-(s/def ::edges (s/or 
-                :edge   ::edge
-                :node   string?))
-
 ;@+node:conor.20160606073225.1: *4* splitting the string with types
 ;@+others
 ;@+node:conor.20160606073225.2: *5* (defn count-tabs  [string]  
@@ -50,19 +33,15 @@
 
 (def trigger #{"@person" "@role"})
 
-(s/def ::trigger trigger)
+(s/def ::trigger (s/or :deftrig trigger
+                       :trig  #(str/starts-with? % "@")))
 
 (s/def ::not-trigger (s/and string? #(not (trigger %))))
 
-(s/conform ::not-trigger "Conor")
-
-(s/def ::string string?)
 
 (s/def ::edgeparse (s/cat 
                     :type  ::trigger
                     :val   (s/* ::not-trigger)))
-
-(s/conform ::edgeparse  ["@person" "Conor" "White-Sullivan"])
 
 
 (s/def ::even-parse  (s/* 
@@ -74,61 +53,26 @@
 ;@+node:conor.20160606123700.1: *7* WIN  reducing pattern volume 3
 
 
-(reduce (fn [ {c :current r :result :as m} input] 
-         (update m :current #(conj % input))
-          #_(if (s/valid? ::not-trigger input)
-            (update m :current (conj c input))
-            (update m :current [input]
-                    :result  (conj r c))))  
-        {:current []
-         :result []}  
-        ["@person" "Conor" "White-Sullivan"])
+
+(def newsamp ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
+
+
+(defn vals-between [resetfn s]
+  (->> s
+       (reduce (fn [{c :c r :r :as m} x]
+                 (if (resetfn x)
+                   (assoc m :c [x] :r (conj r c))
+                   (assoc m :c (conj c x))))
+               {:c [] :r []})
+       ((fn [{c :c r :r}]  (conj r c)))))
+
+(def parsedf
+  (vals-between #(s/valid? ::trigger %) newsamp))       
+                          
+
+(pprint (s/conform ::even-parse parsedf))
 
 ;@-others
-
-
-
-(defn check-edges [edgeset string]
-  (loop [result [] s string]
-    (let [words (str/split string #"\s")]
-      (if  (edgeset (first words))
-        (->> (partition-by #(edgeset %) words)
-             (partition 2)
-             (map (juxt #(ffirst %) #(str/join " " (second %))))
-             (apply conj result))
-        (let [node-string (take-while #(not (edgeset %)) words)
-              newval (str/join " " node-string) 
-              remaining (str/replace-first s (re-pattern newval) "")]
-          (if (seq remaining)
-            (recur (conj result newval) remaining)
-            result))))))
-
-(comment
-
-(check-edges trigger "@person Coonro is great @role org @person Steve")
-
-
-(check-edges trigger "Conor is great @role organizer")
-
-(str/replace-first "abcd" (re-pattern "b") "")
-
-
-(s/explain ::even-parse (check-edges trigger "@person Conor"))
-
-
-(s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
-
-(s/explain ::even-parse (check-edges trigger "@person Conor @role King of the World"))
-
-
-(s/explain ::even-parse (check-edges trigger "Conor @role King of the World"))
-
-
-(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
-
-)
-
-
 
 
 ;@+node:conor.20160606073225.3: *5* (defn parsed [text]  (->> 

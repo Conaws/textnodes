@@ -18,8 +18,8 @@
 <v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
 <v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
 <v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
-<v t="conor.20160606052632.1"
-expanded="conor.20160606062933.1,conor.20160606065151.1,conor.20160606073225.1,conor.20160606113823.1,conor.20160606070500.1,"><vh>@file spec-test.clj</vh></v>
+<v t="conor.20160606052632.1" a="E"
+expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606073225.1,conor.20160606075341.1,conor.20160606113823.1,conor.20160606070500.1,"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605012522.1"><vh>@auto core.clj</vh></v>
 <v t="conor.20160605011026.1"><vh>css.clj</vh></v>
 </v>
@@ -36,7 +36,7 @@ expanded="conor.20160606062933.1,conor.20160606065151.1,conor.20160606073225.1,c
 </v>
 </v>
 </v>
-<v t="conor.20160606044649.1" a="E"><vh>Mon Jun  6 </vh>
+<v t="conor.20160606044649.1"><vh>Mon Jun  6 </vh>
 <v t="conor.20160606053804.1"><vh>break</vh></v>
 <v t="conor.20160606055117.1"><vh>Discovery  05:55:43</vh>
 <v t="conor.20160606055120.1"><vh>Working with Leo and Emacs</vh>
@@ -121,9 +121,18 @@ expanded="conor.20160606062933.1,conor.20160606065151.1,conor.20160606073225.1,c
 </v>
 </v>
 <v t="conor.20160606123700.1"></v>
+<v t="conor.20160606132427.1"><vh>General Clojure lessons</vh>
+<v t="conor.20160606132433.1"><vh>debugging -- do println, then return test value</vh></v>
+<v t="conor.20160606132555.1"><vh>str/replace-first</vh></v>
+<v t="conor.20160606132801.1"><vh>reducing pattern</vh>
 <v t="conor.20160606130151.1"><vh>WIN  reducing pattern volume 2</vh></v>
 <v t="conor.20160606124013.1"><vh>WIN reducing pattern basic</vh></v>
-<v t="conor.20160606120806.1" a="E"><vh>oneway</vh>
+</v>
+</v>
+<v t="conor.20160606132404.1"><vh>spec lessons</vh>
+<v t="conor.20160606132252.1"><vh>useful spec lessons</vh></v>
+</v>
+<v t="conor.20160606120806.1"><vh>oneway</vh>
 <v t="conor.20160606094026.1"><vh>(def trigger #{"@person" "@role"})</vh></v>
 <v t="conor.20160606114947.1"><vh>set-members-in-string</vh></v>
 <v t="conor.20160606114555.1"><vh>(s/def ::trigger trigger)</vh></v>
@@ -131,6 +140,12 @@ expanded="conor.20160606062933.1,conor.20160606065151.1,conor.20160606073225.1,c
 <v t="conor.20160606114644.1"><vh>(s/def ::even-parse  (s/* (s/cat :t ::trigger :string string?)))</vh></v>
 <v t="conor.20160606094026.3"><vh>(defn check-edges [edgeset string]  </vh></v>
 <v t="conor.20160606094026.4"><vh>(s/explain ::even-parse (check-edges trigger "@person </vh></v>
+</v>
+<v t="conor.20160606131947.1" a="E"><vh>Recovered Nodes</vh>
+<v t="conor.20160606131947.2"><vh>Recovered node "WIN  reducing pattern volume 3" from @file spec-test.clj</vh>
+<v t="conor.20160606131947.3"><vh>old:WIN  reducing pattern volume 3</vh></v>
+<v t="conor.20160606131947.4"><vh>new:WIN  reducing pattern volume 3</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -500,19 +515,15 @@ process edge
 <t tx="conor.20160606113823.1">
 (def trigger #{"@person" "@role"})
 
-(s/def ::trigger trigger)
+(s/def ::trigger (s/or :deftrig trigger
+                       :trig  #(str/starts-with? % "@")))
 
 (s/def ::not-trigger (s/and string? #(not (trigger %))))
 
-(s/conform ::not-trigger "Conor")
-
-(s/def ::string string?)
 
 (s/def ::edgeparse (s/cat 
                     :type  ::trigger
                     :val   (s/* ::not-trigger)))
-
-(s/conform ::edgeparse  ["@person" "Conor" "White-Sullivan"])
 
 
 (s/def ::even-parse  (s/* 
@@ -521,50 +532,6 @@ process edge
 
 
 @others
-
-
-
-(defn check-edges [edgeset string]
-  (loop [result [] s string]
-    (let [words (str/split string #"\s")]
-      (if  (edgeset (first words))
-        (-&gt;&gt; (partition-by #(edgeset %) words)
-             (partition 2)
-             (map (juxt #(ffirst %) #(str/join " " (second %))))
-             (apply conj result))
-        (let [node-string (take-while #(not (edgeset %)) words)
-              newval (str/join " " node-string) 
-              remaining (str/replace-first s (re-pattern newval) "")]
-          (if (seq remaining)
-            (recur (conj result newval) remaining)
-            result))))))
-
-(comment
-
-(check-edges trigger "@person Coonro is great @role org @person Steve")
-
-
-(check-edges trigger "Conor is great @role organizer")
-
-(str/replace-first "abcd" (re-pattern "b") "")
-
-
-(s/explain ::even-parse (check-edges trigger "@person Conor"))
-
-
-(s/conform ::even-parse (check-edges trigger "@person Conor @role King of the World"))
-
-(s/explain ::even-parse (check-edges trigger "@person Conor @role King of the World"))
-
-
-(s/explain ::even-parse (check-edges trigger "Conor @role King of the World"))
-
-
-(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
-
-)
-
-
 
 
 </t>
@@ -603,15 +570,24 @@ user=&gt; (clojure.set/intersection #{1 :a} #{:a 3} #{:a})
 </t>
 <t tx="conor.20160606123700.1">
 
-(reduce (fn [ {c :current r :result :as m} input] 
-         (update m :current #(conj % input))
-          #_(if (s/valid? ::not-trigger input)
-            (update m :current (conj c input))
-            (update m :current [input]
-                    :result  (conj r c))))  
-        {:current []
-         :result []}  
-        ["@person" "Conor" "White-Sullivan"])
+
+(def newsamp ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
+
+
+(defn vals-between [resetfn s]
+  (-&gt;&gt; s
+       (reduce (fn [{c :c r :r :as m} x]
+                 (if (resetfn x)
+                   (assoc m :c [x] :r (conj r c))
+                   (assoc m :c (conj c x))))
+               {:c [] :r []})
+       ((fn [{c :c r :r}]  (conj r c)))))
+
+(def parsedf
+  (vals-between #(s/valid? ::trigger %) newsamp))       
+                          
+
+(pprint (s/conform ::even-parse parsedf))
 
 </t>
 <t tx="conor.20160606124013.1">
@@ -628,6 +604,7 @@ user=&gt; (clojure.set/intersection #{1 :a} #{:a 3} #{:a})
 
 </t>
 <t tx="conor.20160606130151.1">
+    
 
 (reduce (fn [ {c :current r :result :as m} input] 
          (update m :current #(conj % input))
@@ -640,5 +617,140 @@ user=&gt; (clojure.set/intersection #{1 :a} #{:a 3} #{:a})
         ["@person" "Conor" "White-Sullivan"])
 
 </t>
+<t tx="conor.20160606131947.1"></t>
+<t tx="conor.20160606131947.2">(uncached) conor.20160606123700.1
+Diff...
+  
+  
+  (reduce (fn [ {c :current r :result :as m} input] 
+-          #_(update m :current #(conj % input))
+?          --
++          (update m :current #(conj % input))
+-           (let [valid? (s/valid? ::trigger input)]
+?            -------- ^^                           -
++           #_(if (s/valid? ::not-trigger input)
+?           ++  ^             ++++
++             (update m :current (conj c input))
+-           (if (do
+-                 #_(print (vector input valid?))
+-                 valid?)
+-             (assoc m :current [input]
+?               ^^^^
++             (update m :current [input]
+?              +++ ^^
+-                    :result  (conj r c))
++                     :result  (conj r c))))  
+? +                                       ++++
+-             (assoc m :current (conj c input))
+-              )))  
+          {:current []
+           :result []}  
+-         ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
++         ["@person" "Conor" "White-Sullivan"])
+  
+- 
+- (def newsamp ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
+- 
+- 
+- (defn vals-between [resetfn s]
+-   (-&gt;&gt; s
+-        (reduce (fn [{c :c r :r :as m} x]
+-                  (if (resetfn x)
+-                    (assoc m :c [x] :r (conj r c))
+-                    (assoc m :c (conj c x))))
+-                {:c [] :r []})
+-        ((fn [{c :c r :r}]  (conj r c)))))
+- 
+- 
+- (vals-between #(s/valid? ::trigger %) newsamp)       
+-                           
+- 
+- 
+- 
+</t>
+<t tx="conor.20160606131947.3">
+
+(reduce (fn [ {c :current r :result :as m} input] 
+         (update m :current #(conj % input))
+          #_(if (s/valid? ::not-trigger input)
+            (update m :current (conj c input))
+            (update m :current [input]
+                    :result  (conj r c))))  
+        {:current []
+         :result []}  
+        ["@person" "Conor" "White-Sullivan"])
+
+</t>
+<t tx="conor.20160606131947.4">
+
+(reduce (fn [ {c :current r :result :as m} input] 
+         #_(update m :current #(conj % input))
+          (let [valid? (s/valid? ::trigger input)]
+          (if (do
+                #_(print (vector input valid?))
+                valid?)
+            (assoc m :current [input]
+                   :result  (conj r c))
+            (assoc m :current (conj c input))
+             )))  
+        {:current []
+         :result []}  
+        ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
+
+
+(def newsamp ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
+
+
+(defn vals-between [resetfn s]
+  (-&gt;&gt; s
+       (reduce (fn [{c :c r :r :as m} x]
+                 (if (resetfn x)
+                   (assoc m :c [x] :r (conj r c))
+                   (assoc m :c (conj c x))))
+               {:c [] :r []})
+       ((fn [{c :c r :r}]  (conj r c)))))
+
+
+(vals-between #(s/valid? ::trigger %) newsamp)       
+                          
+
+
+
+</t>
+<t tx="conor.20160606132252.1">
+(def trigger #{"@person" "@role"})
+
+(s/def ::trigger (s/or :deftrig trigger
+                       :trig  #(str/starts-with? % "@")))
+
+(s/def ::not-trigger (s/and string? #(not (trigger %))))
+
+(s/conform ::not-trigger "Conor")
+
+(s/valid? ::trigger "@person")
+
+(s/conform ::trigger "@result")
+
+
+(s/def ::edgeparse (s/cat 
+                    :type  ::trigger
+                    :val   (s/* ::not-trigger)))
+
+(s/conform ::edgeparse  ["@person" "Conor" "White-Sullivan"])
+
+
+(s/def ::even-parse  (s/* 
+                      (s/or :edge  ::edgeparse
+                            :child (s/spec (s/* ::not-trigger)))))
+</t>
+<t tx="conor.20160606132404.1"></t>
+<t tx="conor.20160606132427.1"></t>
+<t tx="conor.20160606132433.1">(if (do (print "hello") (= :a :b))
+  :a
+  :b)</t>
+<t tx="conor.20160606132555.1">
+(str/replace-first "abcd" (re-pattern "b") "")
+</t>
+<t tx="conor.20160606132801.1"></t>
 </tnodes>
 </leo_file>
