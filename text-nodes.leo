@@ -19,7 +19,7 @@
 <v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
 <v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
 <v t="conor.20160606052632.1" a="E"
-expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606073225.1,conor.20160606075341.1,conor.20160606113823.1,conor.20160606070500.1,"><vh>@file spec-test.clj</vh></v>
+expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606073225.1,"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605012522.1"><vh>@auto core.clj</vh></v>
 <v t="conor.20160605011026.1"><vh>css.clj</vh></v>
 </v>
@@ -114,22 +114,23 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606073225.1,c
 </v>
 </v>
 </v>
-<v t="conor.20160606075341.1" a="E"><vh>using split-with</vh>
-<v t="conor.20160606120955.1"><vh>set-members-in-string</vh></v>
-<v t="conor.20160606113823.1" a="E"><vh>splitting text using conforms</vh>
-<v t="conor.20160606123700.1"><vh>WIN  reducing pattern volume 3</vh></v>
-</v>
-</v>
-<v t="conor.20160606123700.1"></v>
-<v t="conor.20160606132427.1"><vh>General Clojure lessons</vh>
+<v t="conor.20160606132427.1" a="E"><vh>General Clojure lessons</vh>
 <v t="conor.20160606132433.1"><vh>debugging -- do println, then return test value</vh></v>
 <v t="conor.20160606132555.1"><vh>str/replace-first</vh></v>
-<v t="conor.20160606132801.1"><vh>reducing pattern</vh>
+<v t="conor.20160606132801.1" a="E"><vh>reducing pattern</vh>
+<v t="conor.20160606134111.1"><vh>parsers used</vh></v>
+<v t="conor.20160606141311.1" a="E"><vh>vals-between</vh>
+<v t="conor.20160606141311.2"><vh>test</vh></v>
+</v>
 <v t="conor.20160606130151.1"><vh>WIN  reducing pattern volume 2</vh></v>
 <v t="conor.20160606124013.1"><vh>WIN reducing pattern basic</vh></v>
+<v t="conor.20160606134014.1" a="E"><vh>WIN  reducing pattern volume 3</vh>
+<v t="conor.20160606140315.1"><vh>test</vh></v>
 </v>
 </v>
-<v t="conor.20160606132404.1"><vh>spec lessons</vh>
+<v t="conor.20160606120955.1"><vh>set-members-in-string</vh></v>
+</v>
+<v t="conor.20160606132404.1" a="E"><vh>spec lessons</vh>
 <v t="conor.20160606132252.1"><vh>useful spec lessons</vh></v>
 </v>
 <v t="conor.20160606120806.1"><vh>oneway</vh>
@@ -256,7 +257,6 @@ need to find a way to do that
     
     
 </t>
-<t tx="conor.20160606075341.1"></t>
 <t tx="conor.20160606081759.1"></t>
 <t tx="conor.20160606081839.1"></t>
 <t tx="conor.20160606081845.1"></t>
@@ -512,29 +512,6 @@ process edge
 <t tx="conor.20160606113737.5">(s/explain ::even-parse [[":abcd" "this is all the text"][":edf"  "that follos"]])
 
 )</t>
-<t tx="conor.20160606113823.1">
-(def trigger #{"@person" "@role"})
-
-(s/def ::trigger (s/or :deftrig trigger
-                       :trig  #(str/starts-with? % "@")))
-
-(s/def ::not-trigger (s/and string? #(not (trigger %))))
-
-
-(s/def ::edgeparse (s/cat 
-                    :type  ::trigger
-                    :val   (s/* ::not-trigger)))
-
-
-(s/def ::even-parse  (s/* 
-                      (s/or :edge  ::edgeparse
-                            :child (s/spec (s/* ::not-trigger)))))
-
-
-@others
-
-
-</t>
 <t tx="conor.20160606114555.1">(s/def ::trigger trigger)
 
 </t>
@@ -566,29 +543,9 @@ user=&gt; (clojure.set/intersection #{1 :a} #{:a 3} #{:a})
 <t tx="conor.20160606120955.1">(defn members-in-string  [trigset string]
    (set/intersection trigset (str/split string #"\s")))
 
+(members-in-string #{"word" "other-word"} "this will show a word but no other word")
 
-</t>
-<t tx="conor.20160606123700.1">
-
-
-(def newsamp ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
-
-
-(defn vals-between [resetfn s]
-  (-&gt;&gt; s
-       (reduce (fn [{c :c r :r :as m} x]
-                 (if (resetfn x)
-                   (assoc m :c [x] :r (conj r c))
-                   (assoc m :c (conj c x))))
-               {:c [] :r []})
-       ((fn [{c :c r :r}]  (conj r c)))))
-
-(def parsedf
-  (vals-between #(s/valid? ::trigger %) newsamp))       
-                          
-
-(pprint (s/conform ::even-parse parsedf))
-
+;;=&gt;  #{"word"}
 </t>
 <t tx="conor.20160606124013.1">
 
@@ -752,5 +709,78 @@ Diff...
 (str/replace-first "abcd" (re-pattern "b") "")
 </t>
 <t tx="conor.20160606132801.1"></t>
+<t tx="conor.20160606134014.1">
+
+
+(def newsamp ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
+
+
+(defn vals-between [resetfn s]
+  (-&gt;&gt; s
+       (reduce (fn [{c :c r :r :as m} x]
+                 (if (resetfn x)
+                   (assoc m :c [x] :r (conj r c))
+                   (assoc m :c (conj c x))))
+               {:c [] :r []})
+       ((fn [{c :c r :r}]  (conj r c)))))
+
+(def parsedf
+  (vals-between #(s/valid? ::trigger %) newsamp))       
+                          
+
+(pprint (s/conform ::even-parse parsedf))
+
+</t>
+<t tx="conor.20160606134111.1">
+(def trigger #{"@person" "@role"})
+
+(s/def ::trigger (s/or :deftrig trigger
+                       :trig  #(str/starts-with? % "@")))
+
+(s/def ::not-trigger (s/and string? #(not (trigger %))))
+
+
+(s/def ::edgeparse (s/cat 
+                    :type  ::trigger
+                    :val   (s/* ::not-trigger)))
+
+
+(s/def ::even-parse  (s/* 
+                      (s/or :edge  ::edgeparse
+                            :child (s/spec (s/* ::not-trigger)))))
+</t>
+<t tx="conor.20160606140315.1">(def newsampp ["a" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"]) 
+
+(def parsedf
+ (vals-betweenn #(s/valid? ::trigger %) newsampp))         
+
+
+
+(pprint (s/conform ::even-parse parsedf))  
+</t>
+<t tx="conor.20160606141311.1">
+
+(defn vals-betweenn [resetfn s]
+  (-&gt;&gt; s
+       (reduce (fn [{c :c r :r :as m} x]
+                 (if (resetfn x)
+                   (assoc m :c [x] :r (if (empty? c)
+                                        r
+                                        (conj r c)))
+                   (assoc m :c (conj c x))))
+               {:c [] :r []})
+       ((fn [{c :c r :r}] (conj r c)))))
+
+
+</t>
+<t tx="conor.20160606141311.2">(def newsampp ["a" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"]) 
+
+(def parsedf
+ (vals-betweenn #(s/valid? ::trigger %) newsampp))         
+
+
+
+(pprint (s/conform ::even-parse parsedf))  
+</t>
 </tnodes>
 </leo_file>
