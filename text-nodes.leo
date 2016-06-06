@@ -10,12 +10,12 @@
 <find_panel_settings/>
 <vnodes>
 <v t="conor.20160606053544.1" a="E"><vh>Files to write</vh>
-<v t="conor.20160605011037.1"><vh>@path ~/orgmap/leo/text-nodes</vh>
+<v t="conor.20160605011037.1" a="E"><vh>@path ~/orgmap/leo/text-nodes</vh>
 <v t="conor.20160605011510.1" a="E"><vh>@auto log.org</vh></v>
-<v t="conor.20160605013539.1" a="E"><vh>@auto specter.org</vh></v>
+<v t="conor.20160605013539.1"><vh>@auto specter.org</vh></v>
 </v>
 <v t="conor.20160605013848.1"><vh>@auto datascript.org</vh></v>
-<v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
+<v t="conor.20160605010926.1"><vh>@path src/</vh>
 <v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
 <v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
 <v t="conor.20160606052632.1" a="E"><vh>@file spec-test.clj</vh></v>
@@ -35,7 +35,7 @@
 </v>
 </v>
 </v>
-<v t="conor.20160606044649.1"><vh>Mon Jun  6 </vh>
+<v t="conor.20160606044649.1" a="E"><vh>Mon Jun  6 </vh>
 <v t="conor.20160606053804.1"><vh>break</vh></v>
 <v t="conor.20160606055117.1"><vh>Discovery  05:55:43</vh>
 <v t="conor.20160606055120.1"><vh>Working with Leo and Emacs</vh>
@@ -44,6 +44,7 @@
 </v>
 <v t="conor.20160606055555.1"><vh>create timestamp  --05:57:57</vh></v>
 <v t="conor.20160606055940.1"><vh>break 05:59:42--06:35:58</vh></v>
+<v t="conor.20160606142636.1"><vh>Trying to parse particular "edge" triggers from strings [10 hours] 06:30 -- 14:30</vh>
 <v t="conor.20160606063559.1"><vh>splitting strings 06:36:09--06:45:07</vh>
 <v t="conor.20160606063703.1"><vh>tangent -- processing cljs files in leo</vh></v>
 <v t="conor.20160606063153.1" a="E"><vh>splitting the string with types</vh>
@@ -55,7 +56,7 @@
 </v>
 <v t="conor.20160606064547.1"><vh>where to use the types</vh>
 <v t="conor.20160606064613.1"><vh>1.  As the string is being processed into a depth-array</vh></v>
-<v t="conor.20160606064654.1" a="E"><vh>2.  As the depth-array is being handed into the node</vh>
+<v t="conor.20160606064654.1"><vh>2.  As the depth-array is being handed into the node</vh>
 <v t="conor.20160606064711.1"><vh>edges</vh></v>
 <v t="conor.20160606065408.1" a="E"><vh>How to grab the first part of a string and use it in a a spec</vh>
 <v t="conor.20160606065211.1"><vh>person spec</vh></v>
@@ -107,23 +108,31 @@
 <v t="conor.20160606113737.5"><vh>(s/explain ::even-parse [[":abcd" "this is </vh></v>
 </v>
 </v>
-<v t="conor.20160606115351.1"><vh>clojure set functions</vh>
-<v t="conor.20160606115355.1" a="E"><vh>11:53:59</vh>
-<v t="conor.20160606115634.1"><vh>intersection</vh></v>
+<v t="conor.20160606120806.1"><vh>the first way I tried to do the text for edges</vh>
+<v t="conor.20160606094026.1"><vh>(def trigger #{"@person" "@role"})</vh></v>
+<v t="conor.20160606114555.1"><vh>(s/def ::trigger trigger)</vh></v>
+<v t="conor.20160606094026.2"><vh>(s/def ::string string?)</vh></v>
+<v t="conor.20160606114644.1"><vh>(s/def ::even-parse  (s/* (s/cat :t ::trigger :string string?)))</vh></v>
+<v t="conor.20160606094026.3"><vh>(defn check-edges [edgeset string]  </vh></v>
+<v t="conor.20160606094026.4"><vh>(s/explain ::even-parse (check-edges trigger "@person </vh></v>
 </v>
+<v t="conor.20160606115351.1"><vh>clojure set functions</vh>
+<v t="conor.20160606115355.1"><vh>11:53:59 --</vh>
+<v t="conor.20160606115634.1"><vh>intersection</vh></v>
+<v t="conor.20160606114947.1"><vh>set-members-in-string</vh></v>
 </v>
 </v>
 <v t="conor.20160606132427.1"><vh>General Clojure lessons</vh>
 <v t="conor.20160606132433.1"><vh>debugging -- do println, then return test value</vh></v>
 <v t="conor.20160606132555.1"><vh>str/replace-first</vh></v>
-<v t="conor.20160606132801.1" a="E"><vh>reducing pattern</vh>
+<v t="conor.20160606132801.1"><vh>reducing pattern</vh>
 <v t="conor.20160606134111.1"><vh>parsers used</vh></v>
-<v t="conor.20160606141311.1" a="E"><vh>vals-between</vh>
+<v t="conor.20160606141311.1"><vh>vals-between</vh>
 <v t="conor.20160606141311.2"><vh>test</vh></v>
 </v>
 <v t="conor.20160606130151.1"><vh>WIN  reducing pattern volume 2</vh></v>
 <v t="conor.20160606124013.1"><vh>WIN reducing pattern basic</vh></v>
-<v t="conor.20160606134014.1" a="E"><vh>WIN  reducing pattern volume 3</vh>
+<v t="conor.20160606134014.1"><vh>WIN  reducing pattern volume 3</vh>
 <v t="conor.20160606140315.1"><vh>test</vh></v>
 </v>
 </v>
@@ -132,19 +141,6 @@
 <v t="conor.20160606132404.1"><vh>spec lessons</vh>
 <v t="conor.20160606132252.1"><vh>useful spec lessons</vh></v>
 </v>
-<v t="conor.20160606120806.1"><vh>oneway</vh>
-<v t="conor.20160606094026.1"><vh>(def trigger #{"@person" "@role"})</vh></v>
-<v t="conor.20160606114947.1"><vh>set-members-in-string</vh></v>
-<v t="conor.20160606114555.1"><vh>(s/def ::trigger trigger)</vh></v>
-<v t="conor.20160606094026.2"><vh>(s/def ::string string?)</vh></v>
-<v t="conor.20160606114644.1"><vh>(s/def ::even-parse  (s/* (s/cat :t ::trigger :string string?)))</vh></v>
-<v t="conor.20160606094026.3"><vh>(defn check-edges [edgeset string]  </vh></v>
-<v t="conor.20160606094026.4"><vh>(s/explain ::even-parse (check-edges trigger "@person </vh></v>
-</v>
-<v t="conor.20160606131947.1"><vh>Recovered Nodes</vh>
-<v t="conor.20160606131947.2"><vh>Recovered node "WIN  reducing pattern volume 3" from @file spec-test.clj</vh>
-<v t="conor.20160606131947.3"><vh>old:WIN  reducing pattern volume 3</vh></v>
-<v t="conor.20160606131947.4"><vh>new:WIN  reducing pattern volume 3</vh></v>
 </v>
 </v>
 </vnodes>
@@ -573,106 +569,6 @@ user=&gt; (clojure.set/intersection #{1 :a} #{:a 3} #{:a})
         ["@person" "Conor" "White-Sullivan"])
 
 </t>
-<t tx="conor.20160606131947.1"></t>
-<t tx="conor.20160606131947.2">(uncached) conor.20160606123700.1
-Diff...
-  
-  
-  (reduce (fn [ {c :current r :result :as m} input] 
--          #_(update m :current #(conj % input))
-?          --
-+          (update m :current #(conj % input))
--           (let [valid? (s/valid? ::trigger input)]
-?            -------- ^^                           -
-+           #_(if (s/valid? ::not-trigger input)
-?           ++  ^             ++++
-+             (update m :current (conj c input))
--           (if (do
--                 #_(print (vector input valid?))
--                 valid?)
--             (assoc m :current [input]
-?               ^^^^
-+             (update m :current [input]
-?              +++ ^^
--                    :result  (conj r c))
-+                     :result  (conj r c))))  
-? +                                       ++++
--             (assoc m :current (conj c input))
--              )))  
-          {:current []
-           :result []}  
--         ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
-+         ["@person" "Conor" "White-Sullivan"])
-  
-- 
-- (def newsamp ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
-- 
-- 
-- (defn vals-between [resetfn s]
--   (-&gt;&gt; s
--        (reduce (fn [{c :c r :r :as m} x]
--                  (if (resetfn x)
--                    (assoc m :c [x] :r (conj r c))
--                    (assoc m :c (conj c x))))
--                {:c [] :r []})
--        ((fn [{c :c r :r}]  (conj r c)))))
-- 
-- 
-- (vals-between #(s/valid? ::trigger %) newsamp)       
--                           
-- 
-- 
-- 
-</t>
-<t tx="conor.20160606131947.3">
-
-(reduce (fn [ {c :current r :result :as m} input] 
-         (update m :current #(conj % input))
-          #_(if (s/valid? ::not-trigger input)
-            (update m :current (conj c input))
-            (update m :current [input]
-                    :result  (conj r c))))  
-        {:current []
-         :result []}  
-        ["@person" "Conor" "White-Sullivan"])
-
-</t>
-<t tx="conor.20160606131947.4">
-
-(reduce (fn [ {c :current r :result :as m} input] 
-         #_(update m :current #(conj % input))
-          (let [valid? (s/valid? ::trigger input)]
-          (if (do
-                #_(print (vector input valid?))
-                valid?)
-            (assoc m :current [input]
-                   :result  (conj r c))
-            (assoc m :current (conj c input))
-             )))  
-        {:current []
-         :result []}  
-        ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
-
-
-(def newsamp ["Hey" "@person" "Conor" "White-Sullivan" "@result" "nada" "@final"])
-
-
-(defn vals-between [resetfn s]
-  (-&gt;&gt; s
-       (reduce (fn [{c :c r :r :as m} x]
-                 (if (resetfn x)
-                   (assoc m :c [x] :r (conj r c))
-                   (assoc m :c (conj c x))))
-               {:c [] :r []})
-       ((fn [{c :c r :r}]  (conj r c)))))
-
-
-(vals-between #(s/valid? ::trigger %) newsamp)       
-                          
-
-
-
-</t>
 <t tx="conor.20160606132252.1">
 (def trigger #{"@person" "@role"})
 
@@ -781,5 +677,6 @@ Diff...
 
 (pprint (s/conform ::even-parse parsedf))  
 </t>
+<t tx="conor.20160606142636.1"></t>
 </tnodes>
 </leo_file>
