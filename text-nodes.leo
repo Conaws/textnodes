@@ -9,25 +9,25 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="conor.20160606053544.1" a="E"><vh>Files to write</vh>
+<v t="conor.20160606053544.1"><vh>Files to write</vh>
 <v t="conor.20160605011037.1"><vh>@path ~/orgmap/leo/text-nodes</vh>
 <v t="conor.20160605011510.1"><vh>@auto log.org</vh></v>
 <v t="conor.20160605013539.1"><vh>@auto specter.org</vh></v>
 </v>
 <v t="conor.20160605013848.1"><vh>@auto datascript.org</vh></v>
-<v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
-<v t="conor.20160605011023.2" a="EM"><vh>/clj/</vh>
+<v t="conor.20160605010926.1"><vh>@path src/</vh>
+<v t="conor.20160605011023.2" a="M"><vh>/clj/</vh>
 <v t="conor.20160605011025.1" a="EM"><vh>/text_nodes/</vh>
 <v t="conor.20160606052632.1" a="E"
-expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606063153.1,"><vh>@file spec-test.clj</vh></v>
+expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606063153.1,conor.20160606065151.1,conor.20160606070500.1,"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605012522.1" a="M"><vh>@auto core.clj</vh>
 <v t="conor.20160605013418.1"><vh>namespace -- datascript and specter</vh></v>
 </v>
 <v t="conor.20160605011026.1" a="M"><vh>css.clj</vh></v>
 </v>
 </v>
-<v t="conor.20160605011023.1" a="EM"><vh>/cljs/</vh>
-<v t="conor.20160605011952.1" a="EM"><vh>/text_nodes/</vh>
+<v t="conor.20160605011023.1" a="M"><vh>/cljs/</vh>
+<v t="conor.20160605011952.1" a="M"><vh>/text_nodes/</vh>
 <v t="conor.20160605011953.6" a="M"><vh>config.cljs</vh></v>
 <v t="conor.20160605011953.5" a="M"><vh>@auto core.cljs</vh></v>
 <v t="conor.20160605011953.4" a="M"><vh>@auto db.cljs</vh></v>
@@ -47,8 +47,17 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606063153.1,"
 </v>
 <v t="conor.20160606055555.1"><vh>create timestamp  --05:57:57</vh></v>
 <v t="conor.20160606055940.1"><vh>break 05:59:42--06:35:58</vh></v>
-<v t="conor.20160606063559.1"><vh>splitting strings 06:36:09--</vh>
+<v t="conor.20160606063559.1"><vh>splitting strings 06:36:09--06:45:07</vh>
 <v t="conor.20160606063703.1"><vh>tangent -- processing cljs files in leo</vh></v>
+</v>
+<v t="conor.20160606064547.1" a="E"><vh>where to use the types</vh>
+<v t="conor.20160606064613.1"><vh>1.  As the string is being processed into a depth-array</vh></v>
+<v t="conor.20160606064654.1" a="E"><vh>2.  As the depth-array is being handed into the node</vh>
+<v t="conor.20160606064711.1"><vh>edges</vh></v>
+<v t="conor.20160606065408.1" a="E"><vh>How to grab the first part of a string and use it in a a spec</vh>
+<v t="conor.20160606065211.1"><vh>person spec</vh></v>
+</v>
+</v>
 </v>
 </v>
 <v t="conor.20160606053224.1" a="E"><vh>spec-test</vh>
@@ -59,6 +68,14 @@ expanded="conor.20160606053224.1,conor.20160606062933.1,conor.20160606063153.1,"
 <v t="conor.20160606064205.1"><vh>(defn count-tabs  [string]  </vh></v>
 <v t="conor.20160606064205.2"><vh>(defn parsed [text]  (-&gt;&gt; </vh></v>
 <v t="conor.20160606064219.1"><vh>(parsed sampletext)</vh></v>
+<v t="conor.20160606065151.1" a="E"><vh>Edge Spec</vh>
+<v t="conor.20160606065211.1"></v>
+<v t="conor.20160606070318.1"><vh>role spec</vh></v>
+<v t="conor.20160606064711.1"></v>
+<v t="conor.20160606070500.1" a="E"><vh>Test the Edgespec</vh>
+<v t="conor.20160606070517.1"><vh>newHeadline</vh></v>
+</v>
+</v>
 </v>
 </v>
 </v>
@@ -271,5 +288,19 @@ need to find a way to do that
 
 
 </t>
+<t tx="conor.20160606064547.1"></t>
+<t tx="conor.20160606064613.1"></t>
+<t tx="conor.20160606064654.1"></t>
+<t tx="conor.20160606064711.1">(s/def ::edges #{::person ::role})</t>
+<t tx="conor.20160606065151.1"></t>
+<t tx="conor.20160606065211.1">(s/def ::person (s/and string? #(str/starts-with  %  ":person")))
+                                   </t>
+<t tx="conor.20160606065408.1"></t>
+<t tx="conor.20160606070318.1">(s/def ::role  (s/and string?  #(re-matches #":role" %)))</t>
+<t tx="conor.20160606070500.1"></t>
+<t tx="conor.20160606070517.1">(for [[i t] (parsed sampletext)]
+    [i (s/conforms ::edges t)])
+    
+    </t>
 </tnodes>
 </leo_file>

@@ -15,7 +15,7 @@
                 extend-protocolpath]]))
 ;@+node:conor.20160606062933.1: *3* string spec
 ;@+node:conor.20160606062941.1: *4* sampletext
-(def sampletext "This is the first goal\n\tThis is it's first child\n\t\t:assigned-to Conor")
+(def sampletext "This is the first goal\n\tThis is it's first child\n\t\t:person Conor")
 ;@+node:conor.20160606063153.1: *4* splitting the string with types
 ;@+others
 ;@+node:conor.20160606064205.1: *5* (defn count-tabs  [string]  
@@ -33,6 +33,25 @@
 (parsed sampletext)
 
 
+;@+node:conor.20160606065151.1: *5* Edge Spec
+;@+node:conor.20160606065211.1: *6* person spec
+(s/def ::person (s/and string? #(str/starts-with?  %  ":person")))
+                                   
+;@+node:conor.20160606070318.1: *6* role spec
+(s/def ::role  (s/and string?  #(re-matches #":role" %)))
+
+;@+node:conor.20160606064711.1: *6* edges
+(s/def ::edges (s/or 
+                :person ::person
+                :role   ::role
+                :node   string?))
+
+;@+node:conor.20160606070500.1: *6* Test the Edgespec
+;@+node:conor.20160606070517.1: *7* newHeadline
+(for [[i t] (parsed sampletext)]
+    [i (s/conform ::edges t)])
+    
+    
 ;@-others
 ;@-others
 ;@-leo
