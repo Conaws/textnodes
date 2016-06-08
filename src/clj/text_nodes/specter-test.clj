@@ -3,7 +3,7 @@
 ;@+others
 ;@+node:conor.20160606161918.1: ** namespace
 (ns text-nodes.core
-  (:require [com.rpl.specter  :as sp :refer [ALL]]
+  (:require [com.rpl.specter  :as sp :refer [ALL FIRST LAST STAY collect-one putval VAL]]
                 [clojure.spec        :as s]
                 [clojure.string      :as str]
                 [clojure.pprint       :refer [pprint]]
@@ -123,7 +123,93 @@
                    [{:node :aba}]}]}
                 {:node :b}])
 
+;@+others
+;@+node:conor.20160608060237.1: *4* newHeadline
 
+
+(declarepath  REMAP)
+
+(s/def ::node-name (s/or :s string?
+                         :k keyword?))
+
+
+(s/def ::node-edges (s/* ::node))
+
+(s/def ::node (s/keys 
+               ::req [::node-name]
+               ::opts [::node-edges]))
+
+(providepath REMAP
+             (sp/if-path #(s/valid? ::node  %)
+                      [:children ALL KIDS]
+                      sp/STAY))
+
+
+
+
+(declarepath KIDS)
+
+
+
+
+
+
+
+
+
+(declarepath TREE)
+
+(providepath TREE
+             (sp/if-path vector?
+                         [ALL TREE]
+                         STAY))
+
+
+(select [TREE number?] [1 1 2 [3 [[][][4 5]]]])
+
+
+(declarepath MAPTREE)
+
+(providepath MAPTREE 
+             (sp/if-path map?
+                         [ALL ALL MAPTREE]
+                         STAY))
+
+
+
+(providepath KIDS 
+             (sp/multi-path 
+              :children
+              [:children ALL KIDS]
+              :node))
+
+(pprint (select [ALL KIDS keyword?] samplemap))
+
+
+
+(declarepath KID-EDGES)
+
+(providepath KID-EDGES
+             (sp/multi-path
+              [:children ALL :node]
+              [(sp/collect :node) :children ALL KID-EDGES]
+              [:children nil?]
+              :node))
+
+(pprint (select [ALL KID-EDGES] samplemap))
+
+
+
+
+
+
+
+
+(pprint samplemap)
+
+
+
+;@-others
 
 (defn select-edges [maparray]
    (loop [results [] current-level maparray]

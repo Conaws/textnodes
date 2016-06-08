@@ -19,7 +19,7 @@
 <v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
 <v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
 <v t="conor.20160606161843.1" a="E"
-expanded="conor.20160606170827.1,conor.20160608031859.1,"><vh>@file specter-test.clj</vh></v>
+expanded="conor.20160606170827.1,conor.20160608031859.1,conor.20160608031845.1,"><vh>@file specter-test.clj</vh></v>
 <v t="conor.20160606052632.1" a="E"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605012522.1"><vh>@auto core.clj</vh></v>
 <v t="conor.20160605011026.1"><vh>css.clj</vh></v>
@@ -166,6 +166,13 @@ marks="conor.20160608034750.11,"><vh>@file views.cljs</vh></v>
 <v t="conor.20160608034207.2"><vh>From @file specter-test.clj</vh>
 <v t="conor.20160608034140.1"><vh>new workspace</vh></v>
 </v>
+</v>
+<v t="conor.20160608085512.1" a="E"><vh>Email to Nathan</vh>
+<v t="conor.20160608091708.1"><vh>Sample Map</vh></v>
+<v t="conor.20160608085617.1"><vh>Good recursion</vh></v>
+<v t="conor.20160608085524.1"><vh>Bad Recursion</vh></v>
+<v t="conor.20160608085820.1"><vh>weirdstruct</vh></v>
+<v t="conor.20160608085907.1"><vh>confusion walking maps</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -767,5 +774,137 @@ of specter
 </t>
 <t tx="conor.20160608034207.1"></t>
 <t tx="conor.20160608034207.2"></t>
+<t tx="conor.20160608085512.1"></t>
+<t tx="conor.20160608085524.1">(declarepath KID-EDGES)
+
+(providepath KID-EDGES
+             (sp/multi-path
+              [:children ALL :node]
+              [(sp/collect :node) :children ALL KID-EDGES]
+              [:children nil?]
+              :node))
+
+(pprint (select [ALL KID-EDGES] samplemap))
+
+
+
+[:aa
+ :ab
+ [[:a] :aaa]
+ [[:a] [[:aa] :aaaa]]
+ [[:a] [[:aa] [[:aaa] nil]]]
+ [[:a] [[:aa] [[:aaa] :aaaa]]]
+ [[:a] [[:aa] :aaa]]
+ [[:a] :aa]
+ [[:a] :aba]
+ [[:a] [[:ab] nil]]
+ [[:a] [[:ab] :aba]]
+ [[:a] :ab]
+ :a
+ nil
+ :b]
+
+
+
+
+
+
+</t>
+<t tx="conor.20160608085617.1">[:aa
+ :ab
+ [[:a] :aaa]
+ [[:a] [[:aa] :aaaa]]
+ [[:a] [[:aa] [[:aaa] nil]]]
+ [[:a] [[:aa] [[:aaa] :aaaa]]]
+ [[:a] [[:aa] :aaa]]
+ [[:a] :aa]
+ [[:a] :aba]
+ [[:a] [[:ab] nil]]
+ [[:a] [[:ab] :aba]]
+ [[:a] :ab]
+ :a
+ nil
+ :b]
+</t>
+<t tx="conor.20160608085820.1">
+              
+              
+(def weirdstructure (select [ALL KID-EDGES] samplemap))
+
+
+
+(s/def ::weird  (s/and  vector?
+                              (s/cat :parent vector?
+                                     :child keyword?))) 
+
+
+
+(declarepath weirdpath)
+(providepath weirdpath
+             (sp/if-path
+              vector?
+              (sp/if-path
+               #(s/valid? ::weird %)
+               STAY
+               [ALL weirdpath])
+              ))
+
+(pprint (select weirdpath weirdstructure))
+</t>
+<t tx="conor.20160608085907.1">
+(declarepath simplekids)
+
+(providepath simplekids
+             (sp/if-path :children 
+                         [(sp/collect-one :node) :children ALL :node] 
+                         :node))
+
+
+
+
+(select [ALL simplekids] samplemap)
+
+              
+
+(declarepath simplerkids)
+
+
+(providepath simplerkids
+             (sp/if-path :children 
+                         [(sp/collect-one :node) :children ALL] 
+                         :nodej))
+
+
+(select [ALL simplerkids LAST] samplemap)
+
+
+(select [MAPTREE TREE] {:a {:b [{:a :b :c [:d :D]}] :c :d} :aa  :bb})
+
+(select [ALL (sp/walker #(s/valid? ::node-edges %))] samplemap)
+
+
+
+
+
+(s/explain ::node (first samplemap))
+
+(pprint
+ (select [ALL KIDS] samplemap))
+
+
+(select [ALL :node] samplemap)
+
+(pprint
+ (select [ALL REMAP] samplemap))</t>
+<t tx="conor.20160608091708.1">
+(def samplearraymap  [{:node :a :children [
+                                        {:node :aa :children [
+                                            {:node :aaa :children [
+                                                {:node :aaaa}]}]} 
+                                        {:node :ab :children [
+                                            {:node :aba}]}]}
+                                    {:node :b}])
+
+</t>
 </tnodes>
 </leo_file>
