@@ -13,9 +13,7 @@
          :only [select transform defprotocolpath
                 extend-protocolpath]]))
 ;@+node:conor.20160606062941.1: ** sampletext
-(def sampletext "This is the first goal\n\tThis is it's first child\n\t\t@person Conor @role superhero\nThis is another goal\n\tThis is another child 1\n\tThis is another child 1 again")
-
-
+(def sampletext "This is the first goal\n\tThis is it's first child\n\t\t@person Conor @role superhero")
 ;@+node:conor.20160606073225.1: ** splitting the string with types
 ;@+others
 ;@-others

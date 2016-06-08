@@ -10,27 +10,30 @@
 <find_panel_settings/>
 <vnodes>
 <v t="conor.20160606053544.1" a="E"><vh>Files to write</vh>
-<v t="conor.20160605011037.1" a="E"><vh>@path ~/orgmap/leo/text-nodes</vh>
+<v t="conor.20160605011037.1"><vh>@path ~/orgmap/leo/text-nodes</vh>
 <v t="conor.20160605011510.1" a="E"><vh>@auto log.org</vh></v>
-<v t="conor.20160605013539.1"><vh>@auto specter.org</vh></v>
+<v t="conor.20160605013539.1" a="E"><vh>@auto specter.org</vh></v>
 </v>
 <v t="conor.20160605013848.1"><vh>@auto datascript.org</vh></v>
-<v t="conor.20160605010926.1"><vh>@path src/</vh>
+<v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
 <v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
 <v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
+<v t="conor.20160606161843.1" a="E"
+expanded="conor.20160606170827.1,conor.20160608031859.1,"><vh>@file specter-test.clj</vh></v>
 <v t="conor.20160606052632.1" a="E"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605012522.1"><vh>@auto core.clj</vh></v>
 <v t="conor.20160605011026.1"><vh>css.clj</vh></v>
 </v>
 </v>
-<v t="conor.20160605011023.1"><vh>/cljs/</vh>
-<v t="conor.20160605011952.1"><vh>/text_nodes/</vh>
+<v t="conor.20160605011023.1" a="E"><vh>/cljs/</vh>
+<v t="conor.20160605011952.1" a="E"><vh>/text_nodes/</vh>
 <v t="conor.20160605011953.6"><vh>config.cljs</vh></v>
 <v t="conor.20160605011953.5"><vh>@auto core.cljs</vh></v>
 <v t="conor.20160605011953.4"><vh>@auto db.cljs</vh></v>
 <v t="conor.20160605011953.3"><vh>@auto handlers.cljs</vh></v>
 <v t="conor.20160605011953.2"><vh>@auto subs.cljs</vh></v>
-<v t="conor.20160605011953.1"><vh>@auto views.cljs</vh></v>
+<v t="conor.20160605011953.1" a="E"
+marks="conor.20160608034750.11,"><vh>@file views.cljs</vh></v>
 </v>
 </v>
 </v>
@@ -141,6 +144,27 @@
 <v t="conor.20160606132404.1"><vh>spec lessons</vh>
 <v t="conor.20160606132252.1"><vh>useful spec lessons</vh></v>
 </v>
+</v>
+<v t="conor.20160606143512.1"><vh>Git</vh>
+<v t="conor.20160606143451.1"><vh>Rebased test-spec branch and master</vh></v>
+</v>
+<v t="conor.20160606143558.1"><vh>Meditate 14:36:00 --</vh></v>
+<v t="conor.20160606153335.1"><vh>buy dad gift 15:33:40 -- 15:50:30</vh></v>
+</v>
+<v t="conor.20160606155732.1" a="E"><vh>handwritten examples</vh>
+<v t="conor.20160606162219.1" a="E"><vh>keypaths</vh>
+<v t="conor.20160606162227.1"><vh>misisng value</vh></v>
+</v>
+<v t="conor.20160606162503.1"><vh>Working with maps</vh></v>
+</v>
+<v t="conor.20160608033443.1" a="E"><vh>Wednesday</vh>
+<v t="conor.20160608033501.1" a="E"><vh>Decided recurison and walking beats reduce</vh>
+<v t="conor.20160608032307.1"><vh>simple test</vh></v>
+</v>
+</v>
+<v t="conor.20160608034207.1" a="E"><vh>Resurrected Nodes</vh>
+<v t="conor.20160608034207.2"><vh>From @file specter-test.clj</vh>
+<v t="conor.20160608034140.1"><vh>new workspace</vh></v>
 </v>
 </v>
 </vnodes>
@@ -596,7 +620,15 @@ user=&gt; (clojure.set/intersection #{1 :a} #{:a 3} #{:a})
                             :child (s/spec (s/* ::not-trigger)))))
 </t>
 <t tx="conor.20160606132404.1"></t>
-<t tx="conor.20160606132427.1"></t>
+<t tx="conor.20160606132427.1">http://blog.jayfields.com/2010/07/clojure-destructuring.html
+
+http://clojuredocs.org/clojure.core/cond
+
+http://clojuredocs.org/clojure.core/subs
+
+http://www.spacjer.com/blog/2016/03/03/lesser-known-clojure-new-string-functions-in-clojure-1-8/
+
+https://clojuredocs.org/clojure.core/partition-all</t>
 <t tx="conor.20160606132433.1">(if (do (print "hello") (= :a :b))
   :a
   :b)</t>
@@ -678,5 +710,62 @@ user=&gt; (clojure.set/intersection #{1 :a} #{:a 3} #{:a})
 (pprint (s/conform ::even-parse parsedf))  
 </t>
 <t tx="conor.20160606142636.1"></t>
+<t tx="conor.20160606143451.1">https://git-scm.com/book/ch3-6.html</t>
+<t tx="conor.20160606143512.1"></t>
+<t tx="conor.20160606143558.1"></t>
+<t tx="conor.20160606153335.1"></t>
+<t tx="conor.20160606155732.1">Mon Jun  6 15:57:40 2016
+
+of specter
+
+</t>
+<t tx="conor.20160606162219.1"></t>
+<t tx="conor.20160606162227.1">#_(transform [ALL :a even?] inc
+    [{:a 1}{:b 2}{:a 2}{:a 4}])
+    
+;; this will return an error, since even? needs an integer to work on
+
+
+(transform [ALL :a even?] inc [{:a 1}{:a 2}])
+;; will return  [{:a 1}{:a 3}]
+
+</t>
+<t tx="conor.20160606162503.1"></t>
+<t tx="conor.20160608032307.1">
+(defn vals-between2 [resetfn s]
+  (-&gt;&gt; s
+       (reduce (fn [{c :c r :r :as m} x]
+                 (if (resetfn x)
+                   (assoc m :c [x] :r (if (empty? c)
+                                        r
+                                        (conj r c)))
+                   (assoc m :c (conj c x))))
+               {:c [] :r []})
+       ((fn [{c :c r :r}] (conj r c)))))
+
+
+
+
+
+(let [test [[0 0 :a] [1 1 :b][2 2 :c][3 1 :bb][4 2 :cc]]]
+    (vals-between (fn [[_ depth _]] (&lt; 0 depth))))
+    </t>
+<t tx="conor.20160608033443.1"></t>
+<t tx="conor.20160608033501.1"></t>
+<t tx="conor.20160608034140.1">
+
+
+
+
+
+
+
+
+
+
+
+</t>
+<t tx="conor.20160608034207.1"></t>
+<t tx="conor.20160608034207.2"></t>
 </tnodes>
 </leo_file>
