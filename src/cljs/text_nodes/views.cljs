@@ -9,45 +9,13 @@
             [cljs.pprint     :refer [pprint]]
             [keybind.core :as key]
             [cljs.reader]
-            [com.rpl.specter  :refer [ALL] :as s]
+            [cljs.spec  :as s]
+            [com.rpl.specter  :refer [ALL] :as sp]
             [clojure.string  :as str])
   (:require-macros
            [com.rpl.specter.macros  :refer [select transform defprotocolpath]]
            [reagent.ratom :refer [reaction]]))
 
-
-
-(def schema {
-             :node/text             {:db/unique :db.unique/identity}
-             :node/out-edge         {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}
-             :edge/to               {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}})
-
-
-
-
-
-(register-sub
- :db-atoms
- (fn [_ [_ conn]]
-   (q conn '[:find ?e ?attr ?val
-             :where
-             [?e ?attr ?val]])))
-
-
-
-(register-sub
- :db-entities
- (fn [_ [_ conn]]
-  (q conn '[:find ?e
-             :where
-             [?e]])))
-
-
-
-(register-sub
- :e
- (fn [_ [_ conn eid]]
-   (pull conn '[*] eid)))
 
 
 
@@ -83,42 +51,11 @@
 
 
 
-(defn get-children [treesarray]
-
-  (select [ALL (s/collect-one :node) :children ALL :node]
-          treesarray))
-
-(get-children (nodify test-struct))
-
-(pprint (select [ALL]  (nodify test-struct)))
 
 
 
 
 
-
-(register-handler
- :init
- (fn [db [_ conn]]
-     (let [e  (subscribe [:db-entities conn])
-           node1  {:db/id -1
-                   :node/text "Hello Graphs"}
-           layout {:db/id -2
-                   :layout/x 50
-                   :layout/y 50
-                   :layout/height 500
-                   :layout/width 500
-                   :layout/nodeid (:db/id node1)}]
-       (if (empty? @e)
-         (do (db/transact! conn
-                           [node1 layout])))
-       (assoc db :testmap (nodify test-struct)))))
-
-
-(register-sub
- :testmap
- (fn [db]
-   (reaction (:testmap @db))))
 
 
 
@@ -126,11 +63,6 @@
  :change-text
  (fn [db [_ text]]
    (assoc db :text text)))
-
-(register-sub
- :text
- (fn [db]
-   (reaction (:text @db))))
 
 
 
@@ -146,18 +78,6 @@
   (-> e
       .-target
       .-value))
-
-
-(defn parsed [text]
-  (->> (str/split text #"\n")
-       (map (juxt count-tabs str/trim))))
-
-
-
-(register-sub
- :parsed-text
- (fn [db]
-   (reaction (nodify (parsed (:text @db))))))
 
 
 
@@ -254,9 +174,9 @@
                         (for [child (:children t)]
                           ^{:key child}
                            [tree child])]]]]])))
-                           
-                           
-                           
+
+
+
 
 (defn tree-display []
   (let [tree-array (subscribe [:tree])]
@@ -292,13 +212,11 @@
      [:button {:on-click #(dispatch [:init conn])} "start"]
 ;   [canvas conn]
      [demo]
-     [entity-view conn]
-     [:h1 (pr-str @tm)]])))
+     #_[entity-view conn]
+     #_[:h1 (pr-str @tm)]])))
 
 
 
 (defn main-panel []
     (fn []
       [stuff conn]))
-
-

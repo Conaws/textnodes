@@ -17,16 +17,16 @@
 </v>
 <v t="conor.20160605013848.1"><vh>@auto datascript.org</vh></v>
 <v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
-<v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
+<v t="conor.20160605011023.2"><vh>/clj/</vh>
 <v t="conor.20160610142118.2" a="E"
-expanded="conor.20160610145512.1,conor.20160610145855.1,"><vh>@file core.clj</vh></v>
-<v t="conor.20160610150037.1" a="E"
+expanded="conor.20160610145855.1,conor.20160610150430.1,"><vh>@file core.clj</vh></v>
+<v t="conor.20160610150037.1"
 expanded="conor.20160610150348.1,"><vh>@file helpers.clj</vh></v>
-<v t="conor.20160610142118.1" a="E"><vh>@file spec-test.clj</vh></v>
+<v t="conor.20160610142118.1"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605011025.1"><vh>/text_nodes/</vh>
-<v t="conor.20160606161843.1"
+<v t="conor.20160606161843.1" a="E"
 expanded="conor.20160608031859.1,"><vh>@file specter-test.clj</vh></v>
-<v t="conor.20160606052632.1"
+<v t="conor.20160606052632.1" a="E"
 expanded="conor.20160606073225.1,"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605011026.1"><vh>css.clj</vh></v>
 </v>
@@ -40,11 +40,12 @@ expanded="conor.20160606073225.1,"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605011953.4"><vh>@file db.cljs</vh></v>
 <v t="conor.20160605011953.3" a="E"
 expanded="conor.20160610152638.1,conor.20160610152638.6,"><vh>@file handlers.cljs</vh></v>
-<v t="conor.20160605011953.2"><vh>@file subs.cljs</vh></v>
+<v t="conor.20160605011953.2" a="E"><vh>@file subs.cljs</vh></v>
 </v>
 </v>
 </v>
 </v>
+<v t="conor.20160610164523.1" a="E"><vh>lessons</vh>
 <v t="conor.20160608034752.3"><vh>(comment  </vh>
 <v t="conor.20160608034752.4"><vh>(register-handler :initialize-db (fn [_ [_</vh></v>
 <v t="conor.20160608034752.5"><vh> </vh></v>
@@ -59,7 +60,34 @@ expanded="conor.20160610152638.1,conor.20160610152638.6,"><vh>@file handlers.clj
 <v t="conor.20160608034753.4"><vh>@conn</vh></v>
 <v t="conor.20160608034753.5"><vh>@(q conn '[:find ?e  </vh></v>
 </v>
+<v t="conor.20160610170215.1"><vh>notes from before </vh></v>
 <v t="conor.20160610151933.1"><vh>demo of re-com</vh></v>
+<v t="conor.20160610162904.1"><vh>specter lessons</vh>
+<v t="conor.20160610162909.1"><vh>specter transform</vh></v>
+</v>
+<v t="conor.20160610160233.1"><vh>Resurrected Nodes</vh>
+<v t="conor.20160610160233.2"><vh>From @file handlers.cljs</vh>
+<v t="conor.20160610152638.10"><vh>test</vh></v>
+</v>
+<v t="conor.20160610164428.1"><vh>From @file handlers.cljs</vh>
+<v t="conor.20160610164021.5"><vh>(get-edges (:tree @app-db)) </vh></v>
+</v>
+</v>
+</v>
+<v t="conor.20160610164540.1" a="E"><vh>Active</vh>
+<v t="conor.20160610073243.1" a="E"><vh>Parse-Text</vh>
+<v t="conor.20160610164021.2"><vh>(declarepath TOPSORT)</vh></v>
+<v t="conor.20160610164021.3"><vh>(def CHILDREN (comp-paths :children ALL))</vh></v>
+<v t="conor.20160610164021.4"><vh>(defn get-edges [tree]  (select </vh></v>
+<v t="conor.20160610164021.6"><vh>(defn dbafter-&gt;eid [rv]  (-&gt; </vh></v>
+<v t="conor.20160610164021.7"><vh>(defn create-ds-node [db text]  </vh></v>
+<v t="conor.20160610164021.8"><vh>(defn tree-&gt;ds1 [tree]  (transform </vh></v>
+<v t="conor.20160610164021.10"><vh>(d/transact! conn [{:db/id [:node/text "Hello </vh></v>
+<v t="conor.20160610164021.11"><vh>(d/transact! conn [{:db/id -1  </vh></v>
+<v t="conor.20160610164021.12"><vh>(d/q '[:find ?e   </vh></v>
+<v t="conor.20160610164021.13"><vh>(d/q '[:find [(pull ?e [*]) </vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="conor.20160605010926.1"></t>
@@ -215,6 +243,11 @@ expanded="conor.20160610152638.1,conor.20160610152638.6,"><vh>@file handlers.clj
           [?e :layout/y 50]])
 )
 </t>
+<t tx="conor.20160610073243.1">
+
+
+@others
+</t>
 <t tx="conor.20160610112520.1">http://spootnik.org/entries/2015/03/10_simple-materialized-views-in-kafka-and-clojure.html
 
 Tags: 
@@ -236,45 +269,13 @@ Collected: Fri Jun 10 11:25:20 2016
             [cljs.pprint     :refer [pprint]]
             [keybind.core :as key]
             [cljs.reader]
-            [com.rpl.specter  :refer [ALL] :as s]
+            [cljs.spec  :as s]
+            [com.rpl.specter  :refer [ALL] :as sp]
             [clojure.string  :as str])
   (:require-macros
            [com.rpl.specter.macros  :refer [select transform defprotocolpath]]
            [reagent.ratom :refer [reaction]]))
 
-
-
-(def schema {
-             :node/text             {:db/unique :db.unique/identity}
-             :node/out-edge         {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}
-             :edge/to               {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}})
-
-
-
-
-
-(register-sub
- :db-atoms
- (fn [_ [_ conn]]
-   (q conn '[:find ?e ?attr ?val
-             :where
-             [?e ?attr ?val]])))
-
-
-
-(register-sub
- :db-entities
- (fn [_ [_ conn]]
-  (q conn '[:find ?e
-             :where
-             [?e]])))
-
-
-
-(register-sub
- :e
- (fn [_ [_ conn eid]]
-   (pull conn '[*] eid)))
 
 
 
@@ -310,42 +311,11 @@ Collected: Fri Jun 10 11:25:20 2016
 
 
 
-(defn get-children [treesarray]
-
-  (select [ALL (s/collect-one :node) :children ALL :node]
-          treesarray))
-
-(get-children (nodify test-struct))
-
-(pprint (select [ALL]  (nodify test-struct)))
 
 
 
 
 
-
-(register-handler
- :init
- (fn [db [_ conn]]
-     (let [e  (subscribe [:db-entities conn])
-           node1  {:db/id -1
-                   :node/text "Hello Graphs"}
-           layout {:db/id -2
-                   :layout/x 50
-                   :layout/y 50
-                   :layout/height 500
-                   :layout/width 500
-                   :layout/nodeid (:db/id node1)}]
-       (if (empty? @e)
-         (do (db/transact! conn
-                           [node1 layout])))
-       (assoc db :testmap (nodify test-struct)))))
-
-
-(register-sub
- :testmap
- (fn [db]
-   (reaction (:testmap @db))))
 
 
 
@@ -353,11 +323,6 @@ Collected: Fri Jun 10 11:25:20 2016
  :change-text
  (fn [db [_ text]]
    (assoc db :text text)))
-
-(register-sub
- :text
- (fn [db]
-   (reaction (:text @db))))
 
 
 
@@ -373,18 +338,6 @@ Collected: Fri Jun 10 11:25:20 2016
   (-&gt; e
       .-target
       .-value))
-
-
-(defn parsed [text]
-  (-&gt;&gt; (str/split text #"\n")
-       (map (juxt count-tabs str/trim))))
-
-
-
-(register-sub
- :parsed-text
- (fn [db]
-   (reaction (nodify (parsed (:text @db))))))
 
 
 
@@ -481,9 +434,9 @@ Collected: Fri Jun 10 11:25:20 2016
                         (for [child (:children t)]
                           ^{:key child}
                            [tree child])]]]]])))
-                           
-                           
-                           
+
+
+
 
 (defn tree-display []
   (let [tree-array (subscribe [:tree])]
@@ -519,16 +472,14 @@ Collected: Fri Jun 10 11:25:20 2016
      [:button {:on-click #(dispatch [:init conn])} "start"]
 ;   [canvas conn]
      [demo]
-     [entity-view conn]
-     [:h1 (pr-str @tm)]])))
+     #_[entity-view conn]
+     #_[:h1 (pr-str @tm)]])))
 
 
 
 (defn main-panel []
     (fn []
       [stuff conn]))
-
-
 </t>
 <t tx="conor.20160610151933.1">(defn demo []
   [v-box
@@ -556,6 +507,121 @@ Collected: Fri Jun 10 11:25:20 2016
               [box
                :child "b"
                :align-self :center]]])
+</t>
+<t tx="conor.20160610152638.10">(pprint (depthvec-&gt;tree ts))
+</t>
+<t tx="conor.20160610160233.1"></t>
+<t tx="conor.20160610160233.2"></t>
+<t tx="conor.20160610162904.1"></t>
+<t tx="conor.20160610162909.1">
+(transform [ALL TOPSORT (sp/collect-one :node) :a (sp/subset #{})] (fn [x] #{x})  (:tree @app-db)) 
+</t>
+<t tx="conor.20160610164021.10">
+
+(d/transact! conn [{:db/id [:node/text "Hello Graphs"]
+                     :node/test "helllo"}])
+</t>
+<t tx="conor.20160610164021.11">(d/transact! conn [{:db/id -1
+                    :node/text "Node B"
+                    :edge/_to [:node/text "Hello Graphs"]}])
+</t>
+<t tx="conor.20160610164021.12">(d/q '[:find ?e
+       :in $
+       :where [?e :node/text "Hello Graphs"]]
+     @conn)
+
+(d/pull @conn '[*] 3)
+
+(-&gt;
+ (d/pull-many @conn '[*] (select [ALL ALL] (d/q '[:find ?e :in $ :where [?e]] @conn)))
+ pprint)
+</t>
+<t tx="conor.20160610164021.13">
+(d/q '[:find [(pull ?e [*]) ?e]
+             :in $
+              :where [?e]]
+      @conn)
+
+</t>
+<t tx="conor.20160610164021.2">
+
+(declarepath TOPSORT)
+(providepath TOPSORT
+              (sp/stay-then-continue
+               :children ALL TOPSORT))
+</t>
+<t tx="conor.20160610164021.3">(def CHILDREN (comp-paths :children ALL))
+
+(defn get-leaves [tree]
+  (select [ALL TOPSORT :node] tree))
+</t>
+<t tx="conor.20160610164021.4">(defn get-edges [tree]
+  (select [ALL TOPSORT (sp/collect-one :node) CHILDREN :node] tree))
+
+
+</t>
+<t tx="conor.20160610164021.5">(get-edges (:tree @app-db))</t>
+<t tx="conor.20160610164021.6">
+
+(defn dbafter-&gt;eid [rv]
+  (-&gt; rv
+    :tx-data
+    ffirst))
+</t>
+<t tx="conor.20160610164021.7">
+(defn create-ds-node [db text]
+  (let [eid (d/q '[:find ?e
+                    :in $ ?text
+                    :where
+                    [?e :coll/text ?text]]
+                @db
+                text)]
+      (or (ffirst eid)
+        (dbafter-&gt;eid (d/transact! db [{:db/id -1
+                                        :coll/text text}])))))
+</t>
+<t tx="conor.20160610164021.8">
+
+(defn tree-&gt;ds1 [tree]
+  (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
+           (comp vector (partial create-ds-node conn))
+           tree))
+
+
+
+
+
+(defn get-edge-ids [tree]
+  (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] tree))
+
+
+(-&gt; (:tree @app-db)
+    tree-&gt;ds1
+    get-edge-ids
+    pprint)
+
+
+</t>
+<t tx="conor.20160610164428.1"></t>
+<t tx="conor.20160610164523.1"></t>
+<t tx="conor.20160610164540.1"></t>
+<t tx="conor.20160610170215.1">
+(register-handler
+ :init
+ (fn [db [_ conn]]
+     (let [e  (subscribe [:db-entities conn])
+           node1  {:db/id -1
+                   :node/text "Hello Graphs"}
+           layout {:db/id -2
+                   :layout/x 50
+                   :layout/y 50
+                   :layout/height 500
+                   :layout/width 500
+                   :layout/nodeid (:db/id node1)}]
+       (if (empty? @e)
+         (do (db/transact! conn
+                           [node1 layout])))
+       (assoc db :testmap (nodify test-struct)))))
 </t>
 </tnodes>
 </leo_file>

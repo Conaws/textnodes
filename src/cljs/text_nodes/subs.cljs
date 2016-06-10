@@ -61,6 +61,21 @@
  :e
  (fn [_ [_ conn eid]]
    (pull conn '[*] eid)))
+;@+node:conor.20160610165924.1: ** text
+
+(register-sub
+ :text
+ (fn [db]
+   (reaction (:text @db))))
+;@+node:conor.20160608034749.5: ** (register-sub :db-atoms (fn [_ [_ 
+
+
+(register-sub
+ :db-atoms
+ (fn [_ [_ conn]]
+   (q conn '[:find ?e ?attr ?val
+             :where 
+             [?e ?attr ?val]])))
 ;@+node:conor.20160608034749.6: ** (register-sub :db-entities (fn [_ [_ 
 
 
@@ -77,15 +92,6 @@
    (reaction (:tree @db))))
 
 
-;@+node:conor.20160608034749.5: ** (register-sub :db-atoms (fn [_ [_ 
-
-
-(register-sub
- :db-atoms
- (fn [_ [_ conn]]
-   (q conn '[:find ?e ?attr ?val
-             :where 
-             [?e ?attr ?val]])))
 ;@+node:conor.20160608034750.3: ** (register-sub :testmap (fn [db]  
 
 

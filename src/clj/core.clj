@@ -94,17 +94,6 @@
       :tx-data
       ffirst))
 ;@+node:conor.20160610142318.11: *3* (defn create-ds-node [db text]  
-  (defn create-ds-node [db text]
-    (let [eid (db/q '[:find ?e]
-                    :in $ ?text
-                    :where
-                    [?e :node/text ?text]
-                  @db
-                  text)])
-    (or (ffirst eid)
-        (dbafter->eid (db/transact! db [{:db/id -1
-                                         :node/text text}])))))
-
 ;@-others
 
 
