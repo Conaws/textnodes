@@ -1,94 +1,86 @@
 
 (ns text-nodes.core
   (:require [com.rpl.specter  :as sp :refer [ALL]]
-                [clojure.spec        :as s]
-                [clojure.string      :as str]
-                [clojure.pprint       :refer [pprint]]
-                [datascript.core    :as db])
-  (:use 
-   [com.rpl.specter.macros 
+            [clojure.spec        :as s]
+            [clojure.string      :as str]
+            [clojure.spec.gen :as gen]
+            [clojure.pprint       :refer [pprint]]
+            [datascript.core    :as db])
+  (:use
+   [com.rpl.specter.macros
          :only [select transform defprotocolpath
                 extend-protocolpath]]))
 
-(defprotocolpath TreeWalker [])
+
+(def ts [[0 :a] [1 :b] [2 :c] [0 :d] [1 :e] [1 :f]])
 
 
+(s/def ::function clojure.test/function?)
 
-(extend-protocolpath TreeWalker
-  Object nil
-  clojure.lang.PersistentVector [s/ALL TreeWalker])
+(s/def ::depthvec
+  (s/cat :depth integer?
+         :text  (s/or
+                  :s string?
+                  :k keyword?)))
 
+(s/def ::depthvecs (s/+ ::depthvec))
 
+(gen/sample (s/gen ::depthvec))
 
-(select [TreeWalker number?] [:a 1 [2 [[[3]]] :e] [4 5 [6 7]]])
-
-
-(select [TreeWalker :a] 
-           
-[:a 1 [2 [[[3 {:a "b"}]]] :e] [4 {:a '({} {:b {:c :d}})} 5 [6 7]]])
-
-
-
-
-(def test-struct [[0 :a] [1 :b] [2 :c] [0 :d] [1 :e] [1 :f]])
-
-
-
-
+(s/fdef depthvec->graph
+        :args ::s/any
+          #_(s/cat :nodefn ::function
+                     :edgefn ::function
+                     :sibling-collector ::function
+                     :nseq  (s/+
+                              ::depthvec))
+        :ret ::s/any)
 
 
-(defn deptharray->graph [nodefn edgefn sibling-collector nseq]
-  (loop [result [] 
+(s/explain ::depthvec ts)
+
+
+(defn depthvec->graph [nodefn edgefn sibling-collector nseq]
+  (loop [result []
          s nseq]
     (let[[pdepth ptitle] (first s)
          [children siblings] (split-with #(< pdepth (first %)) (rest s))
-         answer   (nodefn ptitle)                     
+         answer   (nodefn ptitle)
          answer
          (if (seq children)
-           (edgefn answer (nodify nodefn edgefn children))
+           (edgefn answer (depthvec->graph nodefn edgefn children))
            answer)]
       (if (seq siblings)
         (recur (sibling-collector result answer) siblings)
         (sibling-collector result answer)))))
 
 
-;;  the fns
-;;  nodefn  takes a node's text, returns a nodeid (or the node itself)
-;;  edgefn  takes a nodeid and an index of childid, returns a nodeid (or node object)
-;;  siblingfn  takes  the current siblings of a node, and the node, returns a vector of all x at that level
 
-;; challenge, create the associations with order to them...
+(s/instrument #'depthvec->graph)
 
 
-
-
-
-
-
-
-
-(defn create-node 
+(defn create-node
   [title]
-   {:node title})
+  {:node title})
 
-  
+
 (defn connect-node [node children]
    (assoc node :children children :expanded true))
 
 
 
 
-(deptharray->graph identity vector conj test-struct)
+(depthvec->graph identity vector conj test-struct)
 
 
-(deptharray->graph identity vector a test-struct)
+(depthvec->graph identity vector conj test-struct)
 
 
-(def deptharray->nestedmap 
-  (partial deptharray->graph create-node connect-node conj))
+(def depthvec->tree
+  (partial depthvec->graph create-node connect-node conj))
 
 
-(pprint (deptharray->nestedmap test-struct))
+(pprint (depthvec->tree test-struct))
 
 
 (defn dbafter->eid [rv]
@@ -104,7 +96,7 @@
   (let [eid (db/q '[:find ?e
                     :in $ ?text
                     :where
-                    [?e :node/text ?text]] 
+                    [?e :node/text ?text]]
                   @db
                   text)]
     (or (ffirst eid)

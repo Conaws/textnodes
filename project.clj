@@ -1,15 +1,16 @@
 (defproject text-nodes "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure            "1.9.0-alpha3"]
-                 [datascript                          "0.13.3" ]
-                 [posh                                "0.3.5"  ]
+                 [datascript                           "0.13.3"]
+                 [posh                                  "0.3.5"]
                  [org.clojure/clojurescript           "1.9.14"
                                           :scope     "provided"]
-                 [re-com                              "0.8.3"  ]
+                 [re-com                                "0.8.3"]
                  [reagent "0.5.1"]
-                 [reagent-utils                       "0.1.7"  ]
-                 [com.rpl/specter                     "0.11.0" ]
-                 [keybind            "2.0.0"]
+                 [reagent-utils                         "0.1.7"]
+                 [com.rpl/specter                      "0.11.0"]
+                 [keybind                               "2.0.0"]
                  [re-frame "0.7.0"]
+                 [proto-repl "0.1.2"]
                  [garden "1.3.2"]]
 
   :min-lein-version "2.5.3"
@@ -22,7 +23,7 @@
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "resources/public/css"]
 
-  :figwheel {:css-dirs     ["resources/public/css"] }
+  :figwheel {:css-dirs     ["resources/public/css"]}
 
   :garden {:builds [{:id           "screen"
                      :source-paths ["src/clj"]
@@ -46,12 +47,11 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :optimizations   :advanced
                     :closure-defines {goog.DEBUG false}
-                    :pretty-print    false}}
+                    :pretty-print    false}}]}
 
-    ]}
+
 
   :profiles
   {:dev
-   {:plugins [[lein-figwheel "0.5.3"]
-              ]
-    }})
+   [{:dependencies [[org.clojure/test.check "0.9.0"]]}
+    {:plugins [[lein-figwheel "0.5.3"]]}]})

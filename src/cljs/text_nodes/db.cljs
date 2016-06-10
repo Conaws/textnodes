@@ -17,23 +17,23 @@
             [re-com.core   :as re-com :refer [h-box v-box box gap line scroller border h-split v-split title flex-child-style p]]
             [cljs.pprint     :refer [pprint]]
             [keybind.core :as key]
-            [cljs.reader                ]
+            [cljs.reader]
             [com.rpl.specter  :refer [ALL] :as s]
-            [clojure.string  :as str    ])
+            [clojure.string  :as str])
   (:require-macros
            [com.rpl.specter.macros  :refer [select transform defprotocolpath]]
            [reagent.ratom :refer [reaction]]))
-           
-           
-;@+node:conor.20160608034748.2: ** (def schema {;:canvas/layouts   
+
+
+;@+node:conor.20160608034748.2: ** (def schema {;:canvas/layouts
 
 (def schema {
              :node/text  {:db/unique :db.unique/identity}
              :node/out-edge         {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}
-             :edge/to               {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}
+             :edge/to               {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}})
 
-             })
-;@+node:conor.20160608034749.4: ** (defonce conn  (doto (db/create-conn 
+
+;@+node:conor.20160608034749.4: ** (defonce conn  (doto (db/create-conn
 (defonce conn
   (doto (db/create-conn schema)
         posh!))

@@ -5,10 +5,10 @@
 ;@+node:conor.20160610082951.1: ** Spec namespace
 (ns text-nodes.specs
   (:require [com.rpl.specter  :as sp :refer [ALL]]
-                [cljs.spec        :as s]
-                [clojure.string      :as str]
-                [cljs.pprint       :refer [pprint]]
-                [datascript.core    :as db]))
+            [cljs.spec        :as s]
+            [clojure.string      :as str]
+            [cljs.pprint       :refer [pprint]]
+            [datascript.core    :as db]))
 ;@+node:conor.20160606113823.1: ** Edgeparse Specs
 
 (def trigger #{"@person" "@role"})
@@ -19,12 +19,12 @@
 (s/def ::not-trigger (s/and string? #(not (trigger %))))
 
 
-(s/def ::edgeparse (s/cat 
+(s/def ::edgeparse (s/cat
                     :type  ::trigger
                     :val   (s/* ::not-trigger)))
 
 
-(s/def ::even-parse  (s/* 
+(s/def ::even-parse  (s/*
                       (s/or :edge  ::edgeparse
                             :node (s/spec (s/+ ::not-trigger)))))
 
