@@ -44,7 +44,7 @@
 
 
 
-;@+node:conor.20160610152638.3: *3* (s/instrument #'depthvec->graph) 
+;@+node:conor.20160610152638.3: *3* (s/instrument #'depthvec->graph)
 
 
 ;@+node:conor.20160610152638.4: *3* depthvec->graph
@@ -67,18 +67,18 @@
 
 ;@+node:conor.20160610152638.5: *3* depthvec->tree
 ;@+node:conor.20160610152638.6: *4* helpers
-;@+node:conor.20160610152638.7: *5* (defn create-node  [title]  
+;@+node:conor.20160610152638.7: *5* (defn create-node  [title]
 (defn create-node-map
   [title]
   {:node title})
-;@+node:conor.20160610152638.8: *5* (defn connect-node [node children]  
+;@+node:conor.20160610152638.8: *5* (defn connect-node [node children]
 (defn connect-node [node children]
    (assoc node :children children :expanded true))
 
 
 
 
-;@+node:conor.20160610152638.9: *4* (def depthvec->tree  (partial depthvec->graph 
+;@+node:conor.20160610152638.9: *4* (def depthvec->tree  (partial depthvec->graph
 (def depthvec->tree
   (partial transform-depthvec create-node-map connect-node conj))
 
@@ -101,19 +101,19 @@
 
 (defn get-leaves [tree]
   (select [ALL TOPSORT :node] tree))
-;@+node:conor.20160610164021.4: *3* (defn get-edges [tree]  (select 
+;@+node:conor.20160610164021.4: *3* (defn get-edges [tree]  (select
 (defn get-edges [tree]
   (select [ALL TOPSORT (sp/collect-one :node) CHILDREN :node] tree))
 
 
-;@+node:conor.20160610164021.6: *3* (defn dbafter->eid [rv]  (-> 
+;@+node:conor.20160610164021.6: *3* (defn dbafter->eid [rv]  (->
 
 
 (defn dbafter->eid [rv]
   (-> rv
     :tx-data
     ffirst))
-;@+node:conor.20160610164021.7: *3* (defn create-ds-node [db text]  
+;@+node:conor.20160610164021.7: *3* (defn create-ds-node [db text]
 
 (defn create-ds-node [db text]
   (let [eid (d/q '[:find ?e
@@ -125,7 +125,7 @@
       (or (ffirst eid)
         (dbafter->eid (d/transact! db [{:db/id -1
                                         :coll/text text}])))))
-;@+node:conor.20160610164021.8: *3* (defn tree->ds1 [tree]  (transform 
+;@+node:conor.20160610164021.8: *3* (defn tree->ds1 [tree]  (transform
 
 
 (defn tree->ds1 [tree]
@@ -147,16 +147,49 @@
     pprint)
 
 
-;@+node:conor.20160610164021.10: *3* (d/transact! conn [{:db/id [:node/text "Hello 
+(def testmap (tree->ds1 (:tree @app-db)))
+
+(d/transact! conn [{:db/id 1
+                    :edge/to #{2 3}}])
+
+
+
+
+(defn create-coll [collid children]
+  {:db/id collid
+   :edge/to children})
+
+
+
+
+(let [e (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] testmap)
+      b (->> (for [[k v] e]
+              {k #{v}})
+              (apply merge-with clojure.set/union))
+      c (select [ALL] b)]
+       (d/transact!  conn (vec (for [[x y] c]
+                                 (create-coll x y)))))
+
+
+
+
+
+
+
+
+
+
+
+;@+node:conor.20160610164021.10: *3* (d/transact! conn [{:db/id [:node/text "Hello
 
 
 (d/transact! conn [{:db/id [:node/text "Hello Graphs"]
                      :node/test "helllo"}])
-;@+node:conor.20160610164021.11: *3* (d/transact! conn [{:db/id -1  
+;@+node:conor.20160610164021.11: *3* (d/transact! conn [{:db/id -1
 (d/transact! conn [{:db/id -1
                     :node/text "Node B"
                     :edge/_to [:node/text "Hello Graphs"]}])
-;@+node:conor.20160610164021.12: *3* (d/q '[:find ?e   
+;@+node:conor.20160610164021.12: *3* (d/q '[:find ?e
 (d/q '[:find ?e
        :in $
        :where [?e :node/text "Hello Graphs"]]
@@ -167,7 +200,7 @@
 (->
  (d/pull-many @conn '[*] (select [ALL ALL] (d/q '[:find ?e :in $ :where [?e]] @conn)))
  pprint)
-;@+node:conor.20160610164021.13: *3* (d/q '[:find [(pull ?e [*]) 
+;@+node:conor.20160610164021.13: *3* (d/q '[:find [(pull ?e [*])
 
 (d/q '[:find [(pull ?e [*]) ?e]
              :in $
