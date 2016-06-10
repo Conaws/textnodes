@@ -1,42 +1,31 @@
+;@+leo-ver=5-thin
+;@+node:conor.20160605011953.3: * @file handlers.cljs
+;@@language clojure
+;@+others
+;@+node:conor.20160610073301.1: ** @language clojure
+;@@language clojure
 (ns text-nodes.handlers
-    (:require [re-frame.core :as re-frame]
-              [text-nodes.db :as db]))
+  (:require [reagent.core    :as rx]
+            [text-nodes.db :refer [conn]]
+            [text-nodes.specs :as mys]
+            [cljs.spec        :as s]
+            [posh.core       :as posh  :refer [pull posh! q transact!]]
+            [re-frame.core   :refer [register-sub subscribe dispatch register-handler]]
+            [datascript.core :as db]
+            [re-com.core   :as re-com :refer [h-box v-box box gap line scroller border h-split v-split title flex-child-style p]]
+            [cljs.pprint     :refer [pprint]]
+            [keybind.core :as key]
+            [cljs.reader                ]
+            [com.rpl.specter  :refer [ALL] :as sp]
+            [clojure.string  :as str    ])
+  (:require-macros
+           [com.rpl.specter.macros  :refer [select transform defprotocolpath]]
+           [reagent.ratom :refer [reaction]]))
+;@+node:conor.20160610073243.1: ** Parse-Text
 
-(re-frame/register-handler
- :initialize-db
- (fn  [_ _]
-   db/default-db))
+    
+(s/describe ::mys/trigger)
+   
+;@-others
 
-(defn nodify3 [rows]
-  ;; find the entities
-  (let [entities (into {}
-                       (for [[idx _ text] rows]
-                         [idx text]))
-        ;; find the relationships
-        relations (into {}
-                        (for [[idx indent] rows]
-                          [idx
-                           (map (comp - first)
-                                (take-while
-                                  #(= (inc indent) (second %))
-                                  (drop (inc idx) rows)))]))
-        total (+ (count relations) (count entities))]
-    (apply
-      concat
-      (for [[idx text] entities
-            :let [children (relations idx)]]
-        (cons {:node/text text
-               :node/children (map - children (repeat total))
-               :db/id (- idx)}
-              (map-indexed
-                (fn [idx2 cidx]
-                  {:db/id (- cidx total)
-                   :edge/order idx2
-                   :edge/to cidx})
-                children))))))
-
-(defn parsed2 [text]
-  (map-indexed
-    (fn [idx entity]
-      [idx (count-tabs entity) (str/trim entity)])
-    (str/split text #"\n")))
+;@-leo

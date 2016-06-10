@@ -18,25 +18,40 @@
 <v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
 <v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
 <v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
-<v t="conor.20160606161843.1" a="E"
+<v t="conor.20160606161843.1"
 expanded="conor.20160608031859.1,"><vh>@file specter-test.clj</vh></v>
-<v t="conor.20160606052632.1"><vh>@file spec-test.clj</vh></v>
+<v t="conor.20160606052632.1" a="E"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605012522.1"><vh>@auto core.clj</vh></v>
 <v t="conor.20160605011026.1"><vh>css.clj</vh></v>
 </v>
 </v>
-<v t="conor.20160605011023.1"><vh>/cljs/</vh>
+<v t="conor.20160605011023.1" a="E"><vh>/cljs/</vh>
 <v t="conor.20160605011952.1" a="E"><vh>/text_nodes/</vh>
+<v t="conor.20160610082638.1" a="E"><vh>@file specs.cljs</vh></v>
 <v t="conor.20160605011953.6"><vh>config.cljs</vh></v>
 <v t="conor.20160605011953.5"><vh>@auto core.cljs</vh></v>
-<v t="conor.20160605011953.4"><vh>@auto db.cljs</vh></v>
-<v t="conor.20160605011953.3"><vh>@auto handlers.cljs</vh></v>
-<v t="conor.20160605011953.2"><vh>@auto subs.cljs</vh></v>
+<v t="conor.20160605011953.4" a="E"><vh>@file db.cljs</vh></v>
+<v t="conor.20160605011953.3" a="E"><vh>@file handlers.cljs</vh></v>
+<v t="conor.20160605011953.2" a="E"><vh>@file subs.cljs</vh></v>
 <v t="conor.20160605011953.1" a="E"
 marks="conor.20160608034750.11,"><vh>@file views.cljs</vh></v>
 </v>
 </v>
 </v>
+</v>
+<v t="conor.20160608034752.3"><vh>(comment  </vh>
+<v t="conor.20160608034752.4"><vh>(register-handler :initialize-db (fn [_ [_</vh></v>
+<v t="conor.20160608034752.5"><vh> </vh></v>
+<v t="conor.20160608034752.6"><vh>(register-sub :layouts (fn [_ [_ </vh></v>
+<v t="conor.20160608034752.7"><vh>(def lillayouts  (reaction @(subscribe </vh></v>
+<v t="conor.20160608034752.8"><vh>(declare render-layout)</vh></v>
+<v t="conor.20160608034752.9"><vh>(register-sub :layout (fn [db [_ </vh></v>
+<v t="conor.20160608034752.10"><vh>(register-sub :node (fn [db [_ </vh></v>
+<v t="conor.20160608034753.1"><vh>(defn render-layout [eid conn]  </vh></v>
+<v t="conor.20160608034753.2"><vh>(defn svghickory []  (let </vh></v>
+<v t="conor.20160608034753.3"><vh>(defn e-by-av [db a v] </vh></v>
+<v t="conor.20160608034753.4"><vh>@conn</vh></v>
+<v t="conor.20160608034753.5"><vh>@(q conn '[:find ?e  </vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -49,5 +64,149 @@ marks="conor.20160608034750.11,"><vh>@file views.cljs</vh></v>
 <t tx="conor.20160605011952.1">@path text_nodes</t>
 <t tx="conor.20160605011953.6"></t>
 <t tx="conor.20160606053544.1"></t>
+<t tx="conor.20160608034752.10">(register-sub
+ :node
+ (fn [db [_ eid conn]]
+   (pull conn '[*] eid)))
+</t>
+<t tx="conor.20160608034752.3">
+
+(comment 
+</t>
+<t tx="conor.20160608034752.4">
+
+(register-handler 
+ :initialize-db
+ (fn [_ [_ conn]]  
+       (let [node1  {:db/id -1
+                     :node/text "Hello Graphs"}
+             layout {:db/id -2
+                     :layout/x 50
+                     :layout/y 50
+                     :layout/height 500
+                     :layout/width 500
+                     :layout/nodeid (:db/id node1)}
+             canvas {:db/id -3
+                     :db/ident :canvas
+                     :canvas/layouts #{(:db/id layout)}}]
+         (do (db/transact! conn
+                          [node1 layout canvas])
+             @conn))))
+</t>
+<t tx="conor.20160608034752.5"></t>
+<t tx="conor.20160608034752.6">
+
+(register-sub
+ :layouts
+ (fn [_ [_ conn]]
+  (let [layouts (q conn '[:find ?layouts
+                         :where
+                         [_ :canvas/layouts ?layouts]])]
+    (reaction 
+     (for [[eid] @layouts]
+       eid)))))
+    
+</t>
+<t tx="conor.20160608034752.7">
+(def lillayouts
+  (reaction @(subscribe [:layouts])))
+</t>
+<t tx="conor.20160608034752.8">(declare render-layout)
+
+(defn canvas [conn]
+  (let [layouts (subscribe [:layouts conn])]
+    (fn [conn]
+      (into
+       [:svg
+        {:height 1000
+         :width 1000
+       :style {:border "1px solid black"}}]
+       (for
+           [l @layouts]
+        [render-layout l conn])))))
+</t>
+<t tx="conor.20160608034752.9">
+(register-sub
+ :layout
+ (fn [db [_ eid conn]]
+      (pull conn '[:layout/x :layout/y :layout/height :layout/width :layout/nodeid] eid)))
+</t>
+<t tx="conor.20160608034753.1">(defn render-layout [eid conn]
+  (let [{x :layout/x id :layout/nodeid y :layout/y h :layout/height w :layout/width} @(subscribe [:layout eid conn])
+        node (subscribe [:node (:db/id id) conn conn])]
+    (fn []
+      [:g
+       [:rect
+        {:x x
+         :y y
+         :height h
+         :width w
+         :fill :blue}]
+       [:rect
+        {:x x
+         :y y
+         :stroke "black"
+         :stroke-width 1
+         :height h 
+         :width (/ w 2)
+         :fill :white}]
+       [:rect
+        {:x (+ x (/ w 2 3))
+         :y (+ y (/ w 3))
+         :stroke "black"
+         :stroke-width 1
+         :height (/ w 3) 
+         :width (/ w 2 3)
+         :fill :grey}]
+       [:rect
+        {:x x
+         :y y
+         :stroke "black"
+         :stroke-width 1
+         :height (/ h 6)
+         :width w
+         :fill :white}]
+       [:foreignObject
+        {:x x
+         :y y
+         :width w
+         :height (/ h 6)}
+        [:div.hbox.hcenter
+         {:style {:width w}}
+         [:h1 (:node/text @node)]
+         #_[:div (pr-str @node) ]]]])))
+     
+ 
+
+(defn hickory-printer [text]
+   [:div 
+   (pr-str (-&gt; (as-hiccup (hickory.core/parse @text))
+                   first
+                   (get 3)
+                   rest
+                   rest))])
+</t>
+<t tx="conor.20160608034753.2">(defn svghickory []
+  (let [text (rx/atom "")]
+    (fn []
+      [:div
+      [hickory-printer text]
+       [:textarea
+        {:style {:border "5px solid red"}
+         :on-change #(reset! text (e-value %))}]])))
+</t>
+<t tx="conor.20160608034753.3">
+(defn e-by-av [db a v]
+  (-&gt; (db/datoms db :avet a v) first :e))
+</t>
+<t tx="conor.20160608034753.4">@conn
+
+(e-by-av @conn :layout/y 50)
+</t>
+<t tx="conor.20160608034753.5">@(q conn '[:find ?e
+          :where
+          [?e :layout/y 50]])
+)
+</t>
 </tnodes>
 </leo_file>

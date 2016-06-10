@@ -19,27 +19,6 @@
 ;@+node:conor.20160606073225.1: ** splitting the string with types
 ;@+others
 ;@-others
-;@+node:conor.20160606113823.1: ** splitting text using conforms
-
-(def trigger #{"@person" "@role"})
-
-(s/def ::trigger (s/or :deftrig trigger
-                       :trig  #(str/starts-with? % "@")))
-
-(s/def ::not-trigger (s/and string? #(not (trigger %))))
-
-
-(s/def ::edgeparse (s/cat 
-                    :type  ::trigger
-                    :val   (s/* ::not-trigger)))
-
-
-(s/def ::even-parse  (s/* 
-                      (s/or :edge  ::edgeparse
-                            :node (s/spec (s/+ ::not-trigger)))))
-
-
-
 ;@+node:conor.20160606123700.1: ** vals-between
 
 (defn vals-between [resetfn s]

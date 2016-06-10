@@ -2,16 +2,13 @@
 ;@+node:conor.20160605011953.1: * @file views.cljs
 ;@@language clojure
 ;@+others
-;@+node:conor.20160608034748.1: ** @language clojure
+;@+node:conor.20160610073335.1: ** @language clojure
 ;@@language clojure
 (ns text-nodes.views
   (:require [reagent.core    :as rx]
             [posh.core       :as posh  :refer [pull posh! q transact!]]
+            [text-nodes.db :refer [conn]]
             [re-frame.core   :refer [register-sub subscribe dispatch register-handler]]
-          ;  [re-frame.db :as rdb :refer [app-db]]
-        ;    [history.reframe-db :as ls :refer [!>ls <!ls db->seq]]
-       ;     [history.util  :refer [e-value]]
-       ;     [hickory.core :refer [as-hiccup as-hickory]]
             [datascript.core :as db]
             [re-com.core   :as re-com :refer [h-box v-box box gap line scroller border h-split v-split title flex-child-style p]]
             [cljs.pprint     :refer [pprint]]
@@ -24,15 +21,12 @@
            [reagent.ratom :refer [reaction]]))
 ;@+node:conor.20160608034748.2: ** (def schema {;:canvas/layouts   
 
-(def schema {;:canvas/layouts        {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}
-             ;:layout/nodeid         {:db/valueType :db.type/ref}
+(def schema {
              :node/out-edge         {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}
              :edge/to               {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}
-          ;   :node/nodeId           {:db/valueType :db.type/long}
-          ;   :node/content          {:db/valueType :db.type/uri}
-           ;  :node/title            {:db/valueType :db.type/string}
+
              })
-;@+node:conor.20160608034749.1: **  
+;@+node:conor.20160608034749.1: ** 
 ;@+node:conor.20160608034749.2: ** (defn nodify [nseq]  (loop 
 (defn nodify [nseq]
   (loop [result [] 
@@ -50,11 +44,7 @@
       (if (< 0 (count siblings))
         (recur (conj result answer) siblings)
         (conj result answer)))))
-;@+node:conor.20160608034749.3: **  
-;@+node:conor.20160608034749.4: ** (defonce conn  (doto (db/create-conn 
-(defonce conn
-  (doto (db/create-conn schema)
-        posh!))
+;@+node:conor.20160608034749.3: ** 
 ;@+node:conor.20160608034749.5: ** (register-sub :db-atoms (fn [_ [_ 
 
 
@@ -101,9 +91,9 @@
       [:div
        (for [[e] @es]
          [pr-entity conn e])])))
-;@+node:conor.20160608034749.11: **  
-;@+node:conor.20160608034749.12: **  
-;@+node:conor.20160608034749.13: ** (def test-struct  [[0  
+;@+node:conor.20160608034749.11: ** 
+;@+node:conor.20160608034749.12: ** 
+;@+node:conor.20160608034749.13: ** (def test-struct  [[0
 
 
 (def test-struct  [[0  "a"]
@@ -117,24 +107,24 @@
 (select ALL test-struct)
 
 ;this gives me the first layer
-;@+node:conor.20160608034749.15: ** (defn get-children [treesarray]   
+;@+node:conor.20160608034749.15: ** (defn get-children [treesarray]
 (defn get-children [treesarray]
   
   (select [ALL (s/collect-one :node) :children ALL :node]
           treesarray))
 
 (get-children (nodify test-struct))
-;@+node:conor.20160608034749.16: ** (pprint (select [ALL]  (nodify 
+;@+node:conor.20160608034749.16: ** (pprint (select [ALL]  (nodify
 (pprint (select [ALL]  (nodify test-struct)))
 
 ;;[["a" "b"] ["a" "d"] ["1a" "1b"] ["1a" "1c"]]
 ;;[["a" "b"] ["a" "d"] ["1a" "1b"] ["1a" "1c"]]
-;@+node:conor.20160608034750.1: ** (defn seperate-graph-map [graph-map-array]  (map 
+;@+node:conor.20160608034750.1: ** (defn seperate-graph-map [graph-map-array]  (map
 
 
 (defn seperate-graph-map [graph-map-array] 
   (map (partial tree-seq :node :children) graph-map-array))
-;@+node:conor.20160608034750.2: ** (register-handler :init (fn [db [_ 
+;@+node:conor.20160608034750.2: ** (register-handler :init (fn [db [_
 
 (register-handler 
  :init
@@ -159,7 +149,7 @@
  :testmap
  (fn [db]
    (reaction (:testmap @db))))
-;@+node:conor.20160608034750.4: ** (register-handler :change-text (fn [db [_ 
+;@+node:conor.20160608034750.4: ** (register-handler :change-text (fn [db [_
 (register-handler
  :change-text
  (fn [db [_ text]]
@@ -194,14 +184,14 @@
  :parsed-text
  (fn [db]
    (reaction (nodify (parsed (:text @db))))))
-;@+node:conor.20160608034750.8: ** (register-handler :clear-text (fn [db [_ 
+;@+node:conor.20160608034750.8: ** (register-handler :clear-text (fn [db [_
 (register-handler
  :clear-text
  (fn [db [_ e end]]
    (let [text (:text db)]
      (js/console.log (pr-str e))
      (assoc db :text (str (subs text 0 e) "\t"  (subs text end))))))
-;@+node:conor.20160608034750.9: ** (register-handler :fix-tree (fn [db]  
+;@+node:conor.20160608034750.9: ** (register-handler :fix-tree (fn [db]
 (register-handler
  :fix-tree
  (fn [db]
@@ -285,7 +275,7 @@
                                :none)}
              :children [
                        (for [child (:children t)]
-;@+node:conor.20160608034751.1: **      
+;@+node:conor.20160608034751.1: ** 
                          ^{:key child}
 
                                   [tree child])]]]]])))
@@ -304,7 +294,7 @@
        #_[:div (pr-str @tree-array)]
          (for [t @tree-array]
            ^{:key t} [tree t])]])))
-;@+node:conor.20160608034751.3: **  
+;@+node:conor.20160608034751.3: ** 
 ;@+node:conor.20160608034751.4: ** (defn demo []  [v-box 
 (defn demo []
   [v-box
@@ -340,7 +330,7 @@
   (let [tm (subscribe [:testmap])]
   (fn []
   [:div
-   #_[:button {:on-click #(dispatch [:init conn])} "start"]
+ [:button {:on-click #(dispatch [:init conn])} "start"]
 ;   [canvas conn]
    [demo]
    [entity-view conn]
@@ -356,7 +346,7 @@
 
 
 (comment 
-;@+node:conor.20160608034752.4: *3* (register-handler :initialize-db (fn [_ [_ 
+;@+node:conor.20160608034752.4: *3* (register-handler :initialize-db (fn [_ [_
 
 
 (register-handler 
