@@ -22,6 +22,7 @@
 ;@+node:conor.20160608034748.2: ** (def schema {;:canvas/layouts   
 
 (def schema {
+             :node/text  {:db/unique :db.unique/identity}
              :node/out-edge         {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}
              :edge/to               {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}
 

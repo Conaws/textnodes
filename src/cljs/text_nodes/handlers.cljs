@@ -5,26 +5,53 @@
 ;@+node:conor.20160610073301.1: ** @language clojure
 ;@@language clojure
 (ns text-nodes.handlers
-  (:require [reagent.core    :as rx]
+  (:require [reagent.core    :as r]
             [text-nodes.db :refer [conn]]
             [text-nodes.specs :as mys]
             [cljs.spec        :as s]
             [posh.core       :as posh  :refer [pull posh! q transact!]]
-            [re-frame.core   :refer [register-sub subscribe dispatch register-handler]]
-            [datascript.core :as db]
-            [re-com.core   :as re-com :refer [h-box v-box box gap line scroller border h-split v-split title flex-child-style p]]
+            [re-frame.core   :refer [register-handler]]
+            [datascript.core :as d]
             [cljs.pprint     :refer [pprint]]
-            [keybind.core :as key]
             [cljs.reader                ]
             [com.rpl.specter  :refer [ALL] :as sp]
-            [clojure.string  :as str    ])
+            [clojure.string  :as str])
   (:require-macros
-           [com.rpl.specter.macros  :refer [select transform defprotocolpath]]
+           [com.rpl.specter.macros  :refer [select transform declarepath providepath]]
            [reagent.ratom :refer [reaction]]))
 ;@+node:conor.20160610073243.1: ** Parse-Text
 
     
 (s/describe ::mys/trigger)
+
+@conn
+
+(d/transact! conn [{:db/id [:node/text "Hello Graphs"]
+                     :node/test "helllo"}])
+
+
+(d/transact! conn [{:db/id -1
+                    :node/text "Node B"
+                    :edge/_to [:node/text "Hello Graphs"]}])
+
+
+(d/q '[:find ?e
+       :in $
+       :where [?e :node/text "Hello Graphs"]]
+     @conn)
+
+(d/pull @conn '[*] 3)
+
+(->
+(d/pull-many @conn '[*] (select [ALL ALL] (d/q '[:find ?e :in $ :where [?e]] @conn)))
+pprint)
+
+
+;; works
+(d/q '[:find [(pull ?e [*]) ?e]
+              :in $
+              :where [?e]]
+       @conn)
    
 ;@-others
 
