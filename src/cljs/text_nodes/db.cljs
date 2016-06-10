@@ -25,7 +25,7 @@
            [reagent.ratom :refer [reaction]]))
 
 
-;@+node:conor.20160608034748.2: ** (def schema {;:canvas/layouts
+;@+node:conor.20160608034748.2: ** (def schema {;:canvas/layouts   
 
 (def schema {
              :node/text  {:db/unique :db.unique/identity}
@@ -33,7 +33,7 @@
              :edge/to               {:db/valueType :db.type/ref :db/cardinality :db.cardinality/many}})
 
 
-;@+node:conor.20160608034749.4: ** (defonce conn  (doto (db/create-conn
+;@+node:conor.20160608034749.4: ** (defonce conn  (doto (db/create-conn 
 (defonce conn
   (doto (db/create-conn schema)
         posh!))

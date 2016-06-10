@@ -13,7 +13,7 @@
             [re-frame.core   :refer [register-handler]]
             [datascript.core :as d]
             [cljs.pprint     :refer [pprint]]
-            [cljs.reader                ]
+            [cljs.reader]
             [com.rpl.specter  :refer [ALL] :as sp]
             [clojure.string  :as str])
   (:require-macros
@@ -21,10 +21,9 @@
            [reagent.ratom :refer [reaction]]))
 ;@+node:conor.20160610073243.1: ** Parse-Text
 
-    
+
 (s/describe ::mys/trigger)
 
-@conn
 
 (d/transact! conn [{:db/id [:node/text "Hello Graphs"]
                      :node/test "helllo"}])
@@ -43,16 +42,16 @@
 (d/pull @conn '[*] 3)
 
 (->
-(d/pull-many @conn '[*] (select [ALL ALL] (d/q '[:find ?e :in $ :where [?e]] @conn)))
-pprint)
+ (d/pull-many @conn '[*] (select [ALL ALL] (d/q '[:find ?e :in $ :where [?e]] @conn)))
+ pprint)
 
 
-;; works
+
 (d/q '[:find [(pull ?e [*]) ?e]
-              :in $
+             :in $
               :where [?e]]
-       @conn)
-   
+      @conn)
+
 ;@-others
 
 ;@-leo

@@ -4,12 +4,12 @@
 ;@+node:conor.20160605013418.1: ** namespace
 (ns text-nodes.core
   (:require [com.rpl.specter  :as sp :refer [ALL]]
-                [clojure.spec        :as s]
-                [clojure.string      :as str]
-                [clojure.pprint       :refer [pprint]]
-                [datascript.core    :as db])
-  (:use 
-   [com.rpl.specter.macros 
+            [clojure.spec        :as s]
+            [clojure.string      :as str]
+            [clojure.pprint       :refer [pprint]]
+            [datascript.core    :as db])
+  (:use
+   [com.rpl.specter.macros
          :only [select transform defprotocolpath
                 extend-protocolpath]]))
 ;@+node:conor.20160606062941.1: ** sampletext
@@ -18,6 +18,27 @@
 
 ;@+node:conor.20160606073225.1: ** splitting the string with types
 ;@+others
+;@+node:conor.20160606113823.1: *3* Edgeparse Specs
+
+(def trigger #{"@person" "@role"})
+
+(s/def ::trigger (s/or :deftrig trigger
+                       :trig  #(str/starts-with? % "@")))
+
+(s/def ::not-trigger (s/and string? #(not (trigger %))))
+
+
+(s/def ::edgeparse (s/cat
+                    :type  ::trigger
+                    :val   (s/* ::not-trigger)))
+
+
+(s/def ::even-parse  (s/*
+                      (s/or :edge  ::edgeparse
+                            :node (s/spec (s/+ ::not-trigger)))))
+
+
+
 ;@-others
 ;@+node:conor.20160606123700.1: ** vals-between
 
@@ -37,7 +58,7 @@
 (defn count-tabs
   [string]
   (count (take-while #{\tab} string)))
-  
+
 ;@+node:conor.20160606073225.3: ** (defn parsed [text]  (->> 
 
 
