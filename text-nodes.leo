@@ -39,7 +39,7 @@ expanded="conor.20160606073225.1,"><vh>@file spec-test.clj</vh></v>
 <v t="conor.20160605011953.5"><vh>@auto core.cljs</vh></v>
 <v t="conor.20160605011953.4"><vh>@file db.cljs</vh></v>
 <v t="conor.20160605011953.3" a="E"
-expanded="conor.20160610152638.1,conor.20160610152638.6,"><vh>@file handlers.cljs</vh></v>
+expanded="conor.20160610152638.1,conor.20160610152638.5,conor.20160610152638.6,conor.20160610073243.1,"><vh>@file handlers.cljs</vh></v>
 <v t="conor.20160605011953.2" a="E"><vh>@file subs.cljs</vh></v>
 </v>
 </v>
@@ -73,6 +73,8 @@ expanded="conor.20160610152638.1,conor.20160610152638.6,"><vh>@file handlers.clj
 <v t="conor.20160610164021.5"><vh>(get-edges (:tree @app-db)) </vh></v>
 </v>
 </v>
+<v t="conor.20160610183452.1"><vh>favorites</vh></v>
+<v t="conor.20160610183437.1"><vh>(defn tree-&gt;ds1 [tree]  (transform </vh></v>
 </v>
 <v t="conor.20160610164540.1" a="E"><vh>Active</vh>
 <v t="conor.20160610073243.1" a="E"><vh>Parse-Text</vh>
@@ -601,6 +603,44 @@ Collected: Fri Jun 10 11:25:20 2016
     pprint)
 
 
+(def testmap (tree-&gt;ds1 (:tree @app-db)))
+
+(d/transact! conn [{:db/id 1
+                    :edge/to #{2 3}}])
+
+
+
+
+(defn create-coll [collid children]
+  {:db/id collid
+   :edge/to children})
+
+
+
+(defn merge-vectors [e]
+  (-&gt;&gt; (for [[k v] e]
+              {k #{v}})
+              (apply merge-with clojure.set/union)))
+
+
+
+(defn create-edges [treemap]
+  (let [e (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] treemap)
+        c (select [ALL] (merge-vectors e))]
+    (d/transact!  conn (vec (for [[x y] c]
+                              (create-coll x y))))))
+
+
+
+
+
+(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] testmap))
+
+
+
+
+
+
 </t>
 <t tx="conor.20160610164428.1"></t>
 <t tx="conor.20160610164523.1"></t>
@@ -623,5 +663,66 @@ Collected: Fri Jun 10 11:25:20 2016
                            [node1 layout])))
        (assoc db :testmap (nodify test-struct)))))
 </t>
+<t tx="conor.20160610183437.1">
+
+(defn tree-&gt;ds1 [tree]
+  (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
+           (comp vector (partial create-ds-node conn))
+           tree))
+
+
+
+
+
+(defn get-edge-ids [tree]
+  (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] tree))
+
+
+(-&gt; (:tree @app-db)
+    tree-&gt;ds1
+    get-edge-ids
+    pprint)
+
+
+(def testmap (tree-&gt;ds1 (:tree @app-db)))
+
+(d/transact! conn [{:db/id 1
+                    :edge/to #{2 3}}])
+
+
+
+
+(defn create-coll [collid children]
+  {:db/id collid
+   :edge/to children})
+
+
+
+(defn merge-vectors [e]
+  (-&gt;&gt; (for [[k v] e]
+              {k #{v}})
+              (apply merge-with clojure.set/union)))
+
+
+
+(defn create-edges [treemap]
+  (let [e (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] treemap)
+        c (select [ALL] (merge-vectors e))]
+    (d/transact!  conn (vec (for [[x y] c]
+                              (create-coll x y))))))
+
+
+
+
+
+(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] testmap))
+
+
+
+
+
+
+</t>
+<t tx="conor.20160610183452.1"></t>
 </tnodes>
 </leo_file>

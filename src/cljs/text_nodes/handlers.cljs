@@ -134,6 +134,86 @@
            tree))
 
 
+#_(s/fdef create-colls
+        :args (s/coll-of string? [])
+        :ret  (s/coll-of integer? []))
+
+
+
+#_(setval [(sp/subselect ALL map?) (sp/subset :new-val)]
+        1 [{:a 1}[:not :me 1]{:b 2}])
+
+
+(->>  (transform [(sp/subselect ALL TOPSORT :index) (sp/view count)]
+                 range
+                 (:tree @app-db))
+      (select [ALL TOPSORT :index])
+      pprint)
+
+(defn atom? [a] (instance? cljs.core/Atom a))
+
+
+
+
+
+(defn plainent [conn ids]
+  (let [ents (vec (for [[i t] ids] {:db/id i
+                                     :coll/text  t}))]
+    (->> (d/transact! conn ents)
+         :tempids)))
+
+
+(s/fdef plainent
+        :args (s/cat :db atom? 
+                     :entvecs (s/coll-of  (s/spec
+                                           (s/cat
+                                            :id integer?
+                                            :text string?))
+                                          [])))
+
+
+
+(s/instrument #'plainent)
+
+
+(defn tree->ds [conn tree]
+  (let [;tree (:tree @app-db)
+        indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :index)]
+                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
+                                       tree))
+        idmap (->> (select [ALL TOPSORT (sp/multi-path :index :node)] indexed-tree)
+                   (partition 2)
+                   (map vec)
+                   vec
+                   (plainent conn))]
+    (transform [ALL TOPSORT :index] idmap indexed-tree)))
+
+
+(register-handler
+ :tree->ds
+ (fn [db [_ conn]]
+   (assoc db :tree (tree->ds conn (:tree db)))))
+
+
+
+
+
+#_(transform [(sp/subselect ALL ALL)] reverse [#{1 2 3} [4 5 6]])
+
+    ;     vec
+    ;     (d/transact! conn)
+    ;     :tempids
+    ;     vals
+    ;     drop-last]))
+
+
+#_(defn tree->ds2 [tree]
+  (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
+           create-colls
+           tree))
+
+
+#_(pprint (tree->ds2 create-colls))
 
 
 
@@ -161,19 +241,24 @@
 
 
 
-
-(let [e (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] testmap)
-      b (->> (for [[k v] e]
+(defn merge-vectors [e]
+  (->> (for [[k v] e]
               {k #{v}})
-              (apply merge-with clojure.set/union))
-      c (select [ALL] b)]
-       (d/transact!  conn (vec (for [[x y] c]
-                                 (create-coll x y)))))
+              (apply merge-with clojure.set/union)))
+
+
+
+(defn create-edges [treemap]
+  (let [e (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] treemap)
+        c (select [ALL] (merge-vectors e))]
+    (d/transact!  conn (vec (for [[x y] c]
+                              (create-coll x y))))))
 
 
 
 
 
+(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] testmap))
 
 
 

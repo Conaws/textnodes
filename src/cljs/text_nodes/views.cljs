@@ -209,10 +209,10 @@
   (let [tm (subscribe [:testmap])]
    (fn []
     [:div
-     [:button {:on-click #(dispatch [:init conn])} "start"]
+     [:button {:on-click #(dispatch [:tree->ds conn])} "Convert"]
 ;   [canvas conn]
      [demo]
-     #_[entity-view conn]
+     [entity-view conn]
      #_[:h1 (pr-str @tm)]])))
 
 

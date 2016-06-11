@@ -13,35 +13,41 @@
             [re-com.core   :as re-com :refer [h-box v-box box gap line scroller border h-split v-split title flex-child-style p]]
             [cljs.pprint     :refer [pprint]]
             [keybind.core :as key]
-            [cljs.reader                ]
+            [cljs.reader]
             [com.rpl.specter  :refer [ALL] :as s]
-            [clojure.string  :as str    ])
+            [clojure.string  :as str])
   (:require-macros
            [com.rpl.specter.macros  :refer [select transform defprotocolpath]]
            [reagent.ratom :refer [reaction]]))
-;@+node:conor.20160610003346.1: ** (defn count-tabs  [string]  
+;@+node:conor.20160610003346.1: ** (defn count-tabs  [string]
 
 (defn count-tabs
   [string]
   (count (take-while #{\tab} string)))
 
 (count-tabs "\t\t")
-;@+node:conor.20160610003314.1: ** (defn tvalue [e]  (-> 
+;@+node:conor.20160610003314.1: ** (defn tvalue [e]  (->
 
 (defn tvalue [e]
   (-> e
       .-target
       .-value))
-  
-  
-  
+
 
 (defn parsed [text]
+    (->> (str/split text #"\n")
+         (map (juxt count-tabs str/trim))))
+
+(defn parsed2 [text]
   (->> (str/split text #"\n")
-       (map (juxt count-tabs str/trim))))
-;@+node:conor.20160608034749.2: ** (defn nodify [nseq]  (loop 
+       (map-indexed (juxt (fn [i x] (count-tabs x))
+                          (fn [i x] [i (str/trim x)])))))
+
+
+
+;@+node:conor.20160608034749.2: ** (defn nodify [nseq]  (loop
 (defn nodify [nseq]
-  (loop [result [] 
+  (loop [result []
          s nseq]
     (let[sa (first s)
          r (rest s)
@@ -52,11 +58,18 @@
          (if (< 0 (count children))
            (assoc answer :children (nodify children))
            (assoc answer :children children))]
-      
+
       (if (< 0 (count siblings))
         (recur (conj result answer) siblings)
         (conj result answer)))))
-;@+node:conor.20160608034749.7: ** (register-sub :e (fn [_ [_ 
+
+
+(->> (str/split "this\n\tis\n\n\t\tmy baby" #"\n")
+     (filter #(not (empty? %)))
+     pprint)
+
+
+;@+node:conor.20160608034749.7: ** (register-sub :e (fn [_ [_
 (register-sub
  :e
  (fn [_ [_ conn eid]]
@@ -67,40 +80,40 @@
  :text
  (fn [db]
    (reaction (:text @db))))
-;@+node:conor.20160608034749.5: ** (register-sub :db-atoms (fn [_ [_ 
+;@+node:conor.20160608034749.5: ** (register-sub :db-atoms (fn [_ [_
 
 
 (register-sub
  :db-atoms
  (fn [_ [_ conn]]
    (q conn '[:find ?e ?attr ?val
-             :where 
+             :where
              [?e ?attr ?val]])))
-;@+node:conor.20160608034749.6: ** (register-sub :db-entities (fn [_ [_ 
+;@+node:conor.20160608034749.6: ** (register-sub :db-entities (fn [_ [_
 
 
 (register-sub
  :db-entities
  (fn [_ [_ conn]]
   (q conn '[:find ?e
-             :where 
+             :where
              [?e]])))
-;@+node:conor.20160608034750.10: ** (register-sub :tree (fn [db]  
+;@+node:conor.20160608034750.10: ** (register-sub :tree (fn [db]
 (register-sub
  :tree
  (fn [db]
    (reaction (:tree @db))))
 
 
-;@+node:conor.20160608034750.3: ** (register-sub :testmap (fn [db]  
+;@+node:conor.20160608034750.3: ** (register-sub :testmap (fn [db]
 
 
 (register-sub
  :testmap
  (fn [db]
    (reaction (:testmap @db))))
-;@+node:conor.20160608034750.7: **   (register-sub :parsed-text (fn 
-  
+;@+node:conor.20160608034750.7: **   (register-sub :parsed-text (fn
+
 
 (register-sub
  :parsed-text
