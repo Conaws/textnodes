@@ -92,6 +92,10 @@
 ;@+node:conor.20160610164021.2: *3* (declarepath TOPSORT)
 
 
+
+
+
+
 (declarepath TOPSORT)
 (providepath TOPSORT
               (sp/stay-then-continue
@@ -144,10 +148,10 @@
         1 [{:a 1}[:not :me 1]{:b 2}])
 
 
-(->>  (transform [(sp/subselect ALL TOPSORT :index) (sp/view count)]
+#_(->>  (transform [(sp/subselect ALL TOPSORT :id) (sp/view count)]
                  range
                  (:tree @app-db))
-      (select [ALL TOPSORT :index])
+      (select [ALL TOPSORT :id])
       pprint)
 
 (defn atom? [a] (instance? cljs.core/Atom a))
@@ -164,7 +168,7 @@
 
 
 (s/fdef plainent
-        :args (s/cat :db atom? 
+        :args (s/cat :db atom?
                      :entvecs (s/coll-of  (s/spec
                                            (s/cat
                                             :id integer?
@@ -176,23 +180,22 @@
 (s/instrument #'plainent)
 
 
+
+#_(pprint (:tree @app-db))
+
+
+
 (defn tree->ds [conn tree]
   (let [;tree (:tree @app-db)
-        indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :index)]
+        indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :id)]
                                        (partial map-indexed (fn [i x] (- 0 (inc i))))
                                        tree))
-        idmap (->> (select [ALL TOPSORT (sp/multi-path :index :node)] indexed-tree)
+        idmap (->> (select [ALL TOPSORT (sp/multi-path :id :node)] indexed-tree)
                    (partition 2)
                    (map vec)
                    vec
                    (plainent conn))]
-    (transform [ALL TOPSORT :index] idmap indexed-tree)))
-
-
-(register-handler
- :tree->ds
- (fn [db [_ conn]]
-   (assoc db :tree (tree->ds conn (:tree db)))))
+    (transform [ALL TOPSORT :id] idmap indexed-tree)))
 
 
 
@@ -221,38 +224,53 @@
   (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] tree))
 
 
-(-> (:tree @app-db)
-    tree->ds1
-    get-edge-ids
-    pprint)
 
+(comment
+  (def testmap (tree->ds1 (:tree @app-db)))
 
-(def testmap (tree->ds1 (:tree @app-db)))
-
-(d/transact! conn [{:db/id 1
-                    :edge/to #{2 3}}])
+  (d/transact! conn [{:db/id 1}]
+                    :edge/to #{2 3}))
 
 
 
 
-(defn create-coll [collid children]
-  {:db/id collid
-   :edge/to children})
+(defn create-coll [collid children
+                        {:db/id collid}
+                        :edge/to children])
 
 
 
 (defn merge-vectors [e]
-  (->> (for [[k v] e]
-              {k #{v}})
-              (apply merge-with clojure.set/union)))
+  (->> (for [[k v] e
+              {k #{v}}
+              (apply merge-with clojure.set/union)])))
 
 
 
-(defn create-edges [treemap]
-  (let [e (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] treemap)
+(defn create-edges [conn treemap]
+  (let [e (select [ALL TOPSORT (sp/collect-one :id) CHILDREN :id] treemap)
         c (select [ALL] (merge-vectors e))]
     (d/transact!  conn (vec (for [[x y] c]
                               (create-coll x y))))))
+
+
+
+(->> (:tree @app-db)
+    (tree->ds conn)
+    (create-edges conn)
+    pprint)
+
+
+
+
+(register-handler
+ :tree->ds
+ (fn [db [_ conn]]
+   (let [newtree  (tree->ds conn (:tree db))]
+     (do
+       (create-edges conn newtree))
+     (assoc db :tree newtree))))
+
 
 
 
