@@ -29,12 +29,12 @@
 
 
 (defn connview [conn]
-  (let [datoms (subscribe [:db-atoms conn])]
+  (let [datoms (subscribe [:datoms conn])]
     (fn []
       [:div
        (for
          [datom @datoms]
-         [:div (pr-str datom)])])))
+         ^{:key datom }[:div (pr-str datom)])])))
 
 
 
@@ -50,7 +50,7 @@
     (fn []
       [:div
        (for [[e] @es]
-         [pr-entity conn e])])))
+         ^{:key e }[pr-entity conn e])])))
 
 
 
@@ -104,7 +104,9 @@
                         :child
                         [:div
                          (if (< 0 (count (:children t)))
-                           [:button {:on-click #(reset! visible? (not @visible?))}
+                           [:button {:on-click #(do
+                                                  (reset! visible? (not @visible?)))}
+                                                  
                             (if @visible?
                               "-"
                               "+")])]]]]
@@ -150,14 +152,12 @@
 
 
 (defn stuff [conn]
-  (let [tm (subscribe [:testmap])]
+
    (fn []
     [:div
      [:button {:on-click #(dispatch [:tree->ds conn])} "Convert"]
-;   [canvas conn]
      [demo]
-     [entity-view conn]
-     #_[:h1 (pr-str @tm)]])))
+     [entity-view conn]]))
 
 
 

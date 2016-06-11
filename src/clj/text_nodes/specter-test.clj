@@ -16,12 +16,12 @@
 (def sampletext "This is the first goal\n\tThis is it's first child\n\t\t@person Conor @role superhero\nThis is another goal\n\tThis is another child 1\n\tThis is another child 1 again")
 
 
-;@+node:conor.20160606073225.2: ** (defn count-tabs  [string]  
+;@+node:conor.20160606073225.2: ** (defn count-tabs  [string]
 (defn count-tabs
   [string]
   (count (take-while #{\tab} string)))
 
-;@+node:conor.20160608033808.1: ** (defn parsed [text]  (->> 
+;@+node:conor.20160608033808.1: ** (defn parsed [text]  (->>
 
 
 (defn parsed [text]

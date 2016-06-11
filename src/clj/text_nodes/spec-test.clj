@@ -40,6 +40,8 @@
 
 
 
+
+(defn atom? [a] (instance? cljs.core/Atom a))
 ;@-others
 ;@+node:conor.20160606123700.1: ** vals-between
 

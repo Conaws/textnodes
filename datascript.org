@@ -1,0 +1,332 @@
+* Week of June 5th
+** (comment  
+
+
+(comment 
+*** (register-handler :initialize-db (fn [_ [_
+
+
+(register-handler 
+ :initialize-db
+ (fn [_ [_ conn]]  
+       (let [node1  {:db/id -1
+                     :node/text "Hello Graphs"}
+             layout {:db/id -2
+                     :layout/x 50
+                     :layout/y 50
+                     :layout/height 500
+                     :layout/width 500
+                     :layout/nodeid (:db/id node1)}
+             canvas {:db/id -3
+                     :db/ident :canvas
+                     :canvas/layouts #{(:db/id layout)}}]
+         (do (db/transact! conn
+                          [node1 layout canvas])
+             @conn))))
+***  
+*** (register-sub :layouts (fn [_ [_ 
+
+
+(register-sub
+ :layouts
+ (fn [_ [_ conn]]
+  (let [layouts (q conn '[:find ?layouts
+                         :where
+                         [_ :canvas/layouts ?layouts]])]
+    (reaction 
+     (for [[eid] @layouts]
+       eid)))))
+    
+*** (def lillayouts  (reaction @(subscribe 
+
+(def lillayouts
+  (reaction @(subscribe [:layouts])))
+*** (declare render-layout)
+(declare render-layout)
+
+(defn canvas [conn]
+  (let [layouts (subscribe [:layouts conn])]
+    (fn [conn]
+      (into
+       [:svg
+        {:height 1000
+         :width 1000
+       :style {:border "1px solid black"}}]
+       (for
+           [l @layouts]
+        [render-layout l conn])))))
+*** (register-sub :layout (fn [db [_ 
+
+(register-sub
+ :layout
+ (fn [db [_ eid conn]]
+      (pull conn '[:layout/x :layout/y :layout/height :layout/width :layout/nodeid] eid)))
+*** (register-sub :node (fn [db [_ 
+(register-sub
+ :node
+ (fn [db [_ eid conn]]
+   (pull conn '[*] eid)))
+*** (defn render-layout [eid conn]  
+(defn render-layout [eid conn]
+  (let [{x :layout/x id :layout/nodeid y :layout/y h :layout/height w :layout/width} @(subscribe [:layout eid conn])
+        node (subscribe [:node (:db/id id) conn conn])]
+    (fn []
+      [:g
+       [:rect
+        {:x x
+         :y y
+         :height h
+         :width w
+         :fill :blue}]
+       [:rect
+        {:x x
+         :y y
+         :stroke "black"
+         :stroke-width 1
+         :height h 
+         :width (/ w 2)
+         :fill :white}]
+       [:rect
+        {:x (+ x (/ w 2 3))
+         :y (+ y (/ w 3))
+         :stroke "black"
+         :stroke-width 1
+         :height (/ w 3) 
+         :width (/ w 2 3)
+         :fill :grey}]
+       [:rect
+        {:x x
+         :y y
+         :stroke "black"
+         :stroke-width 1
+         :height (/ h 6)
+         :width w
+         :fill :white}]
+       [:foreignObject
+        {:x x
+         :y y
+         :width w
+         :height (/ h 6)}
+        [:div.hbox.hcenter
+         {:style {:width w}}
+         [:h1 (:node/text @node)]
+         #_[:div (pr-str @node) ]]]])))
+     
+ 
+
+(defn hickory-printer [text]
+   [:div 
+   (pr-str (-> (as-hiccup (hickory.core/parse @text))
+                   first
+                   (get 3)
+                   rest
+                   rest))])
+*** (defn svghickory []  (let 
+(defn svghickory []
+  (let [text (rx/atom "")]
+    (fn []
+      [:div
+      [hickory-printer text]
+       [:textarea
+        {:style {:border "5px solid red"}
+         :on-change #(reset! text (e-value %))}]])))
+*** (defn e-by-av [db a v] 
+
+(defn e-by-av [db a v]
+  (-> (db/datoms db :avet a v) first :e))
+*** @conn
+@conn
+
+(e-by-av @conn :layout/y 50)
+*** @(q conn '[:find ?e  
+@(q conn '[:find ?e
+          :where
+          [?e :layout/y 50]])
+)
+** notes from before 
+
+(register-handler
+ :init
+ (fn [db [_ conn]]
+     (let [e  (subscribe [:db-entities conn])
+           node1  {:db/id -1
+                   :node/text "Hello Graphs"}
+           layout {:db/id -2
+                   :layout/x 50
+                   :layout/y 50
+                   :layout/height 500
+                   :layout/width 500
+                   :layout/nodeid (:db/id node1)}]
+       (if (empty? @e)
+         (do (db/transact! conn
+                           [node1 layout])))
+       (assoc db :testmap (nodify test-struct)))))
+** demo of re-com
+(defn demo []
+  [v-box
+   :size "auto"
+   :gap "10px"
+   :children [
+              [re-com/h-split
+               :panel-1 [tree-text]
+               :panel-2 [tree-display]]]])
+
+
+(defn demo2 []
+  [h-box
+   :height "100px"
+   :justify :center
+   :children [
+              [box
+               :child "Box1"
+               :style {:background-color "blue"}]
+
+              [box
+               :child "b"
+               :style {:background-color "green"}]
+
+              [box
+               :child "b"
+               :align-self :center]]])
+** (defn tree->ds1 [tree]  (transform 
+
+
+(defn tree->ds1 [tree]
+  (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
+           (comp vector (partial create-ds-node conn))
+           tree))
+
+
+
+
+
+(defn get-edge-ids [tree]
+  (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] tree))
+
+
+(-> (:tree @app-db)
+    tree->ds1
+    get-edge-ids
+    pprint)
+
+
+(def testmap (tree->ds1 (:tree @app-db)))
+
+(d/transact! conn [{:db/id 1
+                    :edge/to #{2 3}}])
+
+
+
+
+(defn create-coll [collid children]
+  {:db/id collid
+   :edge/to children})
+
+
+
+(defn merge-vectors [e]
+  (->> (for [[k v] e]
+              {k #{v}})
+              (apply merge-with clojure.set/union)))
+
+
+
+(defn create-edges [treemap]
+  (let [e (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] treemap)
+        c (select [ALL] (merge-vectors e))]
+    (d/transact!  conn (vec (for [[x y] c]
+                              (create-coll x y))))))
+
+
+
+
+
+(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] testmap))
+
+
+
+
+
+
+** specter lessons
+*** #_(setval [(sp/subselect ALL map?) (sp/subset 
+
+#_(setval [(sp/subselect ALL map?) (sp/subset :new-val)]
+        1 [{:a 1}[:not :me 1]{:b 2}])
+*** specter transform
+
+(transform [ALL TOPSORT (sp/collect-one :node) :a (sp/subset #{})] (fn [x] #{x})  (:tree @app-db)) 
+** Resurrected Nodes
+*** From @file handlers.cljs
+**** test
+(pprint (depthvec->tree ts))
+*** From @file handlers.cljs
+**** (get-edges (:tree @app-db)) 
+(get-edges (:tree @app-db))
+** Experiments
+(->> (str/split "this\n\tis\n\n\t\tmy baby" #"\n")
+     (filter #(not (empty? %)))
+     pprint)
+*** experiments
+**** (defn get-edges [tree]  (select 
+(defn get-edges [tree]
+  (select [ALL TOPSORT (sp/collect-one :node) CHILDREN :node] tree))
+
+
+**** dbafter->eid 
+
+
+(defn dbafter->eid [rv]
+  (-> rv
+    :tx-data
+    ffirst))
+**** (defn create-ds-node [db text]  
+
+(defn create-ds-node [db text]
+  (let [eid (d/q '[:find ?e
+                    :in $ ?text
+                    :where
+                    [?e :coll/text ?text]]
+                @db
+                text)]
+      (or (ffirst eid)
+        (dbafter->eid (d/transact! db [{:db/id -1
+                                        :coll/text text}])))))
+**** #_(s/fdef create-colls    
+#_(s/fdef create-colls
+        :args (s/coll-of string? [])
+        :ret  (s/coll-of integer? []))
+**** #_(->>  (transform [(sp/subselect ALL 
+#_(->>  (transform [(sp/subselect ALL TOPSORT :id) (sp/view count)]
+                 range
+                 (:tree @app-db))
+      (select [ALL TOPSORT :id])
+      pprint)
+**** tree->ds1
+
+
+(defn tree->ds1 [tree]
+  (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
+           (comp vector (partial create-ds-node conn))
+           tree))
+**** tree->ds
+
+(defn tree->ds [conn tree]
+  (let [;tree (:tree @app-db)
+        indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :id)]
+                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
+                                       tree))
+        idmap (->> (select [ALL TOPSORT (sp/multi-path :id :node)] indexed-tree)
+                   (partition 2)
+                   (map vec)
+                   vec
+                   (plainent conn))]
+    (transform [ALL TOPSORT :id] idmap indexed-tree)))
+**** (defn get-edge-ids [tree]  (select 
+
+(defn get-edge-ids [tree]
+  (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] tree))
+**** #_(def mergable (select [ALL TOPSORT 
+
+
+#_(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] (:tree @app-db)))

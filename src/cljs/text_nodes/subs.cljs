@@ -32,7 +32,7 @@
    (reaction (:text @db))))
 ;@+node:conor.20160608034749.5: ** datoms
 (register-sub
- :db-atoms
+ :datoms
  (fn [_ [_ conn]]
    (q conn '[:find ?e ?attr ?val
              :where
@@ -51,14 +51,14 @@
    (reaction (:tree @db))))
 
 
-;@+node:conor.20160608034750.3: ** :testmap
+;@+node:conor.20160608034750.3: ** :testmap 
 
 
 (register-sub
  :testmap
  (fn [db]
    (reaction (:testmap @db))))
-;@+node:conor.20160608034750.7: ** :parsed-text
+;@+node:conor.20160608034750.7: ** :parsed-text 
 (register-sub
  :parsed-text
  (fn [db]

@@ -32,5 +32,7 @@
 
 
 
+
+(defn atom? [a] (instance? cljs.core/Atom a))
 ;@-others
 ;@-leo

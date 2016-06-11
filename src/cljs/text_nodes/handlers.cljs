@@ -13,7 +13,7 @@
             [re-frame.db     :refer [app-db]]
             [datascript.core :as d]
             [cljs.pprint     :refer [pprint]]
-            [cljs.reader          ]
+            [cljs.reader]
             [com.rpl.specter  :refer [ALL STAY LAST stay-then-continue collect-one comp-paths] :as sp]
             [clojure.string  :as str])
   (:require-macros
@@ -35,7 +35,6 @@
  :clear-text
  (fn [db [_ e end]]
    (let [text (:text db)]
-     (js/console.log (pr-str e))
      (assoc db :text (str (subs text 0 e) "\t"  (subs text end))))))
 
 

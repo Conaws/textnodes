@@ -28,7 +28,7 @@
     (->> (str/split text #"\n")
          (map (juxt count-tabs str/trim))))
 
-(defn parsed2 [text]
+(defn parsed-with-index [text]
   (->> (str/split text #"\n")
        (map-indexed (juxt (fn [i x] (count-tabs x))
                           (fn [i x] [i (str/trim x)])))))
@@ -53,9 +53,6 @@
         (conj result answer)))))
 
 
-(->> (str/split "this\n\tis\n\n\t\tmy baby" #"\n")
-     (filter #(not (empty? %)))
-     pprint)
 
 
 (s/def ::function fn?)
@@ -119,56 +116,6 @@
                :children ALL TOPSORT))
 (def CHILDREN (comp-paths :children ALL))
 
-(defn get-edges [tree]
-  (select [ALL TOPSORT (sp/collect-one :node) CHILDREN :node] tree))
-
-
-
-
-(defn dbafter->eid [rv]
-  (-> rv
-    :tx-data
-    ffirst))
-
-(defn create-ds-node [db text]
-  (let [eid (d/q '[:find ?e
-                    :in $ ?text
-                    :where
-                    [?e :coll/text ?text]]
-                @db
-                text)]
-      (or (ffirst eid)
-        (dbafter->eid (d/transact! db [{:db/id -1
-                                        :coll/text text}])))))
-
-
-(defn tree->ds1 [tree]
-  (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
-           (comp vector (partial create-ds-node conn))
-           tree))
-
-
-#_(s/fdef create-colls
-        :args (s/coll-of string? [])
-        :ret  (s/coll-of integer? []))
-
-
-
-#_(setval [(sp/subselect ALL map?) (sp/subset :new-val)]
-        1 [{:a 1}[:not :me 1]{:b 2}])
-
-
-#_(->>  (transform [(sp/subselect ALL TOPSORT :id) (sp/view count)]
-                 range
-                 (:tree @app-db))
-      (select [ALL TOPSORT :id])
-      pprint)
-
-(defn atom? [a] (instance? cljs.core/Atom a))
-
-
-
-
 
 (defn plainent [conn ids]
   (let [ents (vec (for [[i t] ids] {:db/id i
@@ -178,175 +125,19 @@
 
 
 (s/fdef plainent
-        :args (s/cat :db atom?
+        :args (s/cat :db mys/atom?
                      :entvecs (s/coll-of  (s/spec
                                            (s/cat
                                             :id integer?
                                             :text string?))
                                           [])))
-
-
-
-(s/instrument #'plainent)
-
-
-
-#_(pprint (:tree @app-db))
-
-
-
 (defn tree->ds [conn tree]
-  (let [;tree (:tree @app-db)
-        indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :id)]
-                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
-                                       tree))
-        idmap (->> (select [ALL TOPSORT (sp/multi-path :id :node)] indexed-tree)
-                   (partition 2)
-                   (map vec)
-                   vec
-                   (plainent conn))]
-    (transform [ALL TOPSORT :id] idmap indexed-tree)))
-
-
-#_(pprint (select [ALL TOPSORT (sp/collect-one :id):node] indexed-tree))
-
-(defn tree->ds3 [conn tree]
   (let [indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :id)]
                                        (partial map-indexed (fn [i x] (- 0 (inc i))))
                                        tree))
         idmap (->> (select [ALL TOPSORT (sp/collect-one :id) :node] indexed-tree)
                    (plainent conn))]
     (transform [ALL TOPSORT :id] idmap indexed-tree)))
-
-
-
-#_(transform [(sp/subselect ALL ALL)] reverse [#{1 2 3} [4 5 6]])
-
-    ;     vec
-    ;     (d/transact! conn)
-    ;     :tempids
-    ;     vals
-    ;     drop-last]))
-
-
-#_(defn tree->ds2 [tree]
-    (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
-               create-colls
-               tree))
-
-
-
-#_(pprint (tree->ds2 create-colls))
-
-
-
-(defn get-edge-ids [tree]
-  (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] tree))
-
-
-
-(comment
-  (def testmap (tree->ds1 (:tree @app-db)))
-
-  (d/transact! conn [{:db/id 1}]
-                    :edge/to #{2 3}))
-
-
-
-
-(defn create-coll [collid children]
-                  {:db/id collid
-                   :edge/to children})
-
-
-
-(defn merge-vectors [e]
-  (->> (for [[k v] e]
-            {k #{v}})
-       (apply merge-with clojure.set/union)))
-
-
-
-(defn create-edges [conn treemap]
-  (let [e (select [ALL TOPSORT (sp/collect-one :id) CHILDREN :id] treemap)
-        c (select [ALL] (merge-vectors e))]
-    (d/transact!  conn (vec (for [[x y] c]
-                              (create-coll x y))))))
-
-
-
-
-
-(->> (:tree @app-db)
-    (tree->ds conn)
-    (create-edges conn)
-    pprint)
-
-
-
-
-
-
-
-#_(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] (:tree @app-db)))
-
-
-
-
-
-
-
-
-(defn tree->ds1 [tree]
-  (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
-           (comp vector (partial create-ds-node conn))
-           tree))
-#_(s/fdef create-colls
-        :args (s/coll-of string? [])
-        :ret  (s/coll-of integer? []))
-#_(->>  (transform [(sp/subselect ALL TOPSORT :id) (sp/view count)]
-                 range
-                 (:tree @app-db))
-      (select [ALL TOPSORT :id])
-      pprint)
-
-(defn atom? [a] (instance? cljs.core/Atom a))
-(defn plainent [conn ids]
-  (let [ents (vec (for [[i t] ids] {:db/id i
-                                     :coll/text  t}))]
-    (->> (d/transact! conn ents)
-         :tempids)))
-(s/fdef plainent
-        :args (s/cat :db atom?
-                     :entvecs (s/coll-of  (s/spec
-                                           (s/cat
-                                            :id integer?
-                                            :text string?))
-                                          [])))
-
-(s/instrument #'plainent)
-
-(defn tree->ds [conn tree]
-  (let [;tree (:tree @app-db)
-        indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :id)]
-                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
-                                       tree))
-        idmap (->> (select [ALL TOPSORT (sp/multi-path :id :node)] indexed-tree)
-                   (partition 2)
-                   (map vec)
-                   vec
-                   (plainent conn))]
-    (transform [ALL TOPSORT :id] idmap indexed-tree)))
-(defn tree->ds3 [conn tree]
-  (let [indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :id)]
-                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
-                                       tree))
-        idmap (->> (select [ALL TOPSORT (sp/collect-one :id) :node] indexed-tree)
-                   (plainent conn))]
-    (transform [ALL TOPSORT :id] idmap indexed-tree)))
-
-(defn get-edge-ids [tree]
-  (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] tree))
 
 
 (defn create-coll [collid children]
@@ -365,7 +156,6 @@
                               (create-coll x y))))))
 
 
-#_(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] (:tree @app-db)))
 
 
 (defn all-ents [conn]
