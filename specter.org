@@ -25,4 +25,461 @@ aka nestedarray->graph
                     
 * newHeadline
 
-    
+
+  (select [sp/MAP-VALS ALL (sp/must :foo)  (sp/view count)]
+    #_(fn [a b] (count (filter :foo a)))
+    {:a [{:foo 1} {:bar 3} {:foo 4}]
+     :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
+
+
+
+
+** MAP-VALS bug
+
+
+
+(transform [ALL LAST (collect ALL (must :foo))]
+        (fn [a _] (count a))
+    {:a [{:foo 1} {:bar 3} {:foo 4}]
+     :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
+
+
+(transform [MAP-VALS (sp/collect ALL (pred :foo))]
+           (fn [a _] (count a))
+           {:a [{:foo 1} {:bar 3} {:foo 4}]
+            :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
+
+
+(transform [MAP-VALS (collect ALL (pred :foo))]
+           (fn [a _] (count a))
+           {:a [{:foo 1} {:bar 3} {:foo 4}]
+            :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
+
+
+
+
+
+
+
+* Email to guys
+  CLOCK: [2016-06-11 Sat 12:39]
+
+
+
+I'd been meaning to dive into Specter since Clojure/West, this week I finally did.
+
+
+I put it off for so long because I thought -- y'know, I'm mostly using datascript, so I probably don't have as great a need for a tool for working with nested data structures
+
+
+So here, I'm going to  show off how I used it WITH datascript this week
+
+
+First, let's talk about ``select``
+
+
+Let's say I write a datalog querie to get all the entities out of a db
+
+(d/q '[:find ?e :in $ :where [?e]] @conn)
+
+I'll get back a set of vectors
+
+
+#{[2] [7] [5] [10] [3] [1] [6] [9] [11] [8] [4]}
+
+
+but if I want to use the pull-many, to get all the the attributes for those values,
+I need a single vector of ids.
+
+that's easy, if I just do (select [ALL ALL] #{[1] [2]}), I'll get [1 2]
+
+How? 
+specter visits each vector in the set with the first all, then returns each item
+
+
+so now I can do 
+
+(d/pull-many @conn '[*] 
+ (select [ALL ALL] 
+ (d/q '[:find ?e :in $ :where [?e]] @conn)))
+
+and i've got my whole database in entity form.
+
+
+pretty cool.
+
+
+Alright now, let's get weird.
+
+
+Let's say I've got a vector of trees
+
+
+
+(def treevec [{:node :a :children 
+                 [{:node :aa :children 
+                   [{:node :aaa :children 
+                     [{:node :aaaa}]}]} 
+                  {:node :ab :children
+                   [{:node :aba}]}]}
+                {:node :b}])
+
+
+
+I'd like to add this tree into datascript -- how might specter help?
+
+Well, first, let's simplify the challenge.   
+
+How would I get the value of :node for each map in this tree?
+
+I want to go from that tree to a vector of nodes like this [:a :aa :ab :aaa .....]
+
+And I want to get a collection of the edges so [[:a :aa] [:a :ab] [:aa :aaa] ...]
+
+
+
+Well, the first thing I'll want to do is get the names of the top level nodes
+
+I can do that with 
+
+(select [ALL :node] treevec)
+;;=> [:a :b]
+
+
+I grab all the children with 
+(select [ALL :children ALL] treevec)
+
+
+;;=>  [{:node :aa, :children [{:node :aaa, :children [{:node :aaaa}]}]} {:node :ab, :children [{:node :aba}]}]
+
+
+
+ok, but now, I want to get all the values of the :node key for everything,
+
+well, I guess I could just use recursion... 
+
+
+(loop [nodes [] t treevec]
+   (let [results (conj nodes (select [ALL :node] t))
+         children (select [ALL :children] t)]
+      (if (empty? children)
+        results
+        (recur results children))))
+        
+        
+Oops, I get a stacktrace error,
+why is that?  How am I never getting empty children?
+
+
+I check it out
+
+
+(loop [nodes [] t treevec]
+   (let [results (conj nodes (select [ALL :node] t))
+         children (select [ALL :children] t)]
+      (if (empty? children)
+        results
+        (select [ALL :node] children))))
+
+;;=> [nil nil]
+
+
+
+OHHH, because when I do select ALL :children, I'm getting back a vector of vectors of maps
+--  or in the example above I'm getting a  [[{:node ....}{:node ....}] nil]
+
+then when I call (select [ALL :node]  ...) I'm getting a vector of nils back.
+
+
+so I add that last ALL back in and get
+
+
+(loop [nodes [] t treevec]
+   (let [results (conj nodes (select [ALL :node] t))
+         children (select [ALL :children ALL] t)]
+      (if (empty? children)
+        results
+        (recur results children))))
+
+;;=>  [[:a :b] [:aa :ab] [:aaa :aba] [:aaaa]]
+
+
+well, not exactly what I want, but I can always flatten it, so I'll move on to grabbing edges
+
+
+Now, I need to store info about the parent before I navigate into its children
+
+I check out the specter docs and I discover the collect-one function
+
+this looks like exactly what I need, I can travel into the value of :node within each top level map, and then go down into the children
+
+(select [ALL (collect-one :node) :children ALL :node] treevec)
+
+;;=>  [[:a :aa] [:a :ab]]
+
+
+So then, I can just toss that into the same recursive pattern
+
+
+(defn select-edges [treevec]
+   (loop [results [] current-level tree-vec]
+     (let [edges (select 
+                  [ALL (collect-one :node) :children ALL :node] 
+                  current-level)
+           new-results (apply conj results edges)
+           next-gen (select 
+                     [ALL :children ALL] 
+                     current-level)]
+       (if (empty? next-gen)
+         new-results
+         (recur new-results next-gen)))))
+
+
+(select-edges treevec)
+
+;;=> [[:a :aa] [:a :ab] [:aa :aaa] [:ab :aba] [:aaa :aaaa]]
+
+
+
+Awesome right!
+
+But then, wait a second, I heard specter had a way of doing recursive navigation
+
+I'm probably not using this tool to its full power yet
+
+
+
+Well, the first thing I might do is create a recursive path for specter to traverse
+
+
+(declarepath TOKIDS)
+
+
+(declarepath TOKIDS)
+(providepath TOKIDS
+   [:children ALL TOKIDS])
+
+
+(select [ALL TOKIDS] mytree)
+;; => []
+
+woah, no values! What happened?
+
+Oh yeah, I guess specter followed the path until it got to the nodes that didn't have any children, and then just returned the nil 
+how could I collect values along the way
+
+how can I make sure I return something?
+
+
+I could collect the value using ```collect``` or ```collect-one``` but then I'd end up with another nested data structure because of the recursion I'm using, so I'll instead use multi-path.
+
+multi-path forks the paths, so here, each time you visit one of the maps in a :children array there will be a new path that just goes to the value of the :node key in that map, and returns whatever is there, there will then be another path which looks for a :children key in the same map, and if it is there, will go to the value of that key (an array) and for every element in that array ```ALL``` it will call the same NODE path.
+
+
+(declarepath NODE)
+(providepath NODE 
+             (multi-path 
+              [:children ALL NODE]
+              :node))
+
+(select [ALL NODE] array-of-nested-nodes)
+
+
+
+To get all the edges, I'll need to keep track of the :node value of the map I'm currently in before I go down into its children, but again, if I use 'collect' 'collect-one' or VAL on the same path as my recursive call, I'll end up keeping track of every node that was part of the path, which isn't what I'm looking for here
+
+So again, I'll use the multi-path, on one branch, I'll collect the value of the current node and search ALL of the members of it's :children key for the value at their :node key.  
+
+On another branch, which I'll only travel if there is a value of :node for ALL items in the children key (thus avoiding moving down a level to far), I'll make the recursive call to this same path.
+
+
+
+
+(declarepath EDGES)
+(providepath EDGES
+             (multi-path
+              [(collect-one :node) :children ALL :node]
+              (if-path [:children ALL :node]
+                          [:children ALL EDGES])))
+
+(select [ALL EDGES] array-of-nested-nodes)
+
+
+
+Alright, that's pretty nice, I think, much cleaner than conjing all over the place, but I'm suspicious that there still has to be a better way
+
+so I send my example over to Nathan Marz, and he sends back this gem
+
+
+(declarepath TOPSORT)
+(providepath TOPSORT
+             (sp/stay-then-continue
+              :children ALL TOPSORT))
+
+
+What stay then continue does is, when it is called, it'll return whatever value it's currently at, as well as whatever it navigates to next
+
+so what ends up getting passed to the next function here will be every node touched by this path
+
+
+
+
+So now, not only can I things like
+
+
+(select [ALL TOPSORT :node] treevec)
+
+to get my nodes
+
+
+
+I can do 
+
+(def CHILDREN (sp/comp-paths :children ALL))
+
+
+(select [ALL TOPSORT (collect-one :node) CHILDREN :node] treevec)
+
+to get all my edges
+
+
+And do even crazier things, like adding a new key and value to every map in all the trees
+
+
+
+(setval [ALL TOPSORT :open] true  treevec)
+
+;;=>  
+
+[{:node :a,
+  :children
+  [{:node :aa,
+    :children
+    [{:node :aaa,
+      :children [{:node :aaaa, :open true, :children nil}],
+      :open true}],
+    :open true}
+   {:node :ab,
+    :children [{:node :aba, :open true, :children nil}],
+    :open true}],
+  :open true}
+ {:node :b, :open true, :children nil}]
+
+
+
+
+Woah
+
+
+Ok, so, now that we've got that handled,  
+I want to transact each of these nodes to a datascript or datomic db, and I want to add as a key to each of them the entity ID that I got back from datomic or datascript
+
+
+
+I write a little fn to create a transaction, and return the first entity id
+it just takes the database connection and the text for the new entity
+
+
+(defn create-ds-node [conn text]
+   (-> (d/transact! conn [{:db/id -1
+                         :node/text text}])
+        :tx-data
+        ffirst))
+
+
+
+Then using transform, I can pass that function all the values from :node for each item
+
+
+(defn tree->ds1 [db tree]
+  (transform [ALL TOPSORT (sp/collect-one :node) :id (subset #{})]
+           (comp vector (partial create-ds-node conn))
+           tree))
+
+
+NOTE -- this might seem a  little wierd  with the comp partial and use of subset, you end up wit a vector for the id, I leave it as homework how to just substitue in the id
+
+
+Now I can create edges between all those entities using
+
+
+(defn create-edge [parentid set-of-childids]
+  {:db/id parentid
+   :edge/to set-of-childids})
+
+
+
+(defn merge-vectors [e]
+  (->> (for [[k v] e]
+              {k #{v}})
+              (apply merge-with clojure.set/union)))
+
+
+
+(defn create-edges [conn treemap]
+  (let [e (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] treemap)
+        c (select [ALL] (merge-vectors e))]
+    (d/transact!  conn (vec (for [[x y] c]
+                              (create-coll x y))))))
+
+
+
+NOTE the use of LAST because the id was previously in a vector
+
+
+
+So to recap
+
+declarepath / providepath
+collect-one
+stay-then-continue
+comp-paths
+multi-path
+select
+transform
+
+
+
+
+If you're looking for something even crazier, here's how I used subselect to create a temporary id for each "node" in the tree, 
+then added them all to the db in a single transaction, then returned their new id to replace the tempid
+
+
+this one still probably could be made much cleaner after further exploration of specter though
+ 
+
+
+
+(defn plainent [conn ids]
+  (let [ents (vec (for [[i t] ids] {:db/id i
+                                     :node/text  t}))]
+    (->> (d/transact! conn ents)
+         :tempids)))
+
+
+
+(defn tree->ds [conn tree]
+  (let [;tree (:tree @app-db)
+        indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :id)]
+                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
+                                       tree))
+        idmap (->> (select [ALL TOPSORT (sp/multi-path :id :node)] indexed-tree)
+                   (partition 2)
+                   (map vec)
+                   vec
+                   (plainent conn))]
+    (transform [ALL TOPSORT :id] idmap indexed-tree)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
