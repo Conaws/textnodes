@@ -234,16 +234,16 @@
 
 
 
-(defn create-coll [collid children
-                        {:db/id collid}
-                        :edge/to children])
+(defn create-coll [collid children]
+                  {:db/id collid
+                   :edge/to children})
 
 
 
 (defn merge-vectors [e]
-  (->> (for [[k v] e
-              {k #{v}}
-              (apply merge-with clojure.set/union)])))
+  (->> (for [[k v] e]
+            {k #{v}})
+       (apply merge-with clojure.set/union)))
 
 
 
@@ -252,6 +252,8 @@
         c (select [ALL] (merge-vectors e))]
     (d/transact!  conn (vec (for [[x y] c]
                               (create-coll x y))))))
+
+
 
 
 
@@ -264,19 +266,19 @@
 
 
 (register-handler
- :tree->ds
- (fn [db [_ conn]]
-   (let [newtree  (tree->ds conn (:tree db))]
-     (do
-       (create-edges conn newtree))
-     (assoc db :tree newtree))))
+     :tree->ds
+     (fn [db [_ conn]]
+       (let [newtree  (tree->ds conn (:tree db))]
+         (do
+           (create-edges conn newtree))
+         (assoc db :tree newtree))))
 
 
 
 
 
 
-(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] testmap))
+#_(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] (:tree @app-db)))
 
 
 
