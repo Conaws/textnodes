@@ -26,6 +26,41 @@ aka nestedarray->graph
 * newHeadline
 
 
+  (select [sp/MAP-VALS ALL (sp/must :foo)  (sp/view count)]
+    #_(fn [a b] (count (filter :foo a)))
+    {:a [{:foo 1} {:bar 3} {:foo 4}]
+     :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
+
+
+
+
+** MAP-VALS bug
+
+
+
+(transform [ALL LAST (collect ALL (must :foo))]
+        (fn [a _] (count a))
+    {:a [{:foo 1} {:bar 3} {:foo 4}]
+     :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
+
+
+(transform [MAP-VALS (sp/collect ALL (pred :foo))]
+           (fn [a _] (count a))
+           {:a [{:foo 1} {:bar 3} {:foo 4}]
+            :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
+
+
+(transform [MAP-VALS (collect ALL (pred :foo))]
+           (fn [a _] (count a))
+           {:a [{:foo 1} {:bar 3} {:foo 4}]
+            :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
+
+
+
+
+
+
+
 * Email to guys
   CLOCK: [2016-06-11 Sat 12:39]
 
@@ -434,8 +469,6 @@ this one still probably could be made much cleaner after further exploration of 
                    vec
                    (plainent conn))]
     (transform [ALL TOPSORT :id] idmap indexed-tree)))
-
-
 
 
 

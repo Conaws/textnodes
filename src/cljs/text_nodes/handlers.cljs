@@ -14,12 +14,35 @@
             [datascript.core :as d]
             [cljs.pprint     :refer [pprint]]
             [cljs.reader]
-            [com.rpl.specter  :refer [ALL STAY LAST stay-then-continue collect-one comp-paths] :as sp]
+            [com.rpl.specter  :refer [ALL STAY LAST MAP-VALS 
+                                      stay-then-continue collect-one comp-paths
+                                      collect must pred] :as sp]
             [clojure.string  :as str])
   (:require-macros
            [com.rpl.specter.macros  :refer [select transform declarepath providepath]]
            [reagent.ratom :refer [reaction]]))
 
+
+
+
+(transform MAP-VALS inc {:a 1 :b 2})
+
+(transform [ALL LAST (collect ALL (must :foo))]
+        (fn [a _] (count a))
+    {:a [{:foo 1} {:bar 3} {:foo 4}]
+     :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
+
+
+(transform [sp/MAP-VALS (collect ALL (pred :foo))]
+           (fn [a _] (count a))
+           {:a [{:foo 1} {:bar 3} {:foo 4}]
+            :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
+
+
+(transform [MAP-VALS (collect ALL (pred :foo))]
+           (fn [a _] (count a))
+           {:a [{:foo 1} {:bar 3} {:foo 4}]
+            :b [{:foo 1} {:bar 3 :foo 4} {:foo 4}]})
 
 ;@+node:conor.20160610152638.1: ** Depthvec
 ;@+node:conor.20160610152638.2: *3* specs
@@ -190,14 +213,20 @@
         indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :id)]
                                        (partial map-indexed (fn [i x] (- 0 (inc i))))
                                        tree))
-        idmap (->> (select [ALL TOPSORT (sp/multi-path :id :node)] indexed-tree)
-                   (partition 2)
-                   (map vec)
-                   vec
+        idmap (->> (select [ALL TOPSORT (collect-one :id) :node] indexed-tree)
                    (plainent conn))]
     (transform [ALL TOPSORT :id] idmap indexed-tree)))
 
 
+#_(pprint (select [ALL TOPSORT (sp/collect-one :id):node] indexed-tree))
+
+(defn tree->ds3 [conn tree]
+  (let [indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :id)]
+                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
+                                       tree))
+        idmap (->> (select [ALL TOPSORT (sp/collect-one :id) :node] indexed-tree)
+                   (plainent conn))]
+    (transform [ALL TOPSORT :id] idmap indexed-tree)))
 
 
 
@@ -211,9 +240,10 @@
 
 
 #_(defn tree->ds2 [tree]
-  (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
-           create-colls
-           tree))
+    (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
+               create-colls
+               tree))
+
 
 
 #_(pprint (tree->ds2 create-colls))

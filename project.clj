@@ -1,16 +1,15 @@
 (defproject text-nodes "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure            "1.9.0-alpha3"]
+  :dependencies [[org.clojure/clojure            "1.9.0-alpha4"]
                  [datascript                           "0.13.3"]
                  [posh                                  "0.3.5"]
-                 [org.clojure/clojurescript           "1.9.14"
+                 [org.clojure/clojurescript           "1.9.36"
                                           :scope     "provided"]
                  [re-com                                "0.8.3"]
                  [reagent "0.5.1"]
                  [reagent-utils                         "0.1.7"]
-                 [com.rpl/specter                      "0.11.0"]
+                 [com.rpl/specter                      "0.11.2"]
                  [keybind                               "2.0.0"]
                  [re-frame "0.7.0"]
-                 [proto-repl "0.1.2"]
                  [garden "1.3.2"]]
 
   :min-lein-version "2.5.3"
