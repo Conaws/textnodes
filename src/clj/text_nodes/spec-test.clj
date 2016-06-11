@@ -22,6 +22,7 @@
 
 (def trigger #{"@person" "@role"})
 
+
 (s/def ::trigger (s/or :deftrig trigger
                        :trig  #(str/starts-with? % "@")))
 
@@ -54,12 +55,12 @@
        ((fn [{c :c r :r}] (conj r c)))))
 
 
-;@+node:conor.20160606073225.2: ** (defn count-tabs  [string]  
+;@+node:conor.20160606073225.2: ** (defn count-tabs  [string]
 (defn count-tabs
   [string]
   (count (take-while #{\tab} string)))
 
-;@+node:conor.20160606073225.3: ** (defn parsed [text]  (->> 
+;@+node:conor.20160606073225.3: ** (defn parsed [text]  (->>
 
 
 (defn check-for-edges [string]

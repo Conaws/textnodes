@@ -19,6 +19,15 @@
 
 
 
+
+(defn tvalue [e]
+  (-> e
+      .-target
+      .-value))
+
+
+
+
 (defn connview [conn]
   (let [datoms (subscribe [:db-atoms conn])]
     (fn []
@@ -29,13 +38,10 @@
 
 
 
-
-
 (defn pr-entity [conn eid]
   (let [e (subscribe [:e conn eid])]
     (fn []
       [:div (pr-str @e)])))
-
 
 
 
@@ -45,65 +51,6 @@
       [:div
        (for [[e] @es]
          [pr-entity conn e])])))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(register-handler
- :change-text
- (fn [db [_ text]]
-   (assoc db :text text)))
-
-
-
-(defn count-tabs
-  [string]
-  (count (take-while #{\tab} string)))
-
-
-(count-tabs "\t\t")
-
-
-(defn tvalue [e]
-  (-> e
-      .-target
-      .-value))
-
-
-
-(register-handler
- :clear-text
- (fn [db [_ e end]]
-   (let [text (:text db)]
-     (js/console.log (pr-str e))
-     (assoc db :text (str (subs text 0 e) "\t"  (subs text end))))))
-
-
-
-(register-handler
- :fix-tree
- (fn [db]
-   (let [tree @(subscribe [:parsed-text])]
-     (assoc db :tree tree))))
-
-
-
-(register-sub
- :tree
- (fn [db]
-   (reaction (:tree @db))))
-
-
 
 
 
@@ -124,9 +71,6 @@
                                        (.preventDefault %))
                                    :else)
                    :value @text}]])))
-
-
-
 
 
 

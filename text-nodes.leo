@@ -13,7 +13,7 @@
 <v t="conor.20160606053544.1" a="E"><vh>Files to write</vh>
 <v t="conor.20160605011037.1"><vh>@path ~/orgmap/leo/text-nodes</vh>
 <v t="conor.20160605011510.1"><vh>@auto log.org</vh></v>
-<v t="conor.20160605013539.1" a="E"><vh>@auto specter.org</vh></v>
+<v t="conor.20160605013539.1"><vh>@auto specter.org</vh></v>
 </v>
 <v t="conor.20160605013848.1"><vh>@auto datascript.org</vh></v>
 <v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
@@ -33,13 +33,53 @@ expanded="conor.20160606073225.1,"><vh>@file spec-test.clj</vh></v>
 </v>
 <v t="conor.20160605011023.1" a="E"><vh>/cljs/</vh>
 <v t="conor.20160605011952.1" a="E"><vh>/text_nodes/</vh>
+<v t="conor.20160611204221.1" a="E"><vh>@clean transforms.cljs</vh>
+<v t="conor.20160608034748.1" a="E"><vh>Original Text-&gt;Tree</vh>
+<v t="conor.20160610003346.1"><vh>count-tabs</vh></v>
+<v t="conor.20160610003314.1"><vh>parsed -- split + count tabs</vh></v>
+<v t="conor.20160608034749.2"><vh>(defn nodify [nseq]  (loop </vh></v>
+</v>
+<v t="conor.20160610152638.1"><vh>Text-&gt;Tree</vh>
+<v t="conor.20160610152638.2"><vh>specs</vh></v>
+<v t="conor.20160610152638.4"><vh>depthvec-&gt;graph</vh></v>
+<v t="conor.20160610152638.5"><vh>depthvec-&gt;tree</vh>
+<v t="conor.20160610152638.6"><vh>helpers</vh>
+<v t="conor.20160610152638.7"><vh>(defn create-node  [title]</vh></v>
+<v t="conor.20160610152638.8"><vh>(defn connect-node [node children]</vh></v>
+</v>
+<v t="conor.20160610152638.9"><vh>(def depthvec-&gt;tree  (partial depthvec-&gt;graph</vh></v>
+</v>
+</v>
+<v t="conor.20160610073243.1" a="E"><vh>Tree-&gt;DS</vh>
+<v t="conor.20160610164021.2"><vh>TOPSORT</vh></v>
+<v t="conor.20160610164021.3"><vh>CHILDREN</vh></v>
+<v t="conor.20160610164021.4"><vh>(defn get-edges [tree]  (select </vh></v>
+<v t="conor.20160610164021.6"><vh>dbafter-&gt;eid </vh></v>
+<v t="conor.20160610164021.7"><vh>(defn create-ds-node [db text]  </vh></v>
+<v t="conor.20160610164021.8" a="E"><vh>(defn tree-&gt;ds1 [tree]  (transform </vh>
+<v t="conor.20160611211018.1"><vh>tree-&gt;ds1</vh></v>
+<v t="conor.20160611211018.2"><vh>#_(s/fdef create-colls    </vh></v>
+<v t="conor.20160611211018.4"><vh>#_(-&gt;&gt;  (transform [(sp/subselect ALL </vh></v>
+<v t="conor.20160611211018.6"><vh>(defn plainent [conn ids]  </vh>
+<v t="conor.20160611211018.7"><vh>(s/fdef plainent    </vh></v>
+<v t="conor.20160611211018.8"><vh>(s/instrument #'plainent) </vh></v>
+</v>
+<v t="conor.20160611211018.10"><vh>tree-&gt;ds</vh></v>
+<v t="conor.20160611211019.1"><vh>tree-&gt;ds3</vh></v>
+<v t="conor.20160611211019.5"><vh>(defn get-edge-ids [tree]  (select </vh></v>
+<v t="conor.20160611211019.7"><vh>(defn create-coll [collid children]  </vh></v>
+<v t="conor.20160611211019.8"><vh>(defn merge-vectors [e]  (-&gt;&gt; </vh></v>
+<v t="conor.20160611211019.9"><vh>(defn create-edges [conn treemap]  </vh></v>
+<v t="conor.20160611211019.13"><vh>#_(def mergable (select [ALL TOPSORT </vh></v>
+</v>
+<v t="conor.20160610164021.12"><vh>All Entites</vh></v>
+</v>
+</v>
 <v t="conor.20160610151345.1"><vh>@clean views.cljs</vh></v>
 <v t="conor.20160610082638.1"><vh>@file specs.cljs</vh></v>
-<v t="conor.20160605011953.6"><vh>config.cljs</vh></v>
 <v t="conor.20160605011953.5"><vh>@auto core.cljs</vh></v>
-<v t="conor.20160605011953.4"><vh>@file db.cljs</vh></v>
-<v t="conor.20160605011953.3" a="E"
-expanded="conor.20160610152638.1,conor.20160610152638.5,conor.20160610152638.6,conor.20160610073243.1,"><vh>@file handlers.cljs</vh></v>
+<v t="conor.20160605011953.4" a="E"><vh>@file db.cljs</vh></v>
+<v t="conor.20160605011953.3" a="E"><vh>@file handlers.cljs</vh></v>
 <v t="conor.20160605011953.2" a="E"><vh>@file subs.cljs</vh></v>
 </v>
 </v>
@@ -62,7 +102,8 @@ expanded="conor.20160610152638.1,conor.20160610152638.5,conor.20160610152638.6,c
 </v>
 <v t="conor.20160610170215.1"><vh>notes from before </vh></v>
 <v t="conor.20160610151933.1"><vh>demo of re-com</vh></v>
-<v t="conor.20160610162904.1"><vh>specter lessons</vh>
+<v t="conor.20160610162904.1" a="E"><vh>specter lessons</vh>
+<v t="conor.20160611211442.1"><vh>#_(setval [(sp/subselect ALL map?) (sp/subset </vh></v>
 <v t="conor.20160610162909.1"><vh>specter transform</vh></v>
 </v>
 <v t="conor.20160610160233.1"><vh>Resurrected Nodes</vh>
@@ -77,18 +118,7 @@ expanded="conor.20160610152638.1,conor.20160610152638.5,conor.20160610152638.6,c
 <v t="conor.20160610183437.1"><vh>(defn tree-&gt;ds1 [tree]  (transform </vh></v>
 </v>
 <v t="conor.20160610164540.1" a="E"><vh>Active</vh>
-<v t="conor.20160610073243.1" a="E"><vh>Parse-Text</vh>
-<v t="conor.20160610164021.2"><vh>(declarepath TOPSORT)</vh></v>
-<v t="conor.20160610164021.3"><vh>(def CHILDREN (comp-paths :children ALL))</vh></v>
-<v t="conor.20160610164021.4"><vh>(defn get-edges [tree]  (select </vh></v>
-<v t="conor.20160610164021.6"><vh>(defn dbafter-&gt;eid [rv]  (-&gt; </vh></v>
-<v t="conor.20160610164021.7"><vh>(defn create-ds-node [db text]  </vh></v>
-<v t="conor.20160610164021.8"><vh>(defn tree-&gt;ds1 [tree]  (transform </vh></v>
-<v t="conor.20160610164021.10"><vh>(d/transact! conn [{:db/id [:node/text "Hello </vh></v>
-<v t="conor.20160610164021.11"><vh>(d/transact! conn [{:db/id -1  </vh></v>
-<v t="conor.20160610164021.12"><vh>(d/q '[:find ?e   </vh></v>
-<v t="conor.20160610164021.13"><vh>(d/q '[:find [(pull ?e [*]) </vh></v>
-</v>
+<v t="conor.20160610073243.1" a="E"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -99,8 +129,33 @@ expanded="conor.20160610152638.1,conor.20160610152638.5,conor.20160610152638.6,c
 <t tx="conor.20160605011026.1"></t>
 <t tx="conor.20160605011037.1"></t>
 <t tx="conor.20160605011952.1">@path text_nodes</t>
-<t tx="conor.20160605011953.6"></t>
 <t tx="conor.20160606053544.1"></t>
+<t tx="conor.20160608034748.1">@language clojure
+</t>
+<t tx="conor.20160608034749.2">(defn nodify [nseq]
+  (loop [result []
+         s nseq]
+    (let[sa (first s)
+         r (rest s)
+         [children siblings] (split-with #(&lt; (first sa) (first %)) r)
+         answer     {:node (second sa)
+                     :children-visible true}
+         answer
+         (if (&lt; 0 (count children))
+           (assoc answer :children (nodify children))
+           (assoc answer :children children))]
+
+      (if (&lt; 0 (count siblings))
+        (recur (conj result answer) siblings)
+        (conj result answer)))))
+
+
+(-&gt;&gt; (str/split "this\n\tis\n\n\t\tmy baby" #"\n")
+     (filter #(not (empty? %)))
+     pprint)
+
+
+</t>
 <t tx="conor.20160608034752.10">(register-sub
  :node
  (fn [db [_ eid conn]]
@@ -245,6 +300,27 @@ expanded="conor.20160610152638.1,conor.20160610152638.5,conor.20160610152638.6,c
           [?e :layout/y 50]])
 )
 </t>
+<t tx="conor.20160610003314.1">
+
+(defn parsed [text]
+    (-&gt;&gt; (str/split text #"\n")
+         (map (juxt count-tabs str/trim))))
+
+(defn parsed2 [text]
+  (-&gt;&gt; (str/split text #"\n")
+       (map-indexed (juxt (fn [i x] (count-tabs x))
+                          (fn [i x] [i (str/trim x)])))))
+
+
+
+</t>
+<t tx="conor.20160610003346.1">
+(defn count-tabs
+  [string]
+  (count (take-while #{\tab} string)))
+
+
+</t>
 <t tx="conor.20160610073243.1">
 
 
@@ -281,6 +357,15 @@ Collected: Fri Jun 10 11:25:20 2016
 
 
 
+
+(defn tvalue [e]
+  (-&gt; e
+      .-target
+      .-value))
+
+
+
+
 (defn connview [conn]
   (let [datoms (subscribe [:db-atoms conn])]
     (fn []
@@ -291,13 +376,10 @@ Collected: Fri Jun 10 11:25:20 2016
 
 
 
-
-
 (defn pr-entity [conn eid]
   (let [e (subscribe [:e conn eid])]
     (fn []
       [:div (pr-str @e)])))
-
 
 
 
@@ -307,65 +389,6 @@ Collected: Fri Jun 10 11:25:20 2016
       [:div
        (for [[e] @es]
          [pr-entity conn e])])))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(register-handler
- :change-text
- (fn [db [_ text]]
-   (assoc db :text text)))
-
-
-
-(defn count-tabs
-  [string]
-  (count (take-while #{\tab} string)))
-
-
-(count-tabs "\t\t")
-
-
-(defn tvalue [e]
-  (-&gt; e
-      .-target
-      .-value))
-
-
-
-(register-handler
- :clear-text
- (fn [db [_ e end]]
-   (let [text (:text db)]
-     (js/console.log (pr-str e))
-     (assoc db :text (str (subs text 0 e) "\t"  (subs text end))))))
-
-
-
-(register-handler
- :fix-tree
- (fn [db]
-   (let [tree @(subscribe [:parsed-text])]
-     (assoc db :tree tree))))
-
-
-
-(register-sub
- :tree
- (fn [db]
-   (reaction (:tree @db))))
-
-
 
 
 
@@ -386,9 +409,6 @@ Collected: Fri Jun 10 11:25:20 2016
                                        (.preventDefault %))
                                    :else)
                    :value @text}]])))
-
-
-
 
 
 
@@ -471,10 +491,10 @@ Collected: Fri Jun 10 11:25:20 2016
   (let [tm (subscribe [:testmap])]
    (fn []
     [:div
-     [:button {:on-click #(dispatch [:init conn])} "start"]
+     [:button {:on-click #(dispatch [:tree-&gt;ds conn])} "Convert"]
 ;   [canvas conn]
      [demo]
-     #_[entity-view conn]
+     [entity-view conn]
      #_[:h1 (pr-str @tm)]])))
 
 
@@ -510,7 +530,67 @@ Collected: Fri Jun 10 11:25:20 2016
                :child "b"
                :align-self :center]]])
 </t>
+<t tx="conor.20160610152638.1"></t>
 <t tx="conor.20160610152638.10">(pprint (depthvec-&gt;tree ts))
+</t>
+<t tx="conor.20160610152638.2">(s/def ::function fn?)
+
+(s/def ::depthvec
+  (s/cat :depth integer?
+         :text  (s/or
+                  :s string?
+                  :k keyword?)))
+
+(s/def ::depthvecs (s/+ ::depthvec))
+
+(s/fdef transform-depthvec
+        :args ::s/any
+          #_(s/cat :nodefn ::function
+                     :edgefn ::function
+                     :sibling-collector ::function
+                     :nseq  (s/+
+                              ::depthvec))
+        :ret ::s/any)
+
+
+
+</t>
+<t tx="conor.20160610152638.4">(defn transform-depthvec [nodefn edgefn sibling-collector nseq]
+  (loop [result []
+         s nseq]
+    (let[[pdepth ptitle] (first s)
+         [children siblings] (split-with #(&lt; pdepth (first %)) (rest s))
+         answer   (nodefn ptitle)
+         answer
+         (if (seq children)
+           (edgefn answer (transform-depthvec nodefn edgefn sibling-collector children))
+           answer)]
+      (if (seq siblings)
+        (recur (sibling-collector result answer) siblings)
+        (sibling-collector result answer)))))
+
+
+(s/instrument #'transform-depthvec)
+
+</t>
+<t tx="conor.20160610152638.5"></t>
+<t tx="conor.20160610152638.6"></t>
+<t tx="conor.20160610152638.7">(defn create-node-map
+  [title]
+  {:node title})
+</t>
+<t tx="conor.20160610152638.8">(defn connect-node [node children]
+   (assoc node :children children :expanded true))
+
+
+
+
+</t>
+<t tx="conor.20160610152638.9">(def depthvec-&gt;tree
+  (partial transform-depthvec create-node-map connect-node conj))
+
+
+
 </t>
 <t tx="conor.20160610160233.1"></t>
 <t tx="conor.20160610160233.2"></t>
@@ -518,44 +598,19 @@ Collected: Fri Jun 10 11:25:20 2016
 <t tx="conor.20160610162909.1">
 (transform [ALL TOPSORT (sp/collect-one :node) :a (sp/subset #{})] (fn [x] #{x})  (:tree @app-db)) 
 </t>
-<t tx="conor.20160610164021.10">
+<t tx="conor.20160610164021.12">
 
-(d/transact! conn [{:db/id [:node/text "Hello Graphs"]
-                     :node/test "helllo"}])
+(defn all-ents [conn]
+    (-&gt; (d/pull-many @conn '[*] (select [ALL ALL] (d/q '[:find ?e :in $ :where [?e]] @conn)))
+    pprint)
 </t>
-<t tx="conor.20160610164021.11">(d/transact! conn [{:db/id -1
-                    :node/text "Node B"
-                    :edge/_to [:node/text "Hello Graphs"]}])
-</t>
-<t tx="conor.20160610164021.12">(d/q '[:find ?e
-       :in $
-       :where [?e :node/text "Hello Graphs"]]
-     @conn)
-
-(d/pull @conn '[*] 3)
-
-(-&gt;
- (d/pull-many @conn '[*] (select [ALL ALL] (d/q '[:find ?e :in $ :where [?e]] @conn)))
- pprint)
-</t>
-<t tx="conor.20160610164021.13">
-(d/q '[:find [(pull ?e [*]) ?e]
-             :in $
-              :where [?e]]
-      @conn)
-
-</t>
-<t tx="conor.20160610164021.2">
-
-(declarepath TOPSORT)
+<t tx="conor.20160610164021.2">(declarepath TOPSORT)
 (providepath TOPSORT
               (sp/stay-then-continue
                :children ALL TOPSORT))
 </t>
 <t tx="conor.20160610164021.3">(def CHILDREN (comp-paths :children ALL))
 
-(defn get-leaves [tree]
-  (select [ALL TOPSORT :node] tree))
 </t>
 <t tx="conor.20160610164021.4">(defn get-edges [tree]
   (select [ALL TOPSORT (sp/collect-one :node) CHILDREN :node] tree))
@@ -590,6 +645,95 @@ Collected: Fri Jun 10 11:25:20 2016
            tree))
 
 
+#_(s/fdef create-colls
+        :args (s/coll-of string? [])
+        :ret  (s/coll-of integer? []))
+
+
+
+#_(setval [(sp/subselect ALL map?) (sp/subset :new-val)]
+        1 [{:a 1}[:not :me 1]{:b 2}])
+
+
+#_(-&gt;&gt;  (transform [(sp/subselect ALL TOPSORT :id) (sp/view count)]
+                 range
+                 (:tree @app-db))
+      (select [ALL TOPSORT :id])
+      pprint)
+
+(defn atom? [a] (instance? cljs.core/Atom a))
+
+
+
+
+
+(defn plainent [conn ids]
+  (let [ents (vec (for [[i t] ids] {:db/id i
+                                     :coll/text  t}))]
+    (-&gt;&gt; (d/transact! conn ents)
+         :tempids)))
+
+
+(s/fdef plainent
+        :args (s/cat :db atom?
+                     :entvecs (s/coll-of  (s/spec
+                                           (s/cat
+                                            :id integer?
+                                            :text string?))
+                                          [])))
+
+
+
+(s/instrument #'plainent)
+
+
+
+#_(pprint (:tree @app-db))
+
+
+
+(defn tree-&gt;ds [conn tree]
+  (let [;tree (:tree @app-db)
+        indexed-tree  (-&gt;&gt;  (transform [(sp/subselect ALL TOPSORT :id)]
+                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
+                                       tree))
+        idmap (-&gt;&gt; (select [ALL TOPSORT (sp/multi-path :id :node)] indexed-tree)
+                   (partition 2)
+                   (map vec)
+                   vec
+                   (plainent conn))]
+    (transform [ALL TOPSORT :id] idmap indexed-tree)))
+
+
+#_(pprint (select [ALL TOPSORT (sp/collect-one :id):node] indexed-tree))
+
+(defn tree-&gt;ds3 [conn tree]
+  (let [indexed-tree  (-&gt;&gt;  (transform [(sp/subselect ALL TOPSORT :id)]
+                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
+                                       tree))
+        idmap (-&gt;&gt; (select [ALL TOPSORT (sp/collect-one :id) :node] indexed-tree)
+                   (plainent conn))]
+    (transform [ALL TOPSORT :id] idmap indexed-tree)))
+
+
+
+#_(transform [(sp/subselect ALL ALL)] reverse [#{1 2 3} [4 5 6]])
+
+    ;     vec
+    ;     (d/transact! conn)
+    ;     :tempids
+    ;     vals
+    ;     drop-last]))
+
+
+#_(defn tree-&gt;ds2 [tree]
+    (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
+               create-colls
+               tree))
+
+
+
+#_(pprint (tree-&gt;ds2 create-colls))
 
 
 
@@ -597,35 +741,31 @@ Collected: Fri Jun 10 11:25:20 2016
   (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] tree))
 
 
-(-&gt; (:tree @app-db)
-    tree-&gt;ds1
-    get-edge-ids
-    pprint)
 
+(comment
+  (def testmap (tree-&gt;ds1 (:tree @app-db)))
 
-(def testmap (tree-&gt;ds1 (:tree @app-db)))
-
-(d/transact! conn [{:db/id 1
-                    :edge/to #{2 3}}])
+  (d/transact! conn [{:db/id 1}]
+                    :edge/to #{2 3}))
 
 
 
 
 (defn create-coll [collid children]
-  {:db/id collid
-   :edge/to children})
+                  {:db/id collid
+                   :edge/to children})
 
 
 
 (defn merge-vectors [e]
   (-&gt;&gt; (for [[k v] e]
-              {k #{v}})
-              (apply merge-with clojure.set/union)))
+            {k #{v}})
+       (apply merge-with clojure.set/union)))
 
 
 
-(defn create-edges [treemap]
-  (let [e (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] treemap)
+(defn create-edges [conn treemap]
+  (let [e (select [ALL TOPSORT (sp/collect-one :id) CHILDREN :id] treemap)
         c (select [ALL] (merge-vectors e))]
     (d/transact!  conn (vec (for [[x y] c]
                               (create-coll x y))))))
@@ -634,7 +774,18 @@ Collected: Fri Jun 10 11:25:20 2016
 
 
 
-(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] testmap))
+(-&gt;&gt; (:tree @app-db)
+    (tree-&gt;ds conn)
+    (create-edges conn)
+    pprint)
+
+
+
+
+
+
+
+#_(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] (:tree @app-db)))
 
 
 
@@ -724,5 +875,100 @@ Collected: Fri Jun 10 11:25:20 2016
 
 </t>
 <t tx="conor.20160610183452.1"></t>
+<t tx="conor.20160611204221.1">@language clojure
+(ns text-nodes.transforms
+  (:require [reagent.core    :as r]
+            [text-nodes.db :refer [conn]]
+            [text-nodes.specs :as mys]
+            [cljs.spec        :as s]
+            [posh.core       :as posh  :refer [pull posh! q transact!]]
+            [re-frame.core   :refer [register-handler]]
+            [re-frame.db     :refer [app-db]]
+            [datascript.core :as d]
+            [cljs.pprint     :refer [pprint]]
+            [cljs.reader]
+            [com.rpl.specter  :refer [ALL STAY LAST stay-then-continue collect-one comp-paths] :as sp]
+            [clojure.string  :as str])
+  (:require-macros
+           [com.rpl.specter.macros  :refer [select transform declarepath providepath]]
+           [reagent.ratom :refer [reaction]]))
+
+
+@others
+</t>
+<t tx="conor.20160611211018.1">
+
+(defn tree-&gt;ds1 [tree]
+  (transform [ALL TOPSORT (sp/collect-one :node) :id (sp/subset #{})]
+           (comp vector (partial create-ds-node conn))
+           tree))</t>
+<t tx="conor.20160611211018.10">
+(defn tree-&gt;ds [conn tree]
+  (let [;tree (:tree @app-db)
+        indexed-tree  (-&gt;&gt;  (transform [(sp/subselect ALL TOPSORT :id)]
+                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
+                                       tree))
+        idmap (-&gt;&gt; (select [ALL TOPSORT (sp/multi-path :id :node)] indexed-tree)
+                   (partition 2)
+                   (map vec)
+                   vec
+                   (plainent conn))]
+    (transform [ALL TOPSORT :id] idmap indexed-tree)))</t>
+<t tx="conor.20160611211018.2">#_(s/fdef create-colls
+        :args (s/coll-of string? [])
+        :ret  (s/coll-of integer? []))</t>
+<t tx="conor.20160611211018.4">#_(-&gt;&gt;  (transform [(sp/subselect ALL TOPSORT :id) (sp/view count)]
+                 range
+                 (:tree @app-db))
+      (select [ALL TOPSORT :id])
+      pprint)
+
+(defn atom? [a] (instance? cljs.core/Atom a))</t>
+<t tx="conor.20160611211018.6">(defn plainent [conn ids]
+  (let [ents (vec (for [[i t] ids] {:db/id i
+                                     :coll/text  t}))]
+    (-&gt;&gt; (d/transact! conn ents)
+         :tempids)))</t>
+<t tx="conor.20160611211018.7">(s/fdef plainent
+        :args (s/cat :db atom?
+                     :entvecs (s/coll-of  (s/spec
+                                           (s/cat
+                                            :id integer?
+                                            :text string?))
+                                          [])))</t>
+<t tx="conor.20160611211018.8">
+(s/instrument #'plainent)</t>
+<t tx="conor.20160611211019.1">(defn tree-&gt;ds3 [conn tree]
+  (let [indexed-tree  (-&gt;&gt;  (transform [(sp/subselect ALL TOPSORT :id)]
+                                       (partial map-indexed (fn [i x] (- 0 (inc i))))
+                                       tree))
+        idmap (-&gt;&gt; (select [ALL TOPSORT (sp/collect-one :id) :node] indexed-tree)
+                   (plainent conn))]
+    (transform [ALL TOPSORT :id] idmap indexed-tree)))</t>
+<t tx="conor.20160611211019.13">
+
+#_(def mergable (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] (:tree @app-db)))</t>
+<t tx="conor.20160611211019.5">
+(defn get-edge-ids [tree]
+  (select [ALL TOPSORT (sp/collect-one :id LAST) CHILDREN :id LAST] tree))</t>
+<t tx="conor.20160611211019.7">
+
+(defn create-coll [collid children]
+                  {:db/id collid
+                   :edge/to children})</t>
+<t tx="conor.20160611211019.8">
+(defn merge-vectors [e]
+  (-&gt;&gt; (for [[k v] e]
+            {k #{v}})
+       (apply merge-with clojure.set/union)))</t>
+<t tx="conor.20160611211019.9">
+(defn create-edges [conn treemap]
+  (let [e (select [ALL TOPSORT (sp/collect-one :id) CHILDREN :id] treemap)
+        c (select [ALL] (merge-vectors e))]
+    (d/transact!  conn (vec (for [[x y] c]
+                              (create-coll x y))))))</t>
+<t tx="conor.20160611211442.1">
+#_(setval [(sp/subselect ALL map?) (sp/subset :new-val)]
+        1 [{:a 1}[:not :me 1]{:b 2}])</t>
 </tnodes>
 </leo_file>
