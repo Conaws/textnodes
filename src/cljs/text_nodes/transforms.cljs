@@ -55,6 +55,66 @@
 
 
 
+(defn nodify2 [rows]
+          ;; find the entities
+  (let [entities (into {}
+                       (for [[idx _ text] rows]
+                         [idx text]))
+                ;; find the relationships
+        relations (into {}
+                        (for [[idx indent] rows]
+                          [idx
+                           (map (comp - first)
+                                (filter
+                                  #(= (inc indent) (second %))
+                                  (drop idx rows)))]))
+        offset (+ 1 (count relations) (count entities))]
+    (apply
+      concat
+      (for [[idx text] entities
+            :let [children (relations idx)]]
+        (cons {:node/text text
+               :node/children (map - children (repeat offset))
+               :db/id (- idx)}
+              (map-indexed
+                (fn [idx2 cidx]
+                  {:db/id (- cidx offset)
+                   :edge/order idx2
+                   :edge/to cidx})
+                children))))))
+
+
+(defn parsed2 [text]
+  (map-indexed
+    (fn [idx entity]
+      [(inc idx) (count-tabs entity) (str/trim entity)])
+    (str/split text #"\n")))
+
+#_(deftest text-nodes.handlers
+   (is (= (nodify3 (parsed2
+                    "this is
+        \tsome text
+        \t\tsome other text
+        \t\tmore child
+        \tthis"))
+          ({:node/text "this is", :node/children (-13 -14 -16), :db/id -1}
+           {:db/id -13, :edge/order 0, :edge/to -2}
+           {:db/id -14, :edge/order 1, :edge/to -3}
+           {:db/id -16, :edge/order 2, :edge/to -5}
+           {:node/text "some text", :node/children (-15), :db/id -2}
+           {:db/id -15, :edge/order 0, :edge/to -4}
+           {:node/text "some other text", :node/children (-15), :db/id -3}
+           {:db/id -15, :edge/order 0, :edge/to -4}
+           {:node/text "more child", :node/children (), :db/id -4}
+           {:node/text "this", :node/children (), :db/id -5}))))
+
+
+
+
+
+
+
+
 (s/def ::function fn?)
 
 (s/def ::depthvec
@@ -117,9 +177,13 @@
 (def CHILDREN (comp-paths :children ALL))
 
 
-(defn plainent [conn ids]
-  (let [ents (vec (for [[i t] ids] {:db/id i
-                                     :coll/text  t}))]
+(defn plainent [conn text title ids]
+  (let [pvec [{:db/id -1000
+                     :node/child-text text
+                     :node/title title}]
+        ents (apply conj pvec
+              (for [[i t] ids] {:db/id i
+                                :coll/text  t}))]
     (->> (d/transact! conn ents)
          :tempids)))
 
@@ -130,13 +194,17 @@
                                            (s/cat
                                             :id integer?
                                             :text string?))
-                                          [])))
-(defn tree->ds [conn tree]
+                                          [])
+                     :text string?
+                     :title string?))
+
+
+(defn tree->ds [conn tree text title]
   (let [indexed-tree  (->>  (transform [(sp/subselect ALL TOPSORT :id)]
                                        (partial map-indexed (fn [i x] (- 0 (inc i))))
                                        tree))
         idmap (->> (select [ALL TOPSORT (sp/collect-one :id) :node] indexed-tree)
-                   (plainent conn))]
+                   (plainent conn text title))]
     (transform [ALL TOPSORT :id] idmap indexed-tree)))
 
 

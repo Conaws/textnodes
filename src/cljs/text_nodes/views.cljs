@@ -106,7 +106,7 @@
                          (if (< 0 (count (:children t)))
                            [:button {:on-click #(do
                                                   (reset! visible? (not @visible?)))}
-                                                  
+
                             (if @visible?
                               "-"
                               "+")])]]]]
@@ -141,6 +141,101 @@
 
 
 
+(register-handler
+ :assoc-in-path
+ (fn [db [_ p v]]
+   (assoc-in db p v)))
+
+
+(defn focus-append [this]
+  (doto (.getDOMNode this)
+    (.focus)
+    (.setSelectionRange 100000 100000)))
+
+(defn focus-append-input [m]
+  (rx/create-class
+   {:display-name "focus-append-component"
+    :component-did-mount focus-append
+    :reagent-render
+    (fn focus-append-input-render [m]
+      [:input
+       (merge
+        {:type "text"
+         :name "text"
+         :style {:width "100%"}}
+        m)])}))
+
+
+
+(def key-code-name
+  {13 "ENTER"
+   27 "ESC"
+   46 "DELETE"
+   8 "BACKSPACE"})
+
+(defn save [path editing write e]
+  (.preventDefault e)
+  (write path (.. e -target -value))
+  (dispatch [:assoc-in-path [:editing] nil]))
+
+(register-sub
+ :editing
+ (fn [db]
+   (reaction (:editing @db))))
+
+
+(defn editable-string
+  ([path]
+   (editable-string path
+                    (fn update-model [p v]
+                      (dispatch [:assoc-in-path p v]))))
+  ([path write]
+   (let [editing (subscribe [:editing])
+         dv      (subscribe [:title])]
+     (fn []
+       (if (= path @editing)
+         [focus-append-input
+          {:default-value @dv
+           :on-blur
+           (fn editable-string-blur [e]
+             (save path editing write e))
+           :on-key-down
+           (fn editable-string-key-down [e]
+             (case (key-code-name (.-keyCode e))
+               "ESC" (dispatch [:assoc-in-path [:editing] nil])
+               "ENTER" (save path editing write e)
+               nil))}]
+         [:div.editable
+          {:style {:width "100%"
+                   :cursor "pointer"}
+           :on-click
+           (fn editable-string-click [e]
+             (dispatch [:assoc-in-path [:editing] path]))}
+          @dv
+          [:span.glyphicon.glyphicon-pencil.edit]])))))
+
+(defn title1 []
+  (fn []
+    [editable-string [:title]]))
+
+#_(defn title1 []
+  (let [t (subscribe [:title])
+        editing? (rx/atom true)]
+    (fn []
+      [:div
+        (if (or @editing? (not (< 0 (count @t))))
+          [:span
+            [:input {:value @t
+                     :on-mouse-leave #(reset! editing? false)
+                     :on-change #(dispatch [:edit-title  (tvalue %)])}]
+            [:button {:on-click #(reset! editing? false)} "X"]]
+          [:div [:strong {:style {:font-size 50}
+                          :on-click #(reset! editing? true)} @t]
+                [:strong "click to edit me"]])])))
+
+
+
+
 (defn demo []
   [v-box
    :size "auto"
@@ -151,14 +246,21 @@
                :panel-2 [tree-display]]]])
 
 
-(defn stuff [conn]
+(defn nodes []
+  (let [nodes (subscribe [:nodes])]
+    (fn []
+      [:div
+       (for [n @nodes]
+        [:button (pr-str n)])])))
 
+(defn stuff [conn]
    (fn []
     [:div
+     [title1]
      [:button {:on-click #(dispatch [:tree->ds conn])} "Convert"]
      [demo]
+     [nodes]
      [entity-view conn]]))
-
 
 
 (defn main-panel []

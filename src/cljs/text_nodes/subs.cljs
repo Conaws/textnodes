@@ -51,14 +51,26 @@
    (reaction (:tree @db))))
 
 
-;@+node:conor.20160608034750.3: ** :testmap 
+;@+node:conor.20160608034750.3: ** :testmap
+
+
+(register-sub
+ :title
+ (fn [db]
+   (reaction (:title @db))))
+
+
+(register-sub
+ :nodes
+  (fn [db]
+    (reaction (:nodes @db))))
 
 
 (register-sub
  :testmap
  (fn [db]
    (reaction (:testmap @db))))
-;@+node:conor.20160608034750.7: ** :parsed-text 
+;@+node:conor.20160608034750.7: ** :parsed-text
 (register-sub
  :parsed-text
  (fn [db]

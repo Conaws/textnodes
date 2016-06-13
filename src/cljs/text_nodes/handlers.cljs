@@ -17,7 +17,7 @@
             [com.rpl.specter  :refer [ALL STAY LAST stay-then-continue collect-one comp-paths] :as sp]
             [clojure.string  :as str])
   (:require-macros
-           [com.rpl.specter.macros  :refer [select transform declarepath providepath]]
+           [com.rpl.specter.macros  :refer [select setval transform declarepath providepath]]
            [reagent.ratom :refer [reaction]]))
 
 
@@ -51,12 +51,21 @@
 (register-handler
      :tree->ds
      (fn [db [_ conn]]
-       (let [newtree  (t/tree->ds conn (:tree db))]
+       (let [text (:text db)
+             title (:title db)
+             newtree  (t/tree->ds conn (:tree db) (:text db) (:title db))]
          (do
            (t/create-edges conn newtree))
-         (assoc db :tree newtree))))
+         (->> (assoc db :tree [] :text "" :title "New Map")
+              (setval [:nodes (sp/subset #{})] [text title])))))
 
 
+(register-handler
+  :edit-title
+    (fn [db [_ title]]
+      (if title
+        (assoc db :title title)
+        (assoc db :title "Untitled"))))
 
 
 
