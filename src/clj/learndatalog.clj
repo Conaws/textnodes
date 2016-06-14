@@ -107,6 +107,18 @@
 ;  "Michael Biehn"
 ;  "James Cameron"
 
+(d/q '[:find ?title
+       :in $ ?actor ?director
+       :where
+        [?a :person/name ?actor]
+        [?d :person/name ?director]
+        [?m :movie/director ?d]
+        [?m :movie/cast ?p]
+        [?m :movie/title ?title]]
+     @conn
+     "Michael Biehn"
+     "James Cameron")
+
 
 
 
@@ -211,15 +223,17 @@
         [(= ?aprop :db/cardinality)]]
       (:schema @conn))
 
-(select [:schema ALL (sp/collect-one sp/FIRST) LAST (sp/subselect MAP-VALS)]
-        @conn)
-;; note, couldn't get it exactly
+;answer
 
-{:keep {:ignore :keep2, :ignore1 :keep3}}
+(select [:schema ALL (sp/subselect (sp/multi-path sp/FIRST [LAST MAP-VALS]))]
+        @conn)
+
+(comment
+  {:keep {:ignore :keep2, :ignore1 :keep3}}
 
 
 ;; minor improvement, at least bringing it into a map
 
-(-> (transform [MAP-VALS (sp/collect MAP-VALS)] (fn [xs & _] (flatten xs)) 
+  (-> (transform [MAP-VALS (sp/collect MAP-VALS)] (fn [xs & _] (flatten xs))
         (:schema @conn))
-    pprint)
+    pprint))
