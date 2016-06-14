@@ -61,6 +61,17 @@
 
 
 (register-handler
+  :tree->ds2
+  (fn [db [_ conn]]
+    (d/transact! conn (:tree db))))
+
+
+
+
+
+
+
+(register-handler
   :edit-title
     (fn [db [_ title]]
       (if title

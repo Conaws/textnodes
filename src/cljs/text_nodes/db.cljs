@@ -5,12 +5,14 @@
 (ns text-nodes.db
   (:require [reagent.core    :as rx]
             [posh.core       :as posh  :refer [pull posh! q transact!]]
+            [re-frame.db     :refer [app-db]]
             [re-frame.core   :refer [register-sub subscribe dispatch register-handler]]
             [datascript.core :as db]
             [re-com.core   :as re-com :refer [h-box v-box box gap line scroller border h-split v-split title flex-child-style p]]
             [cljs.pprint     :refer [pprint]]
             [keybind.core :as key]
             [cljs.reader]
+            [alandipert.storage-atom :refer [local-storage]]
             [com.rpl.specter  :refer [ALL] :as s]
             [clojure.string  :as str])
   (:require-macros
@@ -31,5 +33,16 @@
 (defonce conn
   (doto (db/create-conn schema)
         posh!))
+
+
+
+
+(defonce prefs (local-storage app-db :app-db))
+
+(add-watch prefs
+           :new
+           (fn [_ _ _ v]
+             (.log js/console "new preference" v)))
+
 ;@-others
 ;@-leo

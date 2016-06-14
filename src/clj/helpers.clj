@@ -16,10 +16,24 @@
 
 ;@+others
 ;@+node:conor.20160610150348.1: ** datascript helpers
-;@+node:conor.20160610142318.9: *3* (defn dbafter->eid [rv]  (-> 
-  (defn dbafter->eid [rv]
-    (-> rv
-      :tx-data
-      ffirst))
+;@+node:conor.20160610142318.9: *3* (defn dbafter->eid [rv]  (->
+(defn dbafter->eid [rv]
+  (-> rv
+    :tx-data
+    ffirst))
 ;@-others
 ;@-leo
+
+
+(def parent
+  ;; ?a is a parent of ?b
+  '[[(parent ?a ?b)
+     [?a :edge/to ?b]]])
+
+(def ancestor
+  ; ?a is an anscestor of ?b
+  '[[(ancestor ?a ?b)
+     [parent ?a ?b]]
+    [(ancestor ?a ?b)
+     [parent ?a ?x]
+     [ancestor ?x ?b]]])

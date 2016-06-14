@@ -4,6 +4,7 @@
                  [posh                                  "0.3.5"]
                  [org.clojure/clojurescript           "1.9.36"
                                           :scope     "provided"]
+                 [alandipert/storage-atom               "2.0.1"]
                  [re-com                                "0.8.3"]
                  [reagent "0.5.1"]
                  [reagent-utils                         "0.1.7"]
