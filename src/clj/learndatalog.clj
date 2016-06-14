@@ -1,5 +1,5 @@
 
-(ns user.learn-datalog-today
+(ns ldt
   (:require [datascript.core    :as d]
             [com.rpl.specter    :as sp
                                 :refer [ALL LAST MAP-VALS FIRST]]
@@ -285,3 +285,27 @@
       1992
       8.2
       ratings)
+
+
+
+
+;;; transformation functions
+;; turns out in datascript you have to pass them in as args
+
+
+(defn age [birthday today]
+  (quot (- (.getTime today)
+           (.getTime birthday))
+        (* 1000 60 60 24 365)))
+
+
+
+(d/q '[:find ?name ?first
+       :in $ ?age ?today
+       :where
+       [?p :person/name ?name]
+       [?p :person/born ?born]
+       [(?age ?born ?today) ?first]]
+      @conn
+      age
+      #inst "2013-08-02T00:00:00.000-00:00")
