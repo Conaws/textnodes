@@ -237,3 +237,51 @@
   (-> (transform [MAP-VALS (sp/collect MAP-VALS)] (fn [xs & _] (flatten xs))
         (:schema @conn))
     pprint))
+
+
+
+;;; predicates
+
+
+;;find movies older than a certain year
+
+(d/q '[:find ?title
+       :in $ ?year
+       :where
+        [?m :movie/year ?y]
+        [(<= ?y ?year)]
+        [?m :movie/title ?title]]
+      @conn
+      1987)
+
+
+;; find actors older than Danny Glover
+(d/q '[:find ?name
+       :in $
+       :where
+        [?dg :person/name "Danny Glover"]
+        [?dg :person/born ?dy]
+        [?p  :person/born ?yo]
+        [_   :movie/cast ?p]
+        [?p  :person/name ?name]
+        [(< ?y ?dy)]]
+      @conn)
+
+
+
+
+;; find movies that are newer (inclusive) and have higher rating than one supplied
+
+
+
+(d/q '[:find ?title ?rating
+       :in $ ?year ?minrate [[?title ?rating]]
+       :where
+        [(< ?minrate ?rating)]
+        [?m :movie/title ?title]
+        [?m :movie/year ?y]
+        [(>= ?y ?year)]]
+      @conn
+      1992
+      8.2
+      ratings)
