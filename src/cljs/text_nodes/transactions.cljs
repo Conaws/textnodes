@@ -22,13 +22,13 @@
 
 (def parent
 ;; ?a is a parent of ?b
- '[(parent ?a ?b)
+ '[[(parent ?a ?b)]
    [?a :edge/to ?b]])
 
 (def ancestor
 ; ?a is an anscestor of ?b
  '[[(ancestor ?a ?b)
-   [parent ?a ?b]]
+    [parent ?a ?b]]
    [(ancestor ?a ?b)
     [parent ?a ?x]
     [ancestor ?x ?b]]])
@@ -38,9 +38,11 @@
 
 
 (defn ancestor-of-eid [db id-of-changing-entity]
-  (let [edges (d/q '[:find ?ancestor
+  (let [edges (q '[:find [?ancestor ?direct-child]
                    :in $ % ?changling
-                   :where [[ancestor ?ancestor ?changling]]]
+                   :where [[ancestor ?ancestor ?changling]
+                           [ancestor ?direct-child ?changling]
+                           [parent ?ancestor  ?direct-child]]]
                  db
                  rules
                  id-of-changing-entity)]
@@ -49,12 +51,6 @@
 
 (all-ents @conn)
 
-(d/q '[:find ?a
-       :in $ 
-       :where [?a :edge/to 6]] @conn parent)
-
-
-(ancestor-of-eid @conn 6)
 
 
 

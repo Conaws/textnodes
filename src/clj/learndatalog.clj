@@ -1,8 +1,13 @@
 
 (ns user.learn-datalog-today
-  (:require [datascript.core :as d]
+  (:require [datascript.core    :as d]
+            [com.rpl.specter    :as sp
+                                :refer [ALL LAST MAP-VALS FIRST]]
             [clojure.pprint     :refer [pprint]]
-            [clojure.string :as string]))
+            [clojure.string     :as string])
+  (:use
+   [com.rpl.specter.macros
+         :only [select transform setval declarepath providepath]]))
 
 
 (def data-url "https://raw.githubusercontent.com/jonase/learndatalogtoday/master/resources/db/data.edn")
@@ -35,6 +40,7 @@
                     {ident others}))
                 ,,,)
            (apply merge ,,,))))
+
 
 
 
@@ -85,12 +91,24 @@
 ; Find movie title by year
 
 ;Given a list of movie titles, find the title and the year that movie was released.
-; input ["Lethal Weapon" "Lethal Weapon 2" "Lethal Weapon 3"]
+(def q3input
+   ["Lethal Weapon" "Lethal Weapon 2" "Lethal Weapon 3"])
+
+(d/q '[:find ?title ?year
+       :in $ [?title ...]
+       :where [?m :movie/title ?title]
+              [?m :movie/year ?year]]
+     @conn
+     q3input)
+
 
 
 ;  Find all movie ?titles where the ?actor and the ?director has worked together
 ;  "Michael Biehn"
 ;  "James Cameron"
+
+
+
 
 
 
@@ -136,14 +154,7 @@
 
 
 
-;; what attributes are associated with a given movie
-;; input "Commando"
-
-
-
-
 ;; Find the names of all people associated with a particular movie (i.e. both the actors and the directors)
-;;
 
 (d/q
  '[:find [(pull ?m [*])]
@@ -170,3 +181,45 @@
   @conn
   "Die Hard"
   [:movie/cast :movie/director])
+
+
+
+
+
+;;; attributes
+
+;; in datascript you don't need to go to the db/ident to get stuff
+;; schema isn't actually stored in db
+;; what attributes are associated with a given movie
+;; input "Commando"
+(d/q '[:find ?a
+       :in $ ?title
+       :where
+        [?m :movie/title ?title]
+        [?m ?a]]
+     @conn
+     "Commando")
+
+
+
+
+;; find all available attributes and their type -- dont' need datalog here
+
+(d/q '[:find ?attr ?avalue
+       :in $ [[?attr [[?aprop ?avalue] ...]] ...]
+       :where
+        [(= ?aprop :db/cardinality)]]
+      (:schema @conn))
+
+(select [:schema ALL (sp/collect-one sp/FIRST) LAST (sp/subselect MAP-VALS)]
+        @conn)
+;; note, couldn't get it exactly
+
+{:keep {:ignore :keep2, :ignore1 :keep3}}
+
+
+;; minor improvement, at least bringing it into a map
+
+(-> (transform [MAP-VALS (sp/collect MAP-VALS)] (fn [xs & _] (flatten xs)) 
+        (:schema @conn))
+    pprint)
