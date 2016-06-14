@@ -309,3 +309,42 @@
       @conn
       age
       #inst "2013-08-02T00:00:00.000-00:00")
+
+
+
+
+
+;;; aggregates
+
+;;grouping and parameter passing
+
+(= (set (d/q '[:find ?color (max ?amount ?x) (min ?amount ?x)
+               :in   [[?color ?x]] ?amount]
+              [[:red 1]  [:red 2] [:red 3] [:red 4] [:red 5]
+               [:blue 3] [:blue 2][:blue 8] [:blue 9] [:blue 100] [:green 2]]
+              3))
+ #{[:red  [3 4 5] [1 2 3]]
+   [:blue [7 8]   [7 8]]})
+
+;;don't totally understand why htis hppens
+
+
+
+(= (ffirst (d/q '[:find (avg ?x)
+                  :in [?x ...]]
+                 [10 15 20 35 75]))
+   31)
+
+
+(= (ffirst (d/q '[:find (median ?x)
+                  :in [?x ...]]
+                 [10 15 20 35 75]))
+   20)
+
+
+(= (set (d/q '[:find ?color (aggregate ?agg ?x)
+               :in   [[?color ?x]] ?agg]
+             [[:red 1]  [:red 2] [:red 3] [:red 4] [:red 5]
+              [:blue 7] [:blue 8]]
+             #(reverse (sort %))))
+   #{[:red [5 4 3 2 1]] [:blue [8 7]]})
