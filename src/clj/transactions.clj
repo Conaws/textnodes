@@ -2,7 +2,8 @@
   (:require [datascript.core    :as d]
             [com.rpl.specter    :as sp
                                 :refer [ALL LAST MAP-VALS FIRST subselect
-                                        stay-then-continue collect
+                                        stay-then-continue collect selected?
+                                        pred must
                                         collect-one if-path]]
             [clojure.pprint     :refer [pprint]]
             [clojure.string     :as string])
@@ -106,6 +107,99 @@
 
 
 (add-tempids-to-tree sampmap)
+
+
+
+(def sampmap2
+  [{:a "foo"
+    :b "bar"
+    :c [{:this "other thing"
+         :that {:nested :map
+                :deeper #{{:in :we-go}}}}]}])
+
+
+
+;; create a tempid for everything
+
+(declarepath TOPSORT3)
+(providepath TOPSORT3
+             (sp/cond-path
+              map?
+               (stay-then-continue
+                [MAP-VALS TOPSORT3])
+              coll?
+                [ALL TOPSORT3]))
+
+
+(declarepath ConaWalka)
+(providepath ConaWalka
+           (sp/cond-path
+             map? #(:tempid %)
+             coll? ALL ConaWalka))
+
+(defn maps->ds [maps]
+  (->> maps
+       (transform [(subselect TOPSORT3 :tempid) (sp/view count)]
+                  #(range (- %) 0))
+       (select TOPSORT3)
+       (transform [ALL MAP-VALS ConaWalka] :tempid)))
+
+
+(pprint (maps->ds sampmap))
+
+
+
+
+
+
+
+(defn nested->ds [mapvec]
+ (->> mapvec
+  (transform [(subselect TOPSORT3 :tempid) (sp/view count)]
+           #(range (- %) 0))
+  (select TOPSORT3)
+  (transform [ALL MAP-VALS (sp/pred :tempid) (collect-one :tempid)]
+          (fn [v _] v))))
+
+
+
+(transform [(subselect TOPSORT3 :db/id) (sp/view count)]
+           (fn [c] (range (- c) 0))
+           sampmap2)
+
+
+
+(transform [ALL MAP-VALS]
+           #((if (and (map? %) #(:tempid %)))
+             (:tempid %)
+             (if (seq %)
+               (keep :tempid %)
+               %))
+           sampmap2)
+
+
+
+;(defn nested->ds [mapvec]
+
+
+
+
+(transform [ALL MAP-VALS (sp/pred :tempid) (collect-one :tempid)]
+          (fn [v _] v))
+
+
+
+
+
+
+(pprint (nested->ds sampmap2))
+
+
+
+
+
+
+
 
 
 
