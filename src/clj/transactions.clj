@@ -62,7 +62,7 @@
 
 (def s2
   (transform [(subselect ALL TOPSORT2 :tempid) (sp/view count)]
-            #(range (- %) 0) 
+            #(range (- %) 0)
             sampmap))
 
 
@@ -72,11 +72,13 @@
 (def s3 (select [ALL TOPSORT2] s2))
 
 
-(transform [ALL MAP-VALS]
-           (fn [v] (if (:tempid v)
-                     (:tempid v)
-                      v))
+(transform [ALL MAP-VALS (if-path :tempid sp/STAY sp/STOP)]
+           (fn [v] (:tempid v))
            s3)
+
+(transform [ALL MAP-VALS (sp/pred :tempid) (collect-one :tempid)]
+           (fn [x _] x)
+       (conj s3 {:no :id :to {:be :had}}))
 
 
 
@@ -85,10 +87,8 @@
    (transform [(subselect ALL TOPSORT2 :tempid) (sp/view count)]
             #(range (- %) 0))
    (select [ALL TOPSORT2])
-   (transform [ALL MAP-VALS]
-           (fn [v] (if (:tempid v)
-                     (:tempid v)
-                      v)))))
+   (transform [ALL MAP-VALS (sp/pred :tempid) (collect-one :tempid)]
+           (fn [v _] v))))
 
 
 (nestedmaps->ds sampmap)
