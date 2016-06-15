@@ -60,11 +60,14 @@
               (setval [:nodes (sp/subset #{})] [text title])))))
 
 
+
+
+
 (register-handler
   :tree->ds
   (fn [db [_ conn]]
-    (d/transact! conn (:tree db))))
-
+    (d/transact! conn (:tree db))
+    (t/cleardb db)))
 
 
 

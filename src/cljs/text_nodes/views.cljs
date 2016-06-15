@@ -76,7 +76,6 @@
 
 
 
-
 (defn tree [t]
   (let [visible? (rx/atom (:expanded t))]
       (fn []
@@ -253,13 +252,32 @@
        (for [n @nodes]
         [:button (pr-str n)])])))
 
+
+
+
+(defn dnode [conn eid]
+  (let [node (subscribe [:e conn eid])]
+    (fn []
+      [:div (pr-str @node)])))
+
+(defn dtree [conn]
+  (let [all (subscribe [:nodes conn])]
+    (fn []
+      [:div
+       (for [[n] @all]
+         [dnode conn n])])))
+
+
+
+
+
 (defn stuff [conn]
    (fn []
     [:div
+     [dtree conn]
      [title1]
      [:button {:on-click #(dispatch [:tree->ds conn])} "Convert"]
      [demo]
-     [nodes]
      [entity-view conn]]))
 
 

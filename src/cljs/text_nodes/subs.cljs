@@ -8,7 +8,7 @@
             [text-nodes.transforms :as t]
             [text-nodes.db :refer [conn]]
             [re-frame.core   :refer [register-sub subscribe dispatch register-handler]]
-            [datascript.core :as db]
+            [datascript.core :as d]
             [re-com.core   :as re-com :refer [h-box v-box box gap line scroller border h-split v-split title flex-child-style p]]
             [cljs.pprint     :refer [pprint]]
             [keybind.core :as key]
@@ -62,9 +62,9 @@
 
 (register-sub
  :nodes
-  (fn [db]
-    (reaction (:nodes @db))))
-
+  (fn [db [_ conn]]
+    (q conn '[:find ?e
+              :where [?e :node/title]])))
 
 
 
@@ -78,6 +78,10 @@
  :parsed-text
  (fn [db]
    (reaction (t/depthvec->tree (t/parsed (:text @db))))))
+
+
+
+
 
 ;@-others
 ;@-leo

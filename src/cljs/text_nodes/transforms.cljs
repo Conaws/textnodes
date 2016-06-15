@@ -16,7 +16,6 @@
            [reagent.ratom :refer [reaction]]))
 
 
-
 (defn count-tabs
   [string]
   (count (take-while #{\tab} string)))
@@ -235,3 +234,8 @@
         (select [ALL ALL]
                 (d/q '[:find ?e :in $ :where [?e]] @conn)))
       pprint))
+
+
+
+(defn cleardb [db]
+  (assoc db :tree [] :text "" :title (str "New Map" (count (:nodes db)))))
