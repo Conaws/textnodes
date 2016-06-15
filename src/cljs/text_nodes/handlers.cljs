@@ -49,7 +49,7 @@
 
 
 (register-handler
-     :tree->ds
+     :tree->ds2
      (fn [db [_ conn]]
        (let [text (:text db)
              title (:title db)
@@ -61,7 +61,7 @@
 
 
 (register-handler
-  :tree->ds2
+  :tree->ds
   (fn [db [_ conn]]
     (d/transact! conn (:tree db))))
 

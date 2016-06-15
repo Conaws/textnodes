@@ -144,9 +144,7 @@
        (select TOPSORT3)
        (transform [ALL MAP-VALS ConaWalka] :tempid)))
 
-
-(pprint (maps->ds sampmap))
-
+(pprint (maps->ds sampmap2))
 
 
 

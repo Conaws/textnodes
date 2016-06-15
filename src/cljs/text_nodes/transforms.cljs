@@ -155,15 +155,19 @@
 
 (defn create-node-map
   [title]
-  {:node title})
+  {:node/title title})
 (defn connect-node [node children]
-   (assoc node :children children :expanded true))
+   (assoc node :edge/to children :expanded true))
 
 
 
 
 (def depthvec->tree
   (partial transform-depthvec create-node-map connect-node conj))
+
+
+
+(depthvec->tree (parsed (:text @app-db)))
 
 
 

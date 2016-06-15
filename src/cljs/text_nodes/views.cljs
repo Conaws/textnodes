@@ -78,7 +78,7 @@
 
 
 (defn tree [t]
-  (let [visible? (rx/atom (:children-visible t))]
+  (let [visible? (rx/atom (:expanded t))]
       (fn []
          [v-box
           :min-width  "40px"
@@ -98,12 +98,12 @@
                                 :margin"20px 10px 0px 10px"
                                 :border "2px solid blue"}
 
-                        :child (:node t)]
+                        :child (:node/title t)]
                        [box
                         :align-self :center
                         :child
                         [:div
-                         (if (< 0 (count (:children t)))
+                         (if (< 0 (count (:edge/to t)))
                            [:button {:on-click #(do
                                                   (reset! visible? (not @visible?)))}
 
@@ -117,7 +117,7 @@
              :style {:display (if (not @visible?)
                                :none)}
              :children [
-                        (for [child (:children t)]
+                        (for [child (:edge/to t)]
                           ^{:key child}
                            [tree child])]]]]])))
 

@@ -66,6 +66,9 @@
     (reaction (:nodes @db))))
 
 
+
+
+
 (register-sub
  :testmap
  (fn [db]
@@ -74,7 +77,7 @@
 (register-sub
  :parsed-text
  (fn [db]
-   (reaction (t/nodify (t/parsed (:text @db))))))
+   (reaction (t/depthvec->tree (t/parsed (:text @db))))))
 
 ;@-others
 ;@-leo
