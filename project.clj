@@ -4,14 +4,15 @@
                  [posh                                  "0.3.5"]
                  [org.clojure/clojurescript           "1.9.36"
                                           :scope     "provided"]
-                 [alandipert/storage-atom               "2.0.1"]
+                 [alandipert/storage-atom               "1.2.4"]
                  [re-com                                "0.8.3"]
                  [reagent "0.5.1"]
                  [reagent-utils                         "0.1.7"]
                  [com.rpl/specter                      "0.11.2"]
                  [keybind                               "2.0.0"]
-                 [re-frame "0.7.0"]
-                 [garden "1.3.2"]]
+                 [re-frame                              "0.7.0"]
+                 [re-complete                           "0.1.4"]
+                 [garden                                "1.3.2"]]
 
   :min-lein-version "2.5.3"
 

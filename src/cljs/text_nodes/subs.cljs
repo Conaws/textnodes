@@ -31,12 +31,31 @@
  (fn [db]
    (reaction (:text @db))))
 ;@+node:conor.20160608034749.5: ** datoms
+
+(register-sub
+ :editing
+ (fn [db]
+   (reaction (:editing @db))))
+
+
+
+
+(d/q '[:find ?e ?attr ?val ?tx
+            :where
+            [?e ?attr ?val ?tx]]
+     @conn)
+
+
+(defn datom-query [conn]
+  (q conn '[:find ?e ?attr ?val ?tx
+            :where
+            [?e ?attr ?val ?tx]]))
+
+
 (register-sub
  :datoms
  (fn [_ [_ conn]]
-   (q conn '[:find ?e ?attr ?val
-             :where
-             [?e ?attr ?val]])))
+   (datom-query conn)))
 ;@+node:conor.20160608034749.6: ** :db-entities
 (register-sub
  :db-entities

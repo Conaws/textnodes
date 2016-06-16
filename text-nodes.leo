@@ -11,19 +11,19 @@
 <vnodes>
 <v t="conor.20160610112520.1"><vh>spootnik.org %u2013 Simple materialized views in kafka and clojure</vh></v>
 <v t="conor.20160606053544.1" a="E"><vh>Files to write</vh>
-<v t="conor.20160605011037.1"><vh>@path ~/orgmap/leo/text-nodes</vh>
-<v t="conor.20160605011510.1"><vh>@auto log.org</vh></v>
+<v t="conor.20160605011037.1" a="E"><vh>@path ~/orgmap/leo/text-nodes</vh>
+<v t="conor.20160605011510.1" a="E"><vh>@auto log.org</vh></v>
 <v t="conor.20160605013539.1"><vh>@auto specter.org</vh></v>
 </v>
 <v t="conor.20160605013848.1" a="E"><vh>@auto datascript.org</vh></v>
 <v t="conor.20160605010926.1" a="E"><vh>@path src/</vh>
-<v t="conor.20160605011023.2"><vh>/clj/</vh>
+<v t="conor.20160605011023.2" a="E"><vh>/clj/</vh>
 <v t="conor.20160610142118.2"
 expanded="conor.20160610145855.1,"><vh>@file core.clj</vh></v>
 <v t="conor.20160610150037.1"
 expanded="conor.20160610150348.1,"><vh>@file helpers.clj</vh></v>
 <v t="conor.20160610142118.1"><vh>@file spec-test.clj</vh></v>
-<v t="conor.20160605011025.1"><vh>/text_nodes/</vh>
+<v t="conor.20160605011025.1" a="E"><vh>/text_nodes/</vh>
 <v t="conor.20160606161843.1"
 expanded="conor.20160608031859.1,"><vh>@file specter-test.clj</vh></v>
 <v t="conor.20160606052632.1"
@@ -107,6 +107,66 @@ expanded="conor.20160606073225.1,"><vh>@file spec-test.clj</vh></v>
 
 
 
+(defn nodify2 [rows]
+          ;; find the entities
+  (let [entities (into {}
+                       (for [[idx _ text] rows]
+                         [idx text]))
+                ;; find the relationships
+        relations (into {}
+                        (for [[idx indent] rows]
+                          [idx
+                           (map (comp - first)
+                                (filter
+                                  #(= (inc indent) (second %))
+                                  (drop idx rows)))]))
+        offset (+ 1 (count relations) (count entities))]
+    (apply
+      concat
+      (for [[idx text] entities
+            :let [children (relations idx)]]
+        (cons {:node/text text
+               :node/children (map - children (repeat offset))
+               :db/id (- idx)}
+              (map-indexed
+                (fn [idx2 cidx]
+                  {:db/id (- cidx offset)
+                   :edge/order idx2
+                   :edge/to cidx})
+                children))))))
+
+
+(defn parsed2 [text]
+  (map-indexed
+    (fn [idx entity]
+      [(inc idx) (count-tabs entity) (str/trim entity)])
+    (str/split text #"\n")))
+
+#_(deftest text-nodes.handlers
+   (is (= (nodify3 (parsed2
+                    "this is
+        \tsome text
+        \t\tsome other text
+        \t\tmore child
+        \tthis"))
+          ({:node/text "this is", :node/children (-13 -14 -16), :db/id -1}
+           {:db/id -13, :edge/order 0, :edge/to -2}
+           {:db/id -14, :edge/order 1, :edge/to -3}
+           {:db/id -16, :edge/order 2, :edge/to -5}
+           {:node/text "some text", :node/children (-15), :db/id -2}
+           {:db/id -15, :edge/order 0, :edge/to -4}
+           {:node/text "some other text", :node/children (-15), :db/id -3}
+           {:db/id -15, :edge/order 0, :edge/to -4}
+           {:node/text "more child", :node/children (), :db/id -4}
+           {:node/text "this", :node/children (), :db/id -5}))))
+
+
+
+
+
+
+
+
 </t>
 <t tx="conor.20160610003314.1">
 
@@ -147,6 +207,8 @@ Collected: Fri Jun 10 11:25:20 2016
 
 (ns text-nodes.views
   (:require [reagent.core    :as rx]
+            [re-complete.core  :as rc]
+            [re-complete.dictionary :as dict]
             [posh.core       :as posh  :refer [pull posh! q transact!]]
             [text-nodes.db :refer [conn]]
             [re-frame.core   :refer [register-sub subscribe dispatch register-handler]]
@@ -222,9 +284,8 @@ Collected: Fri Jun 10 11:25:20 2016
 
 
 
-
 (defn tree [t]
-  (let [visible? (rx/atom (:children-visible t))]
+  (let [visible? (rx/atom (:expanded t))]
       (fn []
          [v-box
           :min-width  "40px"
@@ -244,13 +305,15 @@ Collected: Fri Jun 10 11:25:20 2016
                                 :margin"20px 10px 0px 10px"
                                 :border "2px solid blue"}
 
-                        :child (:node t)]
+                        :child (:node/title t)]
                        [box
                         :align-self :center
                         :child
                         [:div
-                         (if (&lt; 0 (count (:children t)))
-                           [:button {:on-click #(reset! visible? (not @visible?))}
+                         (if (&lt; 0 (count (:edge/to t)))
+                           [:button {:on-click #(do
+                                                  (reset! visible? (not @visible?)))}
+
                             (if @visible?
                               "-"
                               "+")])]]]]
@@ -261,7 +324,7 @@ Collected: Fri Jun 10 11:25:20 2016
              :style {:display (if (not @visible?)
                                :none)}
              :children [
-                        (for [child (:children t)]
+                        (for [child (:edge/to t)]
                           ^{:key child}
                            [tree child])]]]]])))
 
@@ -285,6 +348,101 @@ Collected: Fri Jun 10 11:25:20 2016
 
 
 
+(register-handler
+ :assoc-in-path
+ (fn [db [_ p v]]
+   (assoc-in db p v)))
+
+
+(defn focus-append [this]
+  (doto (.getDOMNode this)
+    (.focus)
+    (.setSelectionRange 100000 100000)))
+
+(defn focus-append-input [m]
+  (rx/create-class
+   {:display-name "focus-append-component"
+    :component-did-mount focus-append
+    :reagent-render
+    (fn focus-append-input-render [m]
+      [:input
+       (merge
+        {:type "text"
+         :name "text"
+         :style {:width "100%"}}
+        m)])}))
+
+
+
+(def key-code-name
+  {13 "ENTER"
+   27 "ESC"
+   46 "DELETE"
+   8 "BACKSPACE"})
+
+(defn save [path editing write e]
+  (.preventDefault e)
+  (write path (.. e -target -value))
+  (dispatch [:assoc-in-path [:editing] nil]))
+
+(register-sub
+ :editing
+ (fn [db]
+   (reaction (:editing @db))))
+
+
+(defn editable-string
+  ([path]
+   (editable-string path
+                    (fn update-model [p v]
+                      (dispatch [:assoc-in-path p v]))))
+  ([path write]
+   (let [editing (subscribe [:editing])
+         dv      (subscribe [:title])]
+     (fn []
+       (if (= path @editing)
+         [focus-append-input
+          {:default-value @dv
+           :on-blur
+           (fn editable-string-blur [e]
+             (save path editing write e))
+           :on-key-down
+           (fn editable-string-key-down [e]
+             (case (key-code-name (.-keyCode e))
+               "ESC" (dispatch [:assoc-in-path [:editing] nil])
+               "ENTER" (save path editing write e)
+               nil))}]
+         [:div.editable
+          {:style {:width "100%"
+                   :cursor "pointer"}
+           :on-click
+           (fn editable-string-click [e]
+             (dispatch [:assoc-in-path [:editing] path]))}
+          @dv
+          [:span.glyphicon.glyphicon-pencil.edit]])))))
+
+(defn title1 []
+  (fn []
+    [editable-string [:title]]))
+
+#_(defn title1 []
+  (let [t (subscribe [:title])
+        editing? (rx/atom true)]
+    (fn []
+      [:div
+        (if (or @editing? (not (&lt; 0 (count @t))))
+          [:span
+            [:input {:value @t
+                     :on-mouse-leave #(reset! editing? false)
+                     :on-change #(dispatch [:edit-title  (tvalue %)])}]
+            [:button {:on-click #(reset! editing? false)} "X"]]
+          [:div [:strong {:style {:font-size 50}
+                          :on-click #(reset! editing? true)} @t]
+                [:strong "click to edit me"]])])))
+
+
+
+
 (defn demo []
   [v-box
    :size "auto"
@@ -295,14 +453,50 @@ Collected: Fri Jun 10 11:25:20 2016
                :panel-2 [tree-display]]]])
 
 
-(defn stuff [conn]
+(defn nodes []
+  (let [nodes (subscribe [:nodes])]
+    (fn []
+      [:div
+       (for [n @nodes]
+        [:button (pr-str n)])])))
 
+
+
+
+(defn dnode [conn eid]
+  (let [node (subscribe [:e conn eid])]
+    (fn []
+      [:div (pr-str @node)])))
+
+(defn dtree [conn]
+  (let [all (subscribe [:nodes conn])]
+    (fn []
+      [:div
+       (for [[n] @all]
+         [dnode conn n])])))
+
+
+(defn rec []
+  (fn []
+    [:ul.checklist
+     [:li.input
+      [:input {:type "text"
+               :value ""
+               :on-change (fn [e]
+                            (dispatch [:input "veg" (.. e -target -value)]))}]
+      [:div.re-completion-list-part
+       [rc/completions "veg"]]]]))
+
+
+(defn stuff [conn]
    (fn []
     [:div
+     [dtree conn]
+     [rec]
+     [title1]
      [:button {:on-click #(dispatch [:tree-&gt;ds conn])} "Convert"]
      [demo]
      [entity-view conn]]))
-
 
 
 (defn main-panel []
@@ -354,10 +548,10 @@ Collected: Fri Jun 10 11:25:20 2016
 <t tx="conor.20160610152638.6"></t>
 <t tx="conor.20160610152638.7">(defn create-node-map
   [title]
-  {:node title})
+  {:node/title title})
 </t>
 <t tx="conor.20160610152638.8">(defn connect-node [node children]
-   (assoc node :children children :expanded true))
+   (assoc node :edge/to children :expanded true))
 
 
 
@@ -365,6 +559,10 @@ Collected: Fri Jun 10 11:25:20 2016
 </t>
 <t tx="conor.20160610152638.9">(def depthvec-&gt;tree
   (partial transform-depthvec create-node-map connect-node conj))
+
+
+
+(depthvec-&gt;tree (parsed (:text @app-db)))
 
 
 
@@ -376,6 +574,11 @@ Collected: Fri Jun 10 11:25:20 2016
         (select [ALL ALL]
                 (d/q '[:find ?e :in $ :where [?e]] @conn)))
       pprint))
+
+
+
+(defn cleardb [db]
+  (assoc db :tree [] :text "" :title (str "New Map" (count (:nodes db)))))
 </t>
 <t tx="conor.20160610164021.2">(declarepath TOPSORT)
 (providepath TOPSORT
@@ -408,12 +611,15 @@ Collected: Fri Jun 10 11:25:20 2016
            [com.rpl.specter.macros  :refer [select transform declarepath providepath]]
            [reagent.ratom :refer [reaction]]))
 
-
 @others
 </t>
-<t tx="conor.20160611211018.6">(defn plainent [conn ids]
-  (let [ents (vec (for [[i t] ids] {:db/id i
-                                     :coll/text  t}))]
+<t tx="conor.20160611211018.6">(defn plainent [conn text title ids]
+  (let [pvec [{:db/id -1000
+                     :node/child-text text
+                     :node/title title}]
+        ents (apply conj pvec
+              (for [[i t] ids] {:db/id i
+                                :coll/text  t}))]
     (-&gt;&gt; (d/transact! conn ents)
          :tempids)))
 
@@ -425,14 +631,18 @@ Collected: Fri Jun 10 11:25:20 2016
                                            (s/cat
                                             :id integer?
                                             :text string?))
-                                          [])))
+                                          [])
 </t>
-<t tx="conor.20160611211019.1">(defn tree-&gt;ds [conn tree]
+<t tx="conor.20160611211019.1">                     :text string?
+                     :title string?))
+
+
+(defn tree-&gt;ds [conn tree text title]
   (let [indexed-tree  (-&gt;&gt;  (transform [(sp/subselect ALL TOPSORT :id)]
                                        (partial map-indexed (fn [i x] (- 0 (inc i))))
                                        tree))
         idmap (-&gt;&gt; (select [ALL TOPSORT (sp/collect-one :id) :node] indexed-tree)
-                   (plainent conn))]
+                   (plainent conn text title))]
     (transform [ALL TOPSORT :id] idmap indexed-tree)))
 </t>
 <t tx="conor.20160611211019.7">

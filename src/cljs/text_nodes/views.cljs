@@ -1,6 +1,9 @@
 
 (ns text-nodes.views
   (:require [reagent.core    :as rx]
+            [re-complete.core  :as rc]
+            [text-nodes.recomplete :as rd]
+            [re-complete.dictionary :as dict]
             [posh.core       :as posh  :refer [pull posh! q transact!]]
             [text-nodes.db :refer [conn]]
             [re-frame.core   :refer [register-sub subscribe dispatch register-handler]]
@@ -19,7 +22,6 @@
 
 
 
-
 (defn tvalue [e]
   (-> e
       .-target
@@ -28,7 +30,7 @@
 
 
 
-(defn connview [conn]
+(defn datoms [conn]
   (let [datoms (subscribe [:datoms conn])]
     (fn []
       [:div
@@ -177,10 +179,7 @@
   (write path (.. e -target -value))
   (dispatch [:assoc-in-path [:editing] nil]))
 
-(register-sub
- :editing
- (fn [db]
-   (reaction (:editing @db))))
+
 
 
 (defn editable-string
@@ -268,19 +267,35 @@
          [dnode conn n])])))
 
 
+(dispatch [:dictionary "veg" '("aaa" "bbbb" "aabbcc" "Salami")])
 
+(defn rec []
+  (let [text (subscribe [:text])]
+    (fn []
+      [:ul.checklist
+       [:li.input
+        [:input {:type "text"
+                 :value @text
+                 :on-change #(do
+                              (dispatch [:input "veg" (.. % -target -value)])
+                              (dispatch [:change-text (tvalue %)]))}]
+              [:div.re-completion-list-part
+               [rc/completions "veg"]]]])))
 
 
 (defn stuff [conn]
    (fn []
     [:div
      [dtree conn]
+     [rec]
      [title1]
      [:button {:on-click #(dispatch [:tree->ds conn])} "Convert"]
      [demo]
-     [entity-view conn]]))
+     [datoms conn]]))
 
 
 (defn main-panel []
     (fn []
-      [stuff conn]))
+      [:div
+       [rd/recomplete-demo]
+       [stuff conn]]))
