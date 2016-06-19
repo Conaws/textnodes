@@ -6,12 +6,15 @@
                                           :scope     "provided"]
                  [alandipert/storage-atom               "1.2.4"]
                  [re-com                                "0.8.3"]
+                 [secretary                             "1.2.3"]
+                 #_[bidi                                  "2.0.9"]
+                 #_[kibu/pushy                            "0.3.6"]
                  [reagent "0.5.1"]
                  [reagent-utils                         "0.1.7"]
                  [com.rpl/specter                      "0.11.2"]
                  [keybind                               "2.0.0"]
                  [re-frame                              "0.7.0"]
-                 [re-complete                           "0.1.4"]
+                 [re-complete                "0.1.4-1-SNAPSHOT"]
                  [garden                                "1.3.2"]]
 
   :min-lein-version "2.5.3"
@@ -55,4 +58,4 @@
   :profiles
   {:dev
    [{:dependencies [[org.clojure/test.check "0.9.0"]]}
-    {:plugins [[lein-figwheel "0.5.3"]]}]})
+    {:plugins [[lein-figwheel "0.5.4-3"]]}]})

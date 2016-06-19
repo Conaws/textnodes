@@ -3,6 +3,7 @@
   (:require [reagent.core    :as rx]
             [re-complete.core  :as rc]
             [text-nodes.recomplete :as rd]
+            [text-nodes.routes :as routes]
             [re-complete.dictionary :as dict]
             [posh.core       :as posh  :refer [pull posh! q transact!]]
             [text-nodes.db :refer [conn]]
@@ -267,34 +268,73 @@
          [dnode conn n])])))
 
 
-(dispatch [:dictionary "veg" '("aaa" "bbbb" "aabbcc" "Salami")])
-
-(defn rec []
-  (let [text (subscribe [:text])]
-    (fn []
-      [:ul.checklist
-       [:li.input
-        [:input {:type "text"
-                 :value @text
-                 :on-change #(do
-                              (dispatch [:input "veg" (.. % -target -value)])
-                              (dispatch [:change-text (tvalue %)]))}]
-              [:div.re-completion-list-part
-               [rc/completions "veg"]]]])))
 
 
 (defn stuff [conn]
    (fn []
     [:div
      [dtree conn]
-     [rec]
+     #_[rec]
      [title1]
      [:button {:on-click #(dispatch [:tree->ds conn])} "Convert"]
      [demo]
      [datoms conn]]))
 
 
+
+
+
+
+
+(defn home-panel []
+    (fn []
+      [:div 
+       #_[stuff conn]
+       [:div [:a {:href "#/about"} "go to About Page"]]]))
+
+
+(defn about-panel []
+  (fn []
+    [:div "This is the About Page."
+     [rd/recomplete-demo]
+     [:div [:a {:href "#/"} "go to Home Page"]]]))
+
+
+
+
+
+(defmulti panels identity)
+(defmethod panels :home-panel [] [home-panel])
+(defmethod panels :about-panel [] [about-panel])
+(defmethod panels :default [] [:div])
+
+
+
+
 (defn main-panel []
+  (let [active-panel (subscribe [:active-panel])]
+    (fn []
+      [:div
+       #_[home-panel]
+       #_[:a {:href "#/about"} "go to About Page"]
+       (panels @active-panel)])))
+
+
+(register-handler
+ :set-active-panel
+ (fn [db [_ panel-name]]
+   (assoc db :active-panel panel-name)))
+
+
+(register-sub
+ :active-panel
+ (fn [db _]
+   (reaction (:active-panel @db))))
+
+
+
+
+#_(defn main-panel []
     (fn []
       [:div
        [rd/recomplete-demo]

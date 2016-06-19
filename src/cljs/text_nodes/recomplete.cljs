@@ -11,6 +11,13 @@
             [clojure.string :as string]))
 
 
+(defn tvalue [e]
+  (-> e
+      .-target
+      .-value))
+
+
+
 ;; Initial state
 
 #_(def initial-state {})
@@ -22,6 +29,50 @@
  (fn
    [db _]
    (merge db initial-state)))
+
+
+(comment
+(register-handler
+ :selected-item
+ (fn [db [_ linked-component-key hovered-item]]
+   (let [suggestion-list (get-in db [:re-complete :linked-components linked-component-key :completions])
+         suggestion-indexed-vector (map-indexed vector suggestion-list)
+         hovered-item-with-index (first (filter (comp (partial = hovered-item) second) suggestion-indexed-vector))]
+     (assoc-in db [:re-complete :linked-components linked-component-key :selected-item] hovered-item-with-index))))
+
+
+
+
+
+
+(defn items-to-complete
+  "List of the items to autocomplete by given input and list of the all items"
+  [case-sensitive? dictionary input]
+  (if (= input nil)
+    []
+    (filter #(case-sensitivity case-sensitive? % input) dictionary)))
+
+
+
+(defn opening-excluded-chars [word excluded-chars]
+  (if ((set (map #(= (first word) %) excluded-chars)) true)
+    (opening-excluded-chars (apply str (rest word)) excluded-chars)
+    word))
+
+
+(defn closing-excluded-chars [word excluded-chars]
+  (if ((set (map #(= (last word) %) excluded-chars)) true)
+    (closing-excluded-chars (apply str (butlast word)) excluded-chars)
+    word))
+
+
+(defn completions [word dictionary {:keys [trim-chars case-sensitive?]}]
+  (let [new-text (-> word
+                     (opening-excluded-chars trim-chars)
+                     (closing-excluded-chars trim-chars))]
+    (items-to-complete case-sensitive? dictionary new-text)))
+
+)
 
 
 (register-handler
@@ -91,12 +142,51 @@
                                      (dispatch [:clear-input list-name]))}
              [:span {:className "glyphicon glyphicon-ok check"}]]]
            (list-view @get-list)]]
-         [:div.re-completion-list-part
+         [:div
           [re-complete/completions list-name]]]]))))
 
+
+
+#_(register-handler
+ :mouse-on-suggestion-list
+ (fn [db [_ item]]
+   (js/alert "WOOT" item)))
+
+
+(dispatch [:dictionary "veg" '("aaa" "bbbb" "aabbcc" "Salami")])
+
+#_(register-handler
+ :console-set-autocompleted-text
+ (fn console-set-text [db [_ console-key]]
+   (rc-app/set-console-text db console-key (get-in db [:re-complete :linked-components (keyword console-key) :text]))))
+
+
+(defn rec []
+  (let [text (subscribe [:text])]
+    (fn []
+      [:ul.checklist
+       [:li.input
+        [:input {:type "text"
+                 :value @text
+                 :on-change #(do
+                              (dispatch [:input "veg" (.. % -target -value)])
+                              (dispatch [:change-text (tvalue %)]))}]
+              [:div.re-completion-list-part
+               [re-complete/completions "veg" #(do (js/alert "hey") 
+                                                    
+                                                   #_(dispatch [:console-set-autocompleted-text console-key])
+                                                   #_(dispatch [:focus-console-editor console-key]))]]]])))
+
+
+
+
+
+
 (defn recomplete-demo []
+  (fn []
+   #_[rec]
   (into [:div.my-app]
-        (map #(into [render-list] %) my-lists)))
+        (map #(into [render-list] %) my-lists))))
 
 ;; --- Main app fn ---
 
