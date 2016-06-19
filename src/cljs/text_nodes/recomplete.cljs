@@ -161,21 +161,33 @@
    (rc-app/set-console-text db console-key (get-in db [:re-complete :linked-components (keyword console-key) :text]))))
 
 
-(defn rec []
+(defn rec [list-name]
   (let [text (subscribe [:text])]
     (fn []
-      [:ul.checklist
-       [:li.input
-        [:input {:type "text"
-                 :value @text
-                 :on-change #(do
-                              (dispatch [:input "veg" (.. % -target -value)])
-                              (dispatch [:change-text (tvalue %)]))}]
-              [:div.re-completion-list-part
-               [re-complete/completions "veg" #(do (js/alert "hey") 
-                                                    
-                                                   #_(dispatch [:console-set-autocompleted-text console-key])
-                                                   #_(dispatch [:focus-console-editor console-key]))]]]])))
+      [:div
+       [:div {:className (str list-name " my-list")}
+        [:div {:className "panel panel-default re-complete"}
+         [:div {:className "panel-heading"}
+          [:h1 (string/capitalize (str list-name "s"))]]
+         [:div.panel-body
+          [:ul.checklist
+           [:li.input
+            [:input {:type "text"
+                     :className "form-control input-field"
+                     :placeholder (str list-name " name")
+                     :value @text
+                     :on-change (fn [event]
+                                  (dispatch [:input list-name (.. event -target -value)]))
+                     :on-focus #(dispatch [:focus list-name true])
+                     :on-blur #(dispatch [:focus list-name false])}]
+            [:button {:type "button"
+                      :className "btn btn-default button-ok"
+                      :on-click #(do (dispatch [:add-item-to-list list-name @text])
+                                     (dispatch [:clear-input list-name]))}
+             [:span {:className "glyphicon glyphicon-ok check"}]]]
+           (list-view @text)]]
+         [:div.re-completion-list-part
+          [re-complete/completions list-name]]]]])))
 
 
 
@@ -184,8 +196,8 @@
 
 (defn recomplete-demo []
   (fn []
-   #_[rec]
-  (into [:div.my-app]
+   [rec "veg"]
+  #_(into [:div.my-app]
         (map #(into [render-list] %) my-lists))))
 
 ;; --- Main app fn ---
